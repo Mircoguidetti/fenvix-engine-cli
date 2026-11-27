@@ -127,18 +127,20 @@ function releaseAll(o) {
   for (const r of [...s]) r();
 }
 
-// A native call still in flight when a test ends keeps counting for at most NATIVE_GRACE_MS of real time after that
-// end, then stops counting. A query the next test waits on (alakajam: the pool's connection still busy with the
-// previous test's query while the next test waits in tarn's queue) is done long before; a call that never calls back
-// (a path not caught by the callback wrap, eachDone or releaseOnError: a database whose open failed, a statement that
-// failed without a callback) costs at most that much real time, whoever started it (a test, a hook, module scope),
-// however many tests end meanwhile (skipped, concurrent).
+// A native call still in flight when the test that started it ends keeps counting for at most NATIVE_GRACE_MS of
+// real time after that end, then stops counting. Another test's end (a concurrent or skipped sibling) does not start
+// it; a call started outside a test (a hook, module scope) starts it at the next test end. A query the next test
+// waits on (alakajam: the pool's connection still busy with the previous test's query while the next test waits in
+// tarn's queue) is done long before; a call that never calls back (a path not caught by the callback wrap, eachDone
+// or releaseOnError: a database whose open failed, a statement that failed without a callback) costs at most that
+// much real time. When the grace ends a call that never returned, real time decided it: the running test is reported
+// to the cache as reading the real clock (not reusable).
 const NATIVE_GRACE_MS = 3000;
-function releaseTestWork() {
+function releaseTestWork(testId) {
   const { REAL } = require('./clock');
   for (const r of IN_FLIGHT) {
-    if (r.expiry) continue;
-    r.expiry = REAL.setTimeout(r, NATIVE_GRACE_MS);
+    if (r.expiry || (r.owner !== testId && r.owner !== null)) continue;
+    r.expiry = REAL.setTimeout(r.expire, NATIVE_GRACE_MS);
     if (r.expiry && r.expiry.unref) r.expiry.unref();
   }
 }
@@ -175,6 +177,12 @@ function trackOwned(patcher, P, names) {
         if (two) { const cb = a[i]; a[i] = function (...r) { release(); return cb.apply(this, r); }; } else a.push(function eachDone() { release(); });
       } else { const cb = a[i]; a[i] = function (...r) { release(); return cb.apply(this, r); }; }
       work += 1;
+      release.owner = STATE.testId;
+      release.expire = () => {
+        if (done) return;
+        release();
+        if (STATE.onRealClock) STATE.onRealClock('a node-sqlite3 call still in flight 3 s of real time after its test ended stopped counting as pending work (real time decided)');
+      };
       if (self && typeof self === 'object') { let s = OPEN.get(self); if (!s) OPEN.set(self, (s = new Set())); s.add(release); }
       IN_FLIGHT.add(release);
       try {
@@ -245,7 +253,7 @@ function installNativeWork(patcher) {
   }
   Object.defineProperty(w, '__detjsNativeWork', { value: true });
   patcher.set(Module, '_load', w);
-  if (Array.isArray(STATE.onTestEnd)) STATE.onTestEnd.push(() => releaseTestWork());
+  if (Array.isArray(STATE.onTestEnd)) STATE.onTestEnd.push((id) => releaseTestWork(id));
   // already loaded (an earlier file of this process)
   for (const [file, mod] of Object.entries(require.cache)) {
     if (file.endsWith('.node') && mod && mod.exports && typeof mod.exports === 'object') { try { nativeWork(patcher, mod.exports); } catch { /* ignore */ } }
@@ -378,10 +386,10 @@ function startTest() { siteCounters = new Map(); }
 require('./concur').register({ name: 'sched', save: () => siteCounters, restore: (x) => { siteCounters = x; } });
 
 /** A virtual timer was chosen while `n` operations of the test were still pending. */
-function timerChosen(site, n) {
+function timerChosen(site, n, why) {
   STATE.recordAt('sched', 'sched.timer', site || '', `0/${1 + n}:${stableId(site)}`);
   // real time decided the order: the test's result is not reusable (src/cache/capture.js)
-  if (STATE.onRealClock) STATE.onRealClock('a virtual timer fired while I/O of the test was pending (real time decided the order)');
+  if (STATE.onRealClock) STATE.onRealClock(why || 'a virtual timer fired while I/O of the test was pending (real time decided the order)');
 }
 
 /** An operation of the test completed while `n` virtual timers of the test were waiting. */

@@ -30,8 +30,10 @@ Rules as built:
   loadExtension, Statement bind / get / run / all / each / reset / finalize, Backup step / finish) count as pending
   until their callback runs (`each`: its completion callback, an added one when it has only a row callback, or its
   row callback called with an error); a statement whose constructor or prepare callback gets an error is not counted
-  from then on; a call still in flight when a test ends keeps counting for up to 3 s of real time, then stops (a call
-  that never calls back, started by a test, a hook or module scope, costs at most that).
+  from then on; a call still in flight when the test that started it ends keeps counting for up to 3 s of real time,
+  then stops (a call that never calls back, started by a test, a hook or module scope, costs at most that) and the
+  running test is reported as reading the real clock (not reused by the cache). A timer fired at real pace because a
+  runner poll (P1) or a child-starting test (P2) keeps the driver slow is recorded as a choice real time made.
 
 Test (b) passes from b6ec7638 on (CHANGELOG "Fixed"; harness/det_host_values/REPORT.md section 8).
 
