@@ -80,6 +80,14 @@ search request, probe or candidate read (no data existed); none changes the deci
     403 rate limit) is retried until it returns and no longer uses up one of the 6 attempts, so no page is skipped for
     a 429; 6 attempts remain for transport errors and 5xx. Any page that still fails stays recorded (`page_errors`,
     leaf `incomplete`) and counted in REPORT. Check at the change: 311 leaves, 0 error leaves, 0 page errors.
+20. AC4 route (operations, 2026-11-27, after the decision counts and before any AC4 verdict): the work session's
+    REST access is limited to this project's own repository (HTTP 403 "GitHub access to this repository is not
+    enabled for this session" on every `repos/{other}/...` path), so the AC4 evidence (each sample's workflow files and
+    root build files that name a mutation tool, the latest runs of the workflows recorded for it or naming a mutation
+    tool, the jobs and steps of up to 2 completed 2026 runs, and the issue / pull request / commit texts named by the
+    sample) is fetched by the workflow route (`ac4fetch.py`, request `{"chunk": "ac4", "ac4": true}`, GET only) into
+    `results/ac4_wf/`; the session judges every sample by hand from those records. The AC4 samples, rule and stop
+    condition are unchanged.
 
 ## Decision
 
