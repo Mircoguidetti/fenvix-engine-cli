@@ -578,15 +578,17 @@ class Driver {
     }
     // slow because of a runner poll (P1) or a child-starting test's pacing (P2), not of pending I/O: still a choice
     // real time makes (the poll or the child's work races this timer): recorded like one made before pending I/O
-    const paced = !fastMode && this.mode === 'virtual' && (this.safePending.size > 0 || this.childPaced());
+    const ownPoll = !!head && this.safePending.size > 0 && [...this.safePending.values()].includes(head._test);
+    const paced = !fastMode && this.mode === 'virtual' && (ownPoll || this.childPaced());
     const t = this.queue.shift();
     this.progress += 1;
     if (!fastMode && this.mode === 'virtual' && t._test === STATE.testId && STATE.testId !== null) {
-      // chosen before I/O that is still pending: a decision real time made (Level 1, recorded)
+      // a decision real time made (Level 1, recorded): before I/O still pending, or at the real pace a runner poll
+      // of this test (P1) or this test's child (P2) set
       const p = sched.pending();
       if (p.length) sched.timerChosen(t._site, p.length);
       else if (paced) {
-        sched.timerChosen(t._site, 0, this.safePending.size > 0
+        sched.timerChosen(t._site, 0, ownPoll
           ? 'a virtual timer fired at real pace while a runner poll (vi.waitFor / expect.poll) was pending (real time decided the order)'
           : 'a virtual timer fired at real pace after the test started a child process (real time decided the order)');
       }

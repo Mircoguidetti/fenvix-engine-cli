@@ -136,11 +136,19 @@ function releaseAll(o) {
 // much real time. When the grace ends a call that never returned, real time decided it: the running test is reported
 // to the cache as reading the real clock (not reusable).
 const NATIVE_GRACE_MS = 3000;
+// A call owned by another test gets the longer grace from this end: a backstop for an owner whose end never comes
+// (the runner did not end it), so every call stops counting in bounded real time.
+const NATIVE_GRACE_OTHER_MS = 4 * NATIVE_GRACE_MS;
+const ENDED = new Set(); // test ids whose end ran: a call issued under one of them afterwards has no owner left
 function releaseTestWork(testId) {
+  if (testId !== null && testId !== undefined) ENDED.add(testId);
   const { REAL } = require('./clock');
   for (const r of IN_FLIGHT) {
-    if (r.expiry || (r.owner !== testId && r.owner !== null)) continue;
-    r.expiry = REAL.setTimeout(r.expire, NATIVE_GRACE_MS);
+    const mine = r.owner === testId || r.owner === null;
+    if (r.expiry && (r.short || !mine)) continue;
+    if (r.expiry) REAL.clearTimeout(r.expiry); // was armed by another test's end: the owner's end shortens it
+    r.short = mine;
+    r.expiry = REAL.setTimeout(r.expire, mine ? NATIVE_GRACE_MS : NATIVE_GRACE_OTHER_MS);
     if (r.expiry && r.expiry.unref) r.expiry.unref();
   }
 }
@@ -177,11 +185,11 @@ function trackOwned(patcher, P, names) {
         if (two) { const cb = a[i]; a[i] = function (...r) { release(); return cb.apply(this, r); }; } else a.push(function eachDone() { release(); });
       } else { const cb = a[i]; a[i] = function (...r) { release(); return cb.apply(this, r); }; }
       work += 1;
-      release.owner = STATE.testId;
+      release.owner = STATE.testId !== null && !ENDED.has(STATE.testId) ? STATE.testId : null;
       release.expire = () => {
         if (done) return;
         release();
-        if (STATE.onRealClock) STATE.onRealClock('a node-sqlite3 call still in flight 3 s of real time after its test ended stopped counting as pending work (real time decided)');
+        if (STATE.onRealClock) STATE.onRealClock('a node-sqlite3 call still in flight when its real-time grace after a test end ran out stopped counting as pending work (real time decided)');
       };
       if (self && typeof self === 'object') { let s = OPEN.get(self); if (!s) OPEN.set(self, (s = new Set())); s.add(release); }
       IN_FLIGHT.add(release);
@@ -314,6 +322,8 @@ function pendingByNames() {
   }
   const out = [];
   for (const [k, n] of m) for (let i = baselineNames.get(k) || 0; i < n; i++) out.push(k);
+  for (let i = 0; i < held; i++) out.push('held'); // as pending(): what isPending() counts
+  for (let i = 0; i < work; i++) out.push('work');
   return out;
 }
 
@@ -380,16 +390,22 @@ function stableId(site) {
   siteCounters.set(s, n);
   return `${s}#${n}`;
 }
-function startTest() { siteCounters = new Map(); }
+function startTest() { siteCounters = new Map(); CHOSEN_WHY.clear(); }
 
 // per-test state of a concurrent test (src/concur.js)
 require('./concur').register({ name: 'sched', save: () => siteCounters, restore: (x) => { siteCounters = x; } });
 
-/** A virtual timer was chosen while `n` operations of the test were still pending. */
+/**
+ * A virtual timer was chosen by real time: while `n` operations of the test were still pending, or (n = 0) while the
+ * driver ran at real pace for a runner poll or a child-starting test; `why` is the reason given to the cache (once
+ * per test and reason: the capture keeps one flag per reason).
+ */
+const CHOSEN_WHY = new Set();
 function timerChosen(site, n, why) {
   STATE.recordAt('sched', 'sched.timer', site || '', `0/${1 + n}:${stableId(site)}`);
   // real time decided the order: the test's result is not reusable (src/cache/capture.js)
-  if (STATE.onRealClock) STATE.onRealClock(why || 'a virtual timer fired while I/O of the test was pending (real time decided the order)');
+  const reason = why || 'a virtual timer fired while I/O of the test was pending (real time decided the order)';
+  if (STATE.onRealClock && !CHOSEN_WHY.has(reason)) { CHOSEN_WHY.add(reason); STATE.onRealClock(reason); }
 }
 
 /** An operation of the test completed while `n` virtual timers of the test were waiting. */
