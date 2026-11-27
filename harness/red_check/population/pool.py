@@ -21,7 +21,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import rules as R  # noqa: E402
 
-PACE = 3.0
+PACE = 12.0  # at most 5 searches per minute: the coordinator shares the search budget (REPORT, 2026-11-27)
 MAX_PAGES = 3
 RES = HERE / "results"
 RAW = RES / "pool_raw"
