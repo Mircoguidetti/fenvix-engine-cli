@@ -83,11 +83,11 @@ search request, probe or candidate read (no data existed); none changes the deci
 
 ## Decision
 
-**CONTINUE: 109 running, 29 with time pain.**
+**CONTINUE: 109 running, 30 with time pain.**
 
 covered: GitHub Actions, tools stryker (JS/.NET/Scala), mutmut, cosmic-ray, PIT (Maven, Gradle), cargo-mutants, Infection, mutant, go-mutesting, gremlins, Mull, Muter, mutatest; not covered: other CI systems, private repositories, tools not listed.
 
-read 1106, running 109, not-running 714, uncertain 283; pain yes 29, unknown 47, no 33; N 58715; U_R 0.38308 (U_R×N 22492.6), U_P 0.35275 (U_P×N 20712.0); whole frame read: no; truncated leaves: 2; incomplete leaves: 0; hand check: not passed.
+read 1106, running 109, not-running 714, uncertain 283; pain yes 30, unknown 27, no 52; N 58715; U_R 0.38308 (U_R×N 22492.6), U_P 0.33524 (U_P×N 19683.4); whole frame read: no; truncated leaves: 2; incomplete leaves: 0; hand check: not passed.
 
 ## Discovery
 
@@ -139,9 +139,9 @@ Truncated leaves: `B infection filename:infection.json` size:371..371 total 1608
 - has-mutation-job 147, unresolved 23, tool-present-unlinked 241, no-mutation 694, error 1
 - running 109, configured-not-running 20, uncertain with a mutation job 18 (runs cap 12, unsupported 0)
 - duration read 98, duration pain 25
-- pain yes 29, unknown 47, no 33
+- pain yes 30, unknown 27, no 52
 
-Pain unknown reasons (a repository can have several): 300-request cap 8, another mutation job uncertain 5, candidate not hand-read 2, history not run 8, history-error 8, issues search not run 35, runs cap with < 3 values 2, too_few_runs 11
+Pain unknown reasons (a repository can have several): 300-request cap 8, another mutation job uncertain 4, history not run 8, history-error 8, issues search not run 8, runs cap with < 3 values 2, too_few_runs 10
 
 ## Per tool (running repositories)
 
@@ -174,6 +174,9 @@ Pain unknown reasons (a repository can have several): 300-request cap 8, another
 | https://github.com/Elvin-Arrow/privacy-gate | cargo-mutants | every-change | 360.6 | duration | - | median of 10 runs, `.github/workflows/nightly.yml` job `mutants-core` |
 | https://github.com/erenmeren/alice | gremlins | scheduled | 342.4 | duration | - | median of 10 runs, `.github/workflows/nightly.yml` job `fuzz` |
 | https://github.com/ext-sakamoro/ALICE-Zip | cargo-mutants | every-change | 38.3 | duration | - | median of 10 runs, `.github/workflows/quality-deep.yml` job `mutants` |
+| https://github.com/InnerWarden/inner-warden | cargo-mutants | every-change | - | issue | 2026-11-27 | "The nightly cargo-mutants job ran out of its 75 minutes every night since" https://github.com/InnerWarden/inner-warden/pull/461 |
+| https://github.com/InnerWarden/inner-warden | cargo-mutants | every-change | - | issue | 2026-11-11 | "the list grew from 2,540 to about 4,400 mutants and twenty shards no longer fit their budget" https://github.com/InnerWarden/inner-warden/pull/252 |
+| https://github.com/InnerWarden/inner-warden | cargo-mutants | every-change | - | issue | 2026-08-19 | "Sixteen times more work than time." https://github.com/InnerWarden/inner-warden/pull/87 |
 | https://github.com/JamilleJung/wireguard-gui | cargo-mutants | scheduled | 79.0 | duration | - | median of 3 runs, `.github/workflows/mutants.yml` job `mutants` |
 | https://github.com/JoaoPucci/ani-gui | cargo-mutants, stryker | scheduled | 360.3 | duration | - | median of 10 runs, `.github/workflows/mutation.yml` job `cargo-mutants` |
 | https://github.com/justin13888/cameo | cargo-mutants | every-change | 0.4 | moved-off-change | 2026-11-22 | "**Sharding:** mutants are dealt round-robin (`--shard K/8 --sharding round-robin`) across **8 parallel shard jobs**, each limited to **60 minutes**." https://github.com/justin13888/cameo/commit/78e05f08875a1c27a1d6df388d4df685ea3b98d9 |
@@ -195,8 +198,10 @@ Pain unknown reasons (a repository can have several): 300-request cap 8, another
 
 ## Information (not pain, not counted)
 
-- complaint-only or timeout texts (hand-read `information`): 40
+- complaint-only or timeout texts (hand-read `information`): 55
   - aeterna-universe/aeterna issue:35: "- **`pr-deep.yml`** — opt-in via `deep` label. tarpaulin coverage + `cargo-mutants --in-diff origin/master`." https://github.com/aeterna-universe/aeterna/pull/35
+  - arlol/drifty commit:d6ab3e59dc96512a83698b403213c05fa6845ea1: "Run mutation testing on a schedule, not on every pull request" https://github.com/ArloL/drifty/commit/d6ab3e59dc96512a83698b403213c05fa6845ea1
+  - arlol/drifty issue:183: "A run costs about what a native build does and answers nothing about the commit in front of it" https://github.com/ArloL/drifty/pull/183
   - bymaxone/.github issue:21: "The mutation job is cancelled at 45 minutes on every push to `nest-auth`'s default branch, so that gate currently produces nothing." https://github.com/bymaxone/.github/pull/21
   - bymaxone/.github issue:29: "Every library whose per-push mutation run exceeds five minutes is moving to an incremental Stryker run." https://github.com/bymaxone/.github/pull/29
   - bymaxone/.github issue:3: "**Mutation** runs only on default-branch push / dispatch, only when app source changed, with the Stryker incremental state cached. PRs stay gated by coverage + e2e (fast)." https://github.com/bymaxone/.github/pull/3
@@ -206,17 +211,30 @@ Pain unknown reasons (a repository can have several): 300-request cap 8, another
   - drmrd/vernacular issue:1037: "When a change invalidates many results (a large refactor of `core/`, a change to widely shared test helpers, or a Stryker upgrade), the job can hit its 360-minute limit with no early sign." https://github.com/drmrd/vernacular/issues/1037
   - drmrd/vernacular issue:1076: "The warnings hide any real finding in the hand-written lines of the same commit, and the long run holds HEAD in place for the whole time." https://github.com/drmrd/vernacular/issues/1076
   - drmrd/vernacular issue:9: "- Per-PR mutation testing (full Stryker is too slow for the inner loop; diff-only mutation is a separate later decision)." https://github.com/drmrd/vernacular/pull/9
+  - effortlessmetrics/shiplog issue:140: "is the reason full mutation can defer off the default PR gate" https://github.com/EffortlessMetrics/shiplog/pull/140
+  - effortlessmetrics/shiplog issue:20: "Makes long-running automation match its intended advisory role so CI can stay green while baseline signals mature." https://github.com/EffortlessMetrics/shiplog/pull/20
+  - eventjet/ausdruck issue:107: "Mutation testing over the changed files, run with a timeout high enough for this machine, is at 100% MSI." https://github.com/eventjet/ausdruck/pull/107
   - eventjet/eventjet-json issue:125: "Now that the tests pass, all three shards hit their 15-minute step timeout." https://github.com/eventjet/eventjet-json/pull/125
   - eventjet/eventjet-json issue:129: "- **Slower Infection runs.** `PhpDocReadingTest` was a separate class so that Infection ran its cases only against doc-comment code." https://github.com/eventjet/eventjet-json/pull/129
   - eventjet/eventjet-json issue:18: "- Composer's five-minute wrapper limit interrupted the combined check; the normal mutation command completed separately with `COMPOSER_PROCESS_TIMEOUT=0`." https://github.com/eventjet/eventjet-json/pull/18
   - eventjet/eventjet-json issue:63: "The mutation job's time allowance is increased for the larger test suite; its thresholds are unchanged." https://github.com/eventjet/eventjet-json/pull/63
   - eventjet/eventjet-json issue:75: "Infection stopped such a run after 60 seconds, but the child process of an isolated test kept running and used the CPU for the rest of the job, which then hit the 15-minute limit." https://github.com/eventjet/eventjet-json/pull/75
   - eventjet/eventjet-json issue:77: "- Mutation testing does not run the new suite. With 4 threads it takes about 4 minutes, as in #75." https://github.com/eventjet/eventjet-json/pull/77
+  - flyingrobots/colorful-language issue:82: "CI job, since mutation runs are slow" https://github.com/flyingrobots/colorful-language/issues/82
   - halildeu/platform-web commit:940c4c4b83d5d0b5149052834ff213c4e034b430: "**Chart wrappers excluded** — tests render ECharts canvases that timeout under mutation analysis. Wrappers covered via option-shape + visual regression." https://github.com/Halildeu/platform-web/commit/940c4c4b83d5d0b5149052834ff213c4e034b430
   - halildeu/platform-web issue:200: "**Chart wrappers excluded** — tests render ECharts canvases that timeout under mutation analysis. Wrappers covered via option-shape + visual regression." https://github.com/Halildeu/platform-web/pull/200
   - imhalawa/obsidian-roamer issue:22: "every branch push and every pull request update ran the full pipeline twice, the mutation tests (about 20 minutes) ran from scratch on both Node versions, and every e2e run downloaded Obsidian." https://github.com/imhalawa/obsidian-roamer/pull/22
+  - innerwarden/inner-warden commit:60de018bffd2aa9e9c5a67225cfb3bedb11b577d: "It now stops itself at 150 minutes inside a 170-minute job" https://github.com/InnerWarden/inner-warden/commit/60de018bffd2aa9e9c5a67225cfb3bedb11b577d
+  - innerwarden/inner-warden issue:463: "each rebuilt and linked again whenever the engine changes. The nightly mutation run does that for every mutant." https://github.com/InnerWarden/inner-warden/pull/463
+  - innerwarden/inner-warden issue:70: "It now stops itself at 150 minutes inside a 170-minute job, so a partial report still ships" https://github.com/InnerWarden/inner-warden/pull/70
+  - innerwarden/inner-warden issue:73: "`cargo-mutants` hit its own job timeout, which killed its report upload" https://github.com/InnerWarden/inner-warden/pull/73
+  - innerwarden/inner-warden issue:86: "the sweep is **2,520 mutants at ~0.93/min ≈ 45 hours** against a 2.8-hour budget, so it can never finish" https://github.com/InnerWarden/inner-warden/pull/86
   - justin13888/cameo issue:189: "**Mutation cost:** a mutant that breaks the purge or a timeout path now fails after up to about 10s instead of 0.4–2s." https://github.com/justin13888/cameo/pull/189
   - manji-0/rdra-ish-dsl issue:204: "CPU cost is high. Each mutant rebuilds and reruns the corpus, which takes minutes." https://github.com/manji-0/rdra-ish-dsl/issues/204
+  - mcreaper/t7_companion issue:68: "a 1,347-mutant batch was too heavy for the owner's machine; 268 never ran" https://github.com/McReaper/t7_companion/pull/68
+  - mcreaper/t7_companion issue:76: "CI's mutation job on the branch ran past its timeout" https://github.com/McReaper/t7_companion/pull/76
+  - minbzk/moza-notificatiemanagementcomponent issue:112: "Een `@QuarkusTest` blijft erbuiten: onder PIT kost één testklasse bijna een minuut." https://github.com/MinBZK/moza-notificatiemanagementcomponent/pull/112
+  - minbzk/moza-notificatiemanagementcomponent issue:116: "Een `@QuarkusTest` blijft erbuiten: onder PIT kost één testklasse bijna een minuut." https://github.com/MinBZK/moza-notificatiemanagementcomponent/pull/116
   - nasa-jpl/mango-ui issue:209: "including mutation testing for now, though we may want to change the cadence for this in the future as it currently extends action run time by several minutes" https://github.com/nasa-jpl/mango-ui/pull/209
   - notpellew/thalvi issue:247: "On a GitHub runner that is about 21s per mutant, so a whole-workspace run would take about 18 hours. Hence diff-only." https://github.com/NotPellew/Thalvi/pull/247
   - notpellew/thalvi issue:395: "#416 already made PR steps change-aware and moved diff-scoped mutation testing to the heavy tier." https://github.com/NotPellew/Thalvi/issues/395
@@ -270,13 +288,13 @@ Pain unknown reasons (a repository can have several): 300-request cap 8, another
 
 ## Hand check (AC4)
 
-samples: pain-yes 29, running 20, not-running 10, tool-present-unlinked 10, rejected 10, uses-action 3; missing verdicts 82; failures none; rule fix required: no.
+samples: pain-yes 30, running 20, not-running 10, tool-present-unlinked 10, rejected 10, uses-action 3; missing verdicts 83; failures none; rule fix required: no.
 
-- pain-yes: 46b-ETYKiAL/SCR1B3, Arsarneq/docent, DataDog/dd-license-attribution, Elvin-Arrow/privacy-gate, JamilleJung/wireguard-gui, JoaoPucci/ani-gui, NotPellew/Thalvi, ZelAnton/ProcessKit-rs, adfree-app/adfree, anesis-dev/anesis-cli, boredompeaks/perfume-store-backend, breimanntools/aaanalysis, chussenot/judgment, clauseo-ai/clauseo-acp, co3moz/aperio, d2a8k3u/typoseek, drmrd/vernacular, erenmeren/alice, ext-sakamoro/ALICE-Zip, justin13888/cameo, lagz0ne/tinkered, lucasreali/hive, purlis/purlis, sandreialexandru/Smart-Heating-Control, tensorov/polyforge, ttu/emergency-supply-tracker, warpllm/warpllm, xhinoJ/testag, yuchen0x1/Xray-server-management-panel
+- pain-yes: 46b-ETYKiAL/SCR1B3, Arsarneq/docent, DataDog/dd-license-attribution, Elvin-Arrow/privacy-gate, InnerWarden/inner-warden, JamilleJung/wireguard-gui, JoaoPucci/ani-gui, NotPellew/Thalvi, ZelAnton/ProcessKit-rs, adfree-app/adfree, anesis-dev/anesis-cli, boredompeaks/perfume-store-backend, breimanntools/aaanalysis, chussenot/judgment, clauseo-ai/clauseo-acp, co3moz/aperio, d2a8k3u/typoseek, drmrd/vernacular, erenmeren/alice, ext-sakamoro/ALICE-Zip, justin13888/cameo, lagz0ne/tinkered, lucasreali/hive, purlis/purlis, sandreialexandru/Smart-Heating-Control, tensorov/polyforge, ttu/emergency-supply-tracker, warpllm/warpllm, xhinoJ/testag, yuchen0x1/Xray-server-management-panel
 - running: ArloL/drifty, DataDog/dd-license-attribution, Elite-Work/EliteWork, Elvin-Arrow/privacy-gate, JiRaska/open-bank-oss, JoaoPucci/ani-gui, RoRoche/kstreamsmatchers, SuarezPM/kitty-code, anadon/JLS, boredompeaks/perfume-store-backend, d2a8k3u/typoseek, justin13888/cameo, lucasreali/hive, nao1215/career, ogiwbuz188/adaptive-fuzzer, osolmaz/harbor-hf-customization, sanamhub/nepdate-kotlin, undercurrentai/AIPEA, yearofthedan/weaver, yuchen0x1/Xray-server-management-panel
 - not-running: AruNi-01/atmos, BestDevOfc/CTFs_and_hacking_solutions, athiefaine/beyond-gilded-rose, erikdarlingdata/PerformanceMonitor, ferdodo/autochess, godot-gdunit-labs/gdUnit4Net, jorgecasar/legacys-end, migper-gei/gei, misterkante/alerteagri, padamson/rust-project-template
 - tool-present-unlinked: MyButtermilk/Scriber, arnoldwender/junzi-harness, cdklabs/github-merit-badger, dailydevops/healthchecks, evelagin/evetis-wb-analytics, imogenlabs/homelabarr-ce, ucsb-cs156-s26/STARTER-team02, unicity-sphere/sphere-sdk, variamosple/VariaMosAdmin, zalkilabs/zalki
-- rejected: aloews/sherlock-scholes-|issue:30, eventjet/eventjet-json|issue:59, evilfps/bigbrightpaints-erp|issue:59, evilfps/bigbrightpaints-erp|issue:88, evilfps/bigbrightpaints-erp|issue:89, gusto/baerly-storage|issue:96, halildeu/platform-web|issue:1029, lex-studios/stellar-spend|issue:1075, roroche/kstreamsmatchers|issue:155, sateno/rl_studio|issue:4
+- rejected: anadon/jls|issue:1004, effortlessmetrics/shiplog|issue:261, eventjet/eventjet-json|issue:37, eventjet/eventjet-json|issue:56, eventjet/eventjet-json|issue:58, gabrielrufino/samplesize|issue:52, gabrielrufino/samplesize|issue:73, lex-studios/stellar-spend|issue:688, michahoiting/rust-forth-vm|issue:182, yegor256/xembly|issue:254
 - uses-action: bymaxone/.github, itdojp/ae-framework, orisai/exceptions
 
 ## Budget
