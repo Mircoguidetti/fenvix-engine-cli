@@ -187,13 +187,29 @@
   },
   "B pitest filename:pom.xml": {
    "done": false,
-   "leaves": 0,
-   "nodes": 2,
+   "leaves": 7,
+   "nodes": 20,
    "root_incomplete": false,
    "root_total": 12816,
    "stack": [
     [
-     0,
+     4689,
+     6250
+    ],
+    [
+     6251,
+     12500
+    ],
+    [
+     12501,
+     25000
+    ],
+    [
+     25001,
+     50000
+    ],
+    [
+     50001,
      100000
     ],
     [

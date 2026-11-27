@@ -576,3 +576,22 @@ stopping after 30.0 min (resumable)
 2026-11-27T00:53:13+00:00 B pitest filename:pom.xml size:0..400000 tc=12816 leaf=False read=- inc=- req=219
 2026-11-27T00:54:21+00:00 B pitest filename:pom.xml size:0..200000 tc=12816 leaf=False read=- inc=- req=221
 stopping after 30.0 min (resumable)
+2026-11-27T00:54:26+00:00 B pitest filename:pom.xml size:0..100000 tc=12944 leaf=False read=- inc=- req=1
+2026-11-27T00:54:43+00:00 B pitest filename:pom.xml size:0..50000 tc=12816 leaf=False read=- inc=- req=2
+2026-11-27T00:55:57+00:00 B pitest filename:pom.xml size:0..25000 tc=12048 leaf=False read=- inc=- req=4
+2026-11-27T00:56:09+00:00 B pitest filename:pom.xml size:0..12500 tc=10336 leaf=False read=- inc=- req=5
+2026-11-27T00:56:25+00:00 B pitest filename:pom.xml size:0..6250 tc=7208 leaf=False read=- inc=- req=6
+2026-11-27T00:56:37+00:00 B pitest filename:pom.xml size:0..3125 tc=3140 leaf=False read=- inc=- req=7
+2026-11-27T01:00:15+00:00 B pitest filename:pom.xml size:0..1562 tc=688 leaf=True read=671 inc=False req=16
+2026-11-27T01:00:31+00:00 B pitest filename:pom.xml size:1563..3125 tc=2380 leaf=False read=- inc=- req=17
+2026-11-27T01:00:44+00:00 B pitest filename:pom.xml size:1563..2344 tc=1200 leaf=False read=- inc=- req=18
+2026-11-27T01:02:55+00:00 B pitest filename:pom.xml size:1563..1953 tc=482 leaf=True read=500 inc=False req=24
+2026-11-27T01:07:01+00:00 B pitest filename:pom.xml size:1954..2344 tc=808 leaf=True read=885 inc=False req=35
+2026-11-27T01:12:22+00:00 B pitest filename:pom.xml size:2345..3125 tc=960 leaf=True read=1000 inc=False req=48
+2026-11-27T01:12:36+00:00 B pitest filename:pom.xml size:3126..6250 tc=3856 leaf=False read=- inc=- req=49
+2026-11-27T01:12:53+00:00 B pitest filename:pom.xml size:3126..4688 tc=2104 leaf=False read=- inc=- req=50
+2026-11-27T01:14:05+00:00 B pitest filename:pom.xml size:3126..3907 tc=1212 leaf=False read=- inc=- req=52
+2026-11-27T01:16:16+00:00 B pitest filename:pom.xml size:3126..3516 tc=474 leaf=True read=500 inc=False req=58
+2026-11-27T01:20:06+00:00 B pitest filename:pom.xml size:3517..3907 tc=720 leaf=True read=674 inc=False req=68
+2026-11-27T01:24:28+00:00 B pitest filename:pom.xml size:3908..4688 tc=984 leaf=True read=1000 inc=False req=80
+stopping after 30.0 min (resumable)
