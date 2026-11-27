@@ -80,3 +80,20 @@ search request, probe or candidate read (no data existed); none changes the deci
     sample) is fetched by the workflow route (`ac4fetch.py`, request `{"chunk": "ac4", "ac4": true}`, GET only) into
     `results/ac4_wf/`; the session judges every sample by hand from those records. The AC4 samples, rule and stop
     condition are unchanged.
+21. AC4 rule fix (2026-11-27, PREREG "Hand check (AC4)": 4 of the 10 random `tool-present-unlinked` samples run
+    mutation testing in CI, so the rule is fixed and every read row is re-read; round-1 verdicts kept in
+    `results/handcheck_round1.jsonl`, round-1 rows in `results/v1/`). Three fixes, each with a test:
+    (a) a job `uses: <owner>/<repo>/.github/workflows/<file>@<ref>` (remote reusable workflow) is read at that ref and
+    treated like a local `workflow_call` (runs listed on the caller file, job `<caller> / <callee>`; at most 10
+    remote files per repository; an unreadable remote whose name has a tool term is a counted unresolved item, so
+    `uncertain`); (b) a script file run by an interpreter (`node`, `tsx`, `ts-node`, `deno run`, `python`,
+    `python3`, `ruby`, or `./scripts/x.mjs`) is read, and a mutation command in its string literals
+    (`spawnSync('npx', ['stryker', 'run'])`) or a programmatic Stryker run is a wrapped mutation step; (c) an inline
+    comment after a Makefile rule (`fuzz-nightly: ## ... nightly ...`) is no longer read as prerequisites (a bug:
+    gremlins was attributed to a 342-minute fuzz job). Justification: AC4 round 1 found dailydevops/healthchecks,
+    ucsb-cs156-s26/STARTER-team02 and variamosple/VariaMosAdmin (remote reusable Stryker / PIT workflows) and
+    imogenlabs/homelabarr-ce (`node scripts/mutation-ci.mjs` running StrykerJS) running, and erenmeren/alice's
+    duration taken from the wrong job. Not changed: the §3 duration (job wall time, as preregistered and tested);
+    AC4 round 1 found 2 pain-`yes` jobs whose wall time is mostly non-mutation work (xhinoJ/testag, mutation step
+    about 10 s in a 155-minute median job; breimanntools/aaanalysis, mutmut step 1 s in a 347-minute job): these
+    are listed in REPORT and judged again in AC4 round 2, the rule is not redefined after seeing them.

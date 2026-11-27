@@ -10,5 +10,5 @@ RESUMED 2026-11-27 10:05Z (coordinator instruction, early resume). Paused 05:40Z
 - Chunks 4-5 (450-749): read (one run), issues searched, 174 hand reads (0 confirmed, 6 information, 168 rejected).
 - Chunks 6-7 (750-1049): read, issues searched, 156 hand reads (2 confirmed, 7 information, 147 rejected; obsidian-roamer #22 set to information by the session: time reason only implied).
 - Chunks 8-10 (1050-1499): read, issues searched, 430 hand reads (2 confirmed after session review, 16 information, 412 rejected; ArloL/drifty d6ab3e5 set to information: run added and moved in the same PR).
-- No further chunk queued: decision line reached; AC4 hand check (83 samples) in progress.
-- Totals after chunk 10: read 1106, running 109, pain yes 30, unknown 27, no 52. CONTINUE pending AC4.
+- AC4 round 1 (83 samples): stop rule hit (4 tool-present-unlinked samples are running). Rule fixed (CHANGES.md 21); round-1 rows archived in results/v1/; re-reading candidates 0-1499 (requests 1-3 queued, 4-10 next).
+- Round-1 totals (superseded): read 1106, running 109, pain yes 30. No decision claimed.

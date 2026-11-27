@@ -1014,3 +1014,68 @@ def test_client_retries_rate_limited_pages_until_they_return(monkeypatch):
     monkeypatch.setattr(c, "_once", lambda path: answers.pop(0))
     st, data, _ = c.get("search/code?q=x", search="code")
     assert st == 200 and data["total_count"] == 1 and c.n_rate_limited == 7 and not answers
+
+
+WF_REMOTE_CALLER = textwrap.dedent("""\
+    name: nightly
+    on:
+      schedule: [{cron: '0 3 * * *'}]
+    jobs:
+      mutation:
+        name: Mutation
+        uses: org/shared/.github/workflows/stryker.yml@v1
+""")
+WF_REMOTE_CALLEE = textwrap.dedent("""\
+    on: workflow_call
+    jobs:
+      run:
+        name: Stryker
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v4
+          - name: Run Stryker
+            run: npx stryker run
+""")
+
+
+def test_remote_reusable_workflow_is_followed():
+    """protects=CHANGES.md 21 (remote reusable workflows, AC4 round 1: three running repositories read as
+    tool-present-unlinked); fails_when=a job `uses: org/repo/.github/workflows/x.yml@ref` running Stryker is not a
+    mutation job or its runs are not read on the caller file under `<caller> / <callee>`; no_claim=private remotes."""
+    runs = runs_of(3, event="schedule")
+    jobs = {r["id"]: [api_job("Mutation / Stryker", 40, steps=[("Run Stryker", "success", 38)])] for r in runs}
+    gh = FakeGH({".github/workflows/ci.yml": WF_REMOTE_CALLER}, runs={"ci.yml": runs}, jobs=jobs,
+                at_ref={"v1": {".github/workflows/stryker.yml": WF_REMOTE_CALLEE}})
+    row = pipeline.run_candidate(gh, cand(), {"no_history": True})
+    assert row["cls"] == "running" and row["jobs"][0]["file"].startswith("@remote/org/shared/")
+    t = row["jobs"][0]["targets"][0]
+    assert (t["caller"], t["job_name"], t["run_file"]) == ("Mutation", "Stryker", ".github/workflows/ci.yml")
+    assert row["duration"]["pain"]
+
+
+def test_unreadable_remote_workflow_with_term_is_counted_unresolved():
+    """protects=CHANGES.md 21 conservative rule; fails_when=a remote mutation workflow that cannot be read makes the
+    row no-mutation; no_claim=which remote."""
+    gh = FakeGH({".github/workflows/ci.yml": WF_REMOTE_CALLER.replace("stryker.yml", "mutation.yml")})
+    row = pipeline.run_candidate(gh, cand(), {"no_history": True})
+    assert row["cls"] == "uncertain" and any(u["counted"] and "remote" in u["why"] for u in row["unresolved"])
+
+
+def test_interpreter_script_running_stryker_is_a_mutation_step():
+    """protects=CHANGES.md 21 (AC4 round 1: `node scripts/mutation-ci.mjs` ran StrykerJS); fails_when=a Node script
+    that spawns `npx stryker run` is not a wrapped mutation step; no_claim=dynamic command construction."""
+    wf = WF_MUT.replace("npx stryker run", "node scripts/mutation-ci.mjs")
+    script = "import {spawnSync} from 'node:child_process';\nspawnSync('npx', ['stryker', 'run', '--mutate', f]);\n"
+    runs = runs_of(3)
+    jobs = {r["id"]: [api_job("mutation", 9)] for r in runs}
+    row, _ = _row_for(wf, files={"scripts/mutation-ci.mjs": script}, runs={"ci.yml": runs}, jobs=jobs)
+    assert row["cls"] == "running" and row["jobs"][0]["wrapped"]
+    assert R.script_mutations("console.log('mutation score')") == []
+
+
+def test_make_inline_comment_is_not_a_prerequisite():
+    """protects=CHANGES.md 21 (AC4 round 1: gremlins attributed to a fuzz job through `fuzz-nightly: ## ...
+    nightly ...`); fails_when=words of an inline comment are read as prerequisites; no_claim=recipe comments."""
+    r, _ = R.make_rules("fuzz-nightly: ## all targets (spec nightly; 34)\n\t$(MAKE) fuzz-a\n"
+                            "nightly: ## set\n\t$(MAKE) mutation\nmutation:\n\tgremlins unleash .\n")
+    assert r["fuzz-nightly"]["prereq"] == [] and r["nightly"]["prereq"] == []

@@ -516,7 +516,39 @@ class Resolver:
             return self._task(t[1:], wd, level, via, res)
         if base in ("bash", "sh", "zsh") or head.endswith(".sh"):
             return self._shell(t, wd, level, via, res)
+        if base in INTERPRETERS or (head.startswith(("./", "scripts/")) and head.endswith(INTERP_EXT)):
+            return self._interp(t, wd, level, via, res)
         return False
+
+    def _interp(self, t, wd, level, via, res) -> bool:
+        """CHANGES.md 21: a script file run by an interpreter (``node scripts/mutation-ci.mjs``, ``python ci/mut.py``)
+        is read; a mutation command in its string literals (``spawn('npx', ['stryker', 'run'])``, ``"mutmut run"``)
+        or a programmatic Stryker run is a wrapped mutation step; any other tool term only counts as text."""
+        rest = list(t) if not posixpath.basename(t[0]) in INTERPRETERS else list(t[1:])
+        if rest and rest[0] == "run" and posixpath.basename(t[0]) == "deno":
+            rest = rest[1:]
+        while rest and rest[0].startswith("-"):
+            if rest[0] in ("-e", "-c", "-m", "--eval", "-p", "--print"):
+                return False  # inline code or a module run: matched as a command, not a file
+            rest = rest[1:]
+        if not rest or not rest[0].endswith(INTERP_EXT) or re.search(r"(^|/)(node_modules|vendor)/", rest[0]):
+            return False  # a tool's own entry point (`node node_modules/.../stryker.js run`) is matched as a command
+        p = rest[0]
+        res.texts.append({"kind": "file-name", "name": p, "text": posixpath.basename(p), "composer": False})
+        if "$" in p or p.startswith("/") or p.startswith("~"):
+            res.unresolved.append({"name": p, "why": "script path is a variable or absolute", "via": via})
+            return True
+        path = jpath(wd, p)
+        text = self.ctx.read(path)
+        if text is None:
+            res.unresolved.append({"name": p, "why": f"no file {path}", "via": via})
+            return True
+        res.texts.append({"kind": "sh", "name": path, "text": text, "composer": False})
+        found = script_mutations(text)
+        for tool, cmd in found:
+            res.mutations.append({"tool": tool, "cmd": _short(cmd, 200), "via": via + [f"script:{path}|{path}"],
+                                  "how": "interpreter script", "wrapped": True})
+        return True
 
     @staticmethod
     def _pm_opts(args: list, wd: str) -> tuple[str, list, list]:
@@ -964,6 +996,30 @@ class Resolver:
         return True
 
 
+
+INTERPRETERS = {"node", "nodejs", "tsx", "ts-node", "deno", "python", "python3", "ruby"}
+INTERP_EXT = (".js", ".mjs", ".cjs", ".ts", ".mts", ".cts", ".py", ".rb")
+_STR_RE = re.compile(r"""(['"`])((?:(?!\1).){1,300})\1""")
+_STRYKER_API_RE = re.compile(r"@stryker-mutator/(core|api)['\"]")
+
+
+def script_mutations(text: str) -> list[tuple[str, str]]:
+    """CHANGES.md 21: mutation commands written inside an interpreter script, as (tool, command)."""
+    out, seen = [], set()
+    for ln in text.splitlines():
+        lits = [m.group(2) for m in _STR_RE.finditer(ln)]
+        if not lits:
+            continue
+        for cand in lits + [" ".join(lits)]:
+            c = strip_prefixes(cand.strip())
+            tool = match_simple(c) if c else None
+            if tool and (tool, c) not in seen and not re.match(r"^stryker\s+(init|--version|-v)\b", c):
+                seen.add((tool, c))
+                out.append((tool, c))
+    if not out and _STRYKER_API_RE.search(text) and re.search(r"\bnew\s+Stryker\b|runMutationTest", text):
+        out.append(("stryker", "Stryker API (runMutationTest)"))
+    return out
+
 def _short(s: str, n: int = 120) -> str:
     s = " ".join(str(s).split())
     return s if len(s) <= n else s[:n - 3] + "..."
@@ -999,7 +1055,9 @@ def make_rules(text: str) -> tuple[dict, dict]:
             vars_[mv.group(2)] = mv.group(4).strip()
             cur = None
             continue
-        mr = re.match(r"^([^\s:#=][^:=]*?)\s*::?\s*([^=].*)?$", ln)
+        # CHANGES.md 21: an inline comment after a rule (`fuzz-nightly: ## ... nightly ...`) is not a prerequisite
+        rl = re.sub(r"\s#.*$", "", ln)
+        mr = re.match(r"^([^\s:#=][^:=]*?)\s*::?\s*([^=].*)?$", rl)
         if mr and not ln.startswith("#"):
             prereq_part = (mr.group(2) or "").split(";", 1)
             tg = mr.group(1).split()
@@ -1347,18 +1405,20 @@ def leg_eval(leg: dict, mut_api_steps: list, timeout_min) -> dict:
     concl = leg.get("conclusion")
     wall = seconds(leg)
     step_s = sum(x for x in (seconds(s) for s in found if s.get("conclusion") != "skipped") if x)
-    out = {"evidence": False, "value_s": None, "lower_bound": False, "step_s": step_s, "conclusion": concl}
+    out = {"evidence": False, "value_s": None, "lower_bound": False, "step_s": step_s, "conclusion": concl,
+           "wall_s": wall}
     if not step_ok or wall is None:
         return out
     at_timeout = timeout_min is not None and wall >= timeout_min * 60 - 60
+    value = wall  # §3: job wall time (test_job_wall_time_not_step_time); step time is reported next to it
     if concl in ("success", "failure"):
         out["evidence"] = True
-        out["value_s"] = wall
+        out["value_s"] = value
         out["lower_bound"] = concl == "failure" and at_timeout
     elif concl in ("cancelled", "timed_out") and at_timeout:
         # CHANGES.md 9: a leg stopped at its timeout with the mutation step started ran the mutation job
         out["evidence"] = True
-        out["value_s"] = wall
+        out["value_s"] = value
         out["lower_bound"] = True
     return out
 

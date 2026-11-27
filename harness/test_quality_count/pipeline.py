@@ -277,6 +277,10 @@ def inspect_runs(src, repo: str, run_file: str, targets: list[dict], schedule_on
 
 # ---------------------------------------------------------------------------------------------- candidate
 
+REMOTE_WF_RE = re.compile(r"^([\w.-]+/[\w.-]+)/(\.github/workflows/[^@\s]+\.ya?ml)@([^\s]+)$")
+REMOTE_MAX = 10
+
+
 def caller_chains(p: str, callers: dict, parsed: dict, depth: int = 0, seen: frozenset = frozenset()) -> list:
     """Every caller chain of a called workflow up to a workflow that is not only `workflow_call`:
     [(root file, [caller job names from the root down], events reaching it, if-complex flag)]; None = unsupported."""
@@ -389,14 +393,46 @@ def analyze(src, repo: str, branch: str, row: dict, cand: dict) -> None:
             if R.has_term(text, ctx):
                 term_hits.append({"file": p, "kind": "workflow-file", "name": p})
     callers: dict[str, list] = {}
-    for p, wf in parsed.items():
+    remote_unres: list = []
+    queue = list(parsed)
+    while queue:  # CHANGES.md 21: remote reusable workflows are read too (up to REMOTE_MAX files per repository)
+        p = queue.pop(0)
+        wf = parsed[p]
         jobs = wf.get("jobs") if isinstance(wf.get("jobs"), dict) else {}
         for jk, job in jobs.items():
-            if isinstance(job, dict) and isinstance(job.get("uses"), str):
-                u = job["uses"].split("@")[0]
-                if u.startswith("./.github/workflows/"):
-                    callers.setdefault(u[2:], []).append((p, jk, job))
-    jobs_out, unresolved, uses_actions, flags = [], [], [], []
+            if not (isinstance(job, dict) and isinstance(job.get("uses"), str)):
+                continue
+            u = job["uses"].split("@")[0]
+            if u.startswith("./.github/workflows/"):
+                callers.setdefault(u[2:], []).append((p, jk, job))
+                continue
+            m = REMOTE_WF_RE.match(job["uses"].strip())
+            if not m:
+                continue
+            key = f"@remote/{m.group(1)}/{m.group(2)}@{m.group(3)}"
+            if key not in parsed:
+                if sum(1 for k in parsed if k.startswith("@remote/")) >= REMOTE_MAX:
+                    remote_unres.append({"file": p, "job": str(jk), "name": job["uses"], "why": "remote workflow "
+                                         "limit reached", "via": [], "counted": R.has_term(job["uses"], ctx, name=True)})
+                    continue
+                try:
+                    text = Repo(src, m.group(1), m.group(3), None)._contents(m.group(2), m.group(3))
+                except ApiError:
+                    text = None
+                text = text.get("text") if isinstance(text, dict) else None
+                if text is None:
+                    remote_unres.append({"file": p, "job": str(jk), "name": job["uses"], "why": "remote workflow "
+                                         "not readable", "via": [], "counted": R.has_term(job["uses"], ctx, name=True)})
+                    continue
+                try:
+                    parsed[key] = R.load_yaml(text)
+                except Exception as e:  # YAML error
+                    remote_unres.append({"file": p, "job": str(jk), "name": job["uses"], "why": f"remote workflow "
+                                         f"YAML: {str(e)[:80]}", "via": [], "counted": True})
+                    continue
+                queue.append(key)
+            callers.setdefault(key, []).append((p, jk, job))
+    jobs_out, unresolved, uses_actions, flags = [], list(remote_unres), [], []
     for p, wf in sorted(parsed.items()):
         try:
             evs = R.events(wf)
