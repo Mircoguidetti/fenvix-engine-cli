@@ -7,10 +7,12 @@
 //
 // protects: a test waiting on a node-sqlite3 query, with a long timer of its own pending, is not timed out by a
 //   virtual jump (the plain run passes); a failing query (error callback) also ends its pending work.
-// fails_when: node-sqlite3's Database / Statement callbacks are not counted as pending; or the count is not
-//   released when the callback runs (a later virtual sleep then runs at real pace: 20 s must take under 15 s).
-// no_claim: native calls without a callback (stmt.finalize()), the Database constructor's open callback and other
-//   addons (listed in harness/p3_flips/NATIVE.md) are not covered. Needs node-sqlite3 5.1.7 from the npm registry
+// fails_when: node-sqlite3's Database / Statement callbacks are not counted as pending; or a count is not released:
+//   when the callback runs, for each() with only a row callback and no rows, for a statement that failed in its
+//   constructor (closed database), or at the end of the test that started a call that never calls back (a later
+//   virtual sleep then runs at real pace: 80 s of virtual sleep must take under 15 s).
+// no_claim: native calls without a callback (stmt.finalize()), the Database constructor's open, a node-sqlite3 that
+//   was loaded before the engine's hooks, and other addons (listed in harness/p3_flips/NATIVE.md) are not covered. Needs node-sqlite3 5.1.7 from the npm registry
 //   (installed once into test/.tmp/pkgs-sqlite3); if it cannot be installed the test fails, it does not skip.
 // Run: cd node && node --test --test-concurrency=1 test/native-work.test.js
 const { test } = require('node:test');
@@ -46,5 +48,5 @@ test('a node-sqlite3 query in flight is pending work: no virtual jump to the run
   const wall = (Date.now() - t0) / 1000;
   const text = `${(r.stdout || '').slice(-3000)}\n${(r.stderr || '').slice(-2000)}`;
   assert.equal(r.status, 0, `the --det run passes too\n${text}`);
-  assert.ok(wall < 15, `20 s of virtual sleep after the queries took ${wall} s of real time (pending work not released)\n${text}`);
+  assert.ok(wall < 15, `80 s of virtual sleep took ${wall} s of real time (pending work not released)\n${text}`);
 });
