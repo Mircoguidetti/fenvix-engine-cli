@@ -54,12 +54,11 @@ R < 3 depends on the pre-registered classification: with the borderline companie
 | error | 0 |
 
 
-## Run status (PAUSED; replaced by the final build)
+## Run status (in progress; replaced by the final build)
 
-Updated 2026-11-27 05:40 UTC. PAUSED by the founder (credits) until RESUME, planned 2026-12-01 09:00 UTC. This REPORT body is the earlier Part-2-only build, not the final result.
+Updated 2026-11-27 16:59 UTC. Paused 2026-11-27 05:38 UTC, resumed 2026-11-27 16:57:43 UTC. This REPORT body is the earlier Part-2-only build, not the final result.
 
-- New reading deadline: RESUME time + 48 h (founder D2 = A; report_extra change 13). Old deadline 2026-11-28 01:44:55 UTC no longer applies.
-- Complete pairs so far: 34 (results/chunks.jsonl, chunks 8-11). Part 1 direction not computed (rule: not before 100 pairs or the deadline).
-- Calls per new complete pair by chunk: 8: 2,091; 9: 2,831; 10: 1,463; 11: 1,433.
-- Request 12 (27a052b, pushed 04:31 UTC, carries the old deadline) runs on in Actions and commits its results on its own (about 09:20 UTC). No request 13 is pushed; the driver is stopped.
-- On RESUME: wait for chunk 12 if missing, then `driver.py --start-n 13 --deadline <RESUME + 48 h>`.
+- Reading deadline: 2026-11-29 16:57:43 UTC (RESUME + 48 h; report_extra change 13).
+- Complete pairs so far: 42 (results/chunks.jsonl, chunks 8-12). Part 1 direction not computed (not before 100 pairs or the deadline).
+- Calls per new complete pair by chunk: 8: 2,091; 9: 2,831; 10: 1,463; 11: 1,433; 12: 2,176.
+- Request 13 pushed at resume with the new deadline.
