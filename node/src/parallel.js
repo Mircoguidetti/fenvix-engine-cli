@@ -376,11 +376,32 @@ function toPath(p) {
 
 const WRITE_FLAGS = /[wax+]/;
 
-/** Directories of runner caches the footprint leaves out (inherited by the test processes). */
-function skipDirs(dirs) {
+/**
+ * Directories of runner caches the footprint leaves out (inherited by the test processes). `labels` (dir -> name)
+ * names a directory whose path the runner chose at random for this run (Vitest's temporary directories): the trace
+ * header writes it by that name, so two identical runs write the same header (P2 D6); the footprint still skips the
+ * real path.
+ */
+function skipDirs(dirs, labels = {}) {
   const cur = (process.env.DETJS_FOOTPRINT_SKIP_DIRS || '').split(path.delimiter).filter(Boolean);
   for (const d of dirs) if (typeof d === 'string' && d && !cur.includes(d)) cur.push(d);
   process.env.DETJS_FOOTPRINT_SKIP_DIRS = cur.join(path.delimiter);
+  const named = Object.entries(labels).filter(([d, n]) => typeof d === 'string' && d && typeof n === 'string' && n);
+  if (named.length) {
+    let have = {};
+    try { have = JSON.parse(process.env.DETJS_FOOTPRINT_SKIP_LABELS || '{}'); } catch { have = {}; }
+    for (const [d, n] of named) have[d] = n;
+    process.env.DETJS_FOOTPRINT_SKIP_LABELS = JSON.stringify(have);
+  }
+}
+
+/** The names skipDirs() gave to per-run directories, by real path (with a trailing separator, as footprintSkip). */
+function skipLabels() {
+  let have = {};
+  try { have = JSON.parse(process.env.DETJS_FOOTPRINT_SKIP_LABELS || '{}'); } catch { have = {}; }
+  const out = new Map();
+  for (const [d, n] of Object.entries(have)) if (typeof n === 'string') out.set(realDir(path.resolve(d)) + path.sep, n);
+  return out;
 }
 
 /** The real path of `d` (symlinks resolved); a path that does not exist: its nearest existing ancestor's real path + the rest. */
@@ -900,7 +921,9 @@ function skipMeta(root) {
   const rootR = realDir(path.resolve(root));
   const { skip, ignored } = footprintSkip(rootR, footprintSkipCandidates());
   const rel = (d) => (d.startsWith(rootR + path.sep) ? d.slice(rootR.length + 1).split(path.sep).join('/') : d);
-  return { skip_dirs: skip.map((d) => rel(d.slice(0, -path.sep.length))), skip_dirs_ignored: ignored };
+  // a per-run directory (skipDirs labels) by its name, not its random path (P2 D6)
+  const labels = skipLabels();
+  return { skip_dirs: skip.map((d) => (labels.has(d) ? `<${labels.get(d)}>` : rel(d.slice(0, -path.sep.length)))), skip_dirs_ignored: ignored };
 }
 
 /** Real start and end of each file (ms after the first start): how the lanes overlapped. */

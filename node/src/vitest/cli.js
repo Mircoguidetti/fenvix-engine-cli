@@ -262,11 +262,15 @@ async function main(argv) {
     process.env.DETJS_WORKERS = String(n);
     if (n > 1) {
       const dirs = [typeof ctx._tmpDir === 'string' ? ctx._tmpDir : null];
-      for (const pr of projects) {
+      // Vitest's temporary directories have a random name per run: the header names them (P2 D6)
+      const labels = {};
+      if (typeof ctx._tmpDir === 'string') labels[ctx._tmpDir] = 'vitest tmpDir';
+      projects.forEach((pr, i) => {
         const vite = (pr.vite && pr.vite.config) || (pr.server && pr.server.config);
         dirs.push(vite && vite.cacheDir, typeof pr.tmpDir === 'string' ? pr.tmpDir : null);
-      }
-      parallel.skipDirs(dirs);
+        if (typeof pr.tmpDir === 'string' && !(pr.tmpDir in labels)) labels[pr.tmpDir] = `vitest project ${i} tmpDir`;
+      });
+      parallel.skipDirs(dirs, labels);
     }
     for (const c of [ctx.config, ...projects.map((pr) => pr.config || pr.getConfig?.())]) {
       if (!c) continue;
