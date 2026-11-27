@@ -638,3 +638,30 @@ stopping after 30.0 min (resumable)
 2026-11-27T02:27:23+00:00 B pitest filename:build.gradle size:1954..2344 tc=1000 leaf=True read=991 inc=False req=82
 2026-11-27T02:30:01+00:00 B pitest filename:build.gradle size:2345..3125 tc=633 leaf=True read=664 inc=False req=90
 stopping after 30.0 min (resumable)
+2026-11-27T02:31:08+00:00 B pitest filename:build.gradle size:3126..6250 tc=1002 leaf=False read=- inc=- req=2
+2026-11-27T02:33:45+00:00 B pitest filename:build.gradle size:3126..4688 tc=602 leaf=True read=700 inc=False req=10
+2026-11-27T02:35:41+00:00 B pitest filename:build.gradle size:4689..6250 tc=395 leaf=True read=400 inc=False req=15
+2026-11-27T02:37:51+00:00 B pitest filename:build.gradle size:6251..12500 tc=497 leaf=True read=494 inc=False req=21
+2026-11-27T02:39:34+00:00 B pitest filename:build.gradle size:12501..25000 tc=269 leaf=True read=284 inc=False req=25
+2026-11-27T02:39:48+00:00 B pitest filename:build.gradle size:25001..50000 tc=90 leaf=True read=90 inc=False req=26
+2026-11-27T02:40:02+00:00 B pitest filename:build.gradle size:50001..100000 tc=24 leaf=True read=24 inc=False req=27
+2026-11-27T02:40:16+00:00 B pitest filename:build.gradle size:100001..200000 tc=5 leaf=True read=5 inc=False req=28
+2026-11-27T02:40:31+00:00 B pitest filename:build.gradle size:200001..400000 tc=0 leaf=True read=0 inc=False req=29
+2026-11-27T02:40:44+00:00 B pitest filename:build.gradle.kts size:0..400000 tc=1914 leaf=False read=- inc=- req=30
+2026-11-27T02:40:57+00:00 B pitest filename:build.gradle.kts size:0..200000 tc=1914 leaf=False read=- inc=- req=31
+2026-11-27T02:41:12+00:00 B pitest filename:build.gradle.kts size:0..100000 tc=1914 leaf=False read=- inc=- req=32
+2026-11-27T02:41:26+00:00 B pitest filename:build.gradle.kts size:0..50000 tc=1882 leaf=False read=- inc=- req=33
+2026-11-27T02:41:40+00:00 B pitest filename:build.gradle.kts size:0..25000 tc=1766 leaf=False read=- inc=- req=34
+2026-11-27T02:41:54+00:00 B pitest filename:build.gradle.kts size:0..12500 tc=1576 leaf=False read=- inc=- req=35
+2026-11-27T02:42:08+00:00 B pitest filename:build.gradle.kts size:0..6250 tc=1290 leaf=False read=- inc=- req=36
+2026-11-27T02:44:13+00:00 B pitest filename:build.gradle.kts size:0..3125 tc=815 leaf=True read=792 inc=False req=45
+2026-11-27T02:45:23+00:00 B pitest filename:build.gradle.kts size:3126..6250 tc=485 leaf=True read=500 inc=False req=50
+2026-11-27T02:46:05+00:00 B pitest filename:build.gradle.kts size:6251..12500 tc=270 leaf=True read=271 inc=False req=53
+2026-11-27T02:46:33+00:00 B pitest filename:build.gradle.kts size:12501..25000 tc=104 leaf=True read=104 inc=False req=55
+2026-11-27T02:46:47+00:00 B pitest filename:build.gradle.kts size:25001..50000 tc=43 leaf=True read=43 inc=False req=56
+2026-11-27T02:47:01+00:00 B pitest filename:build.gradle.kts size:50001..100000 tc=15 leaf=True read=15 inc=False req=57
+2026-11-27T02:47:15+00:00 B pitest filename:build.gradle.kts size:100001..200000 tc=2 leaf=True read=2 inc=False req=58
+2026-11-27T02:47:29+00:00 B pitest filename:build.gradle.kts size:200001..400000 tc=0 leaf=True read=0 inc=False req=59
+2026-11-27T02:47:43+00:00 B mutant filename:.mutant.yml size:0..400000 tc=80 leaf=True read=80 inc=False req=60
+2026-11-27T02:47:57+00:00 B mutant filename:mutant.yml path:config size:0..400000 tc=12 leaf=True read=12 inc=False req=61
+discovery finished

@@ -1,5 +1,5 @@
 {
- "finished": null,
+ "finished": "2026-11-27T02:47:57+00:00",
  "queries": {
   "A \"cargo mutants\"": {
    "done": true,
@@ -161,6 +161,22 @@
    "root_total": 1252,
    "stack": []
   },
+  "B mutant filename:.mutant.yml": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 80,
+   "stack": []
+  },
+  "B mutant filename:mutant.yml path:config": {
+   "done": true,
+   "leaves": 1,
+   "nodes": 1,
+   "root_incomplete": false,
+   "root_total": 12,
+   "stack": []
+  },
   "B mutants filename:mutants.toml path:.cargo": {
    "done": true,
    "leaves": 6,
@@ -186,41 +202,20 @@
    "stack": []
   },
   "B pitest filename:build.gradle": {
-   "done": false,
-   "leaves": 6,
-   "nodes": 18,
+   "done": true,
+   "leaves": 14,
+   "nodes": 27,
    "root_incomplete": false,
    "root_total": 5840,
-   "stack": [
-    [
-     3126,
-     6250
-    ],
-    [
-     6251,
-     12500
-    ],
-    [
-     12501,
-     25000
-    ],
-    [
-     25001,
-     50000
-    ],
-    [
-     50001,
-     100000
-    ],
-    [
-     100001,
-     200000
-    ],
-    [
-     200001,
-     400000
-    ]
-   ]
+   "stack": []
+  },
+  "B pitest filename:build.gradle.kts": {
+   "done": true,
+   "leaves": 8,
+   "nodes": 15,
+   "root_incomplete": false,
+   "root_total": 1914,
+   "stack": []
   },
   "B pitest filename:pom.xml": {
    "done": true,
