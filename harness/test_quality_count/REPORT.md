@@ -83,18 +83,18 @@ search request, probe or candidate read (no data existed); none changes the deci
 
 ## Decision
 
-**KEEP READING: read 227, running 20, pain yes 11, U_R×N 24458.1, U_P×N 22598.4.**
+**KEEP READING: read 346, running 33, pain yes 14, U_R×N 24949.2, U_P×N 22697.6.**
 
 covered: GitHub Actions, tools stryker (JS/.NET/Scala), mutmut, cosmic-ray, PIT (Maven, Gradle), cargo-mutants, Infection, mutant, go-mutesting, gremlins, Mull, Muter, mutatest; not covered: other CI systems, private repositories, tools not listed.
 
-read 227, running 20, not-running 147, uncertain 60; pain yes 11, unknown 2, no 7; N 58715; U_R 0.41656 (U_R×N 24458.1), U_P 0.38488 (U_P×N 22598.4); whole frame read: no; truncated leaves: 2; incomplete leaves: 0; hand check: not passed.
+read 346, running 33, not-running 217, uncertain 96; pain yes 14, unknown 6, no 13; N 58715; U_R 0.42492 (U_R×N 24949.2), U_P 0.38657 (U_P×N 22697.6); whole frame read: no; truncated leaves: 2; incomplete leaves: 0; hand check: not passed.
 
 ## Discovery
 
 leaves 341, candidates 57499, unread hits on truncated leaves 1216, N 58715.
 DROP reachable via U_P at r >= 11275 (assumes no uncertain or unknown rows).
 
-Observed uncertain share 0.264; DROP still reachable within the frame: no.
+Observed uncertain share 0.277; DROP still reachable within the frame: no.
 
 | query | leaves | total_count | repos | only this query | unread hits | contribution to N | truncated |
 |---|---|---|---|---|---|---|---|
@@ -135,32 +135,35 @@ Truncated leaves: `B infection filename:infection.json` size:371..371 total 1608
 
 ## Funnel
 
-- candidates 57499 -> rows 300 -> excluded 73 (maintainer 2, stale 72) -> read 227
-- has-mutation-job 28, unresolved 6, tool-present-unlinked 51, no-mutation 142, error 0
-- running 20, configured-not-running 5, uncertain with a mutation job 3 (runs cap 2, unsupported 0)
-- duration read 20, duration pain 10
-- pain yes 11, unknown 2, no 7
+- candidates 57499 -> rows 450 -> excluded 104 (maintainer 2, stale 103) -> read 346
+- has-mutation-job 44, unresolved 7, tool-present-unlinked 85, no-mutation 210, error 0
+- running 33, configured-not-running 7, uncertain with a mutation job 4 (runs cap 3, unsupported 0)
+- duration read 33, duration pain 11
+- pain yes 14, unknown 6, no 13
 
-Pain unknown reasons (a repository can have several): history-error 2
+Pain unknown reasons (a repository can have several): 300-request cap 3, another mutation job uncertain 2, history not run 3, history-error 4, issues search not run 3
 
 ## Per tool (running repositories)
 
 | tool | running | every-change | scheduled | manual | other | median duration min (quartiles) | machine min per run (median) | wrapped |
 |---|---|---|---|---|---|---|---|---|
-| stryker | 6 | 2 | 4 | 0 | 0 | 55.6 (Q1 1.9, Q3 117.1) | 55.6 | 0 |
-| mutmut | 2 | 0 | 2 | 0 | 0 | 209.0 (Q1 140.0, Q3 278.0) | 209.0 | 0 |
-| pitest | 1 | 1 | 0 | 0 | 0 | 1.7 (one value) | 1.7 | 0 |
-| cargo-mutants | 8 | 3 | 4 | 1 | 0 | 69.9 (Q1 22.5, Q3 203.2) | 162.3 | 0 |
-| infection | 3 | 2 | 1 | 0 | 0 | 0.6 (Q1 0.5, Q3 9.1) | 0.6 | 0 |
+| stryker | 11 | 4 | 7 | 0 | 0 | 3.3 (Q1 1.0, Q3 63.3) | 3.3 | 0 |
+| mutmut | 5 | 2 | 3 | 0 | 0 | 6.1 (Q1 2.9, Q3 71.0) | 6.1 | 0 |
+| pitest | 2 | 2 | 0 | 0 | 0 | 2.2 (Q1 2.0, Q3 2.5) | 2.2 | 0 |
+| cargo-mutants | 12 | 4 | 6 | 2 | 0 | 28.4 (Q1 22.7, Q3 119.3) | 212.7 | 0 |
+| infection | 4 | 3 | 1 | 0 | 0 | 1.4 (Q1 0.6, Q3 5.9) | 3.1 | 0 |
 | gremlins | 1 | 0 | 1 | 0 | 0 | 342.4 (one value) | 342.4 | 0 |
 
 ## Pain list
 
 | repository | tool | frequency | minutes | kind | date | quote / evidence |
 |---|---|---|---|---|---|---|
+| https://github.com/adfree-app/adfree | cargo-mutants | scheduled | 31.1 | duration | - | median of 6 runs, `.github/workflows/verify.yml` job `mutants` |
 | https://github.com/anesis-dev/anesis-cli | cargo-mutants | scheduled | 295.2 | duration | - | median of 8 runs, `.github/workflows/ci.yml` job `mutants` |
 | https://github.com/boredompeaks/perfume-store-backend | mutmut | scheduled | 71.0 | duration | - | median of 3 runs, `.github/workflows/mutation-weekly.yml` job `mutate` |
 | https://github.com/breimanntools/aaanalysis | mutmut | scheduled | 347.0 | duration | - | median of 10 runs, `.github/workflows/mutation_nightly.yml` job `nightly` |
+| https://github.com/co3moz/aperio | cargo-mutants | manual | 25.8 | moved-off-change | 2026-08-19 | "Mutation testing is hours across eight runners and is now workflow_dispatch" https://github.com/co3moz/aperio/commit/1b35fd738c175c1d82746eda35e3cb6a8fd56ef1 |
+| https://github.com/drmrd/vernacular | stryker | scheduled | 0.3 | issue | 2026-11-22 | "On PR #1085 the mutation check for the schema commit ran about 18,000 mutants for 25 minutes on a fast local machine, and the CI proof job stopped at its 60-minute limit." https://github.com/drmrd/vernacular/pull/1086 |
 | https://github.com/erenmeren/alice | gremlins | scheduled | 342.4 | duration | - | median of 10 runs, `.github/workflows/nightly.yml` job `fuzz` |
 | https://github.com/ext-sakamoro/ALICE-Zip | cargo-mutants | every-change | 38.3 | duration | - | median of 10 runs, `.github/workflows/quality-deep.yml` job `mutants` |
 | https://github.com/JoaoPucci/ani-gui | cargo-mutants, stryker | scheduled | 360.3 | duration | - | median of 10 runs, `.github/workflows/mutation.yml` job `cargo-mutants` |
@@ -175,7 +178,19 @@ Pain unknown reasons (a repository can have several): history-error 2
 
 ## Information (not pain, not counted)
 
-- complaint-only or timeout texts (hand-read `information`): 15
+- complaint-only or timeout texts (hand-read `information`): 27
+  - aeterna-universe/aeterna issue:35: "- **`pr-deep.yml`** — opt-in via `deep` label. tarpaulin coverage + `cargo-mutants --in-diff origin/master`." https://github.com/aeterna-universe/aeterna/pull/35
+  - drmrd/vernacular issue:1013: "4. Stryker mutates the covered added lines. Each surviving mutant is a warning. CI caps this check at 15 minutes and starts with the newest GREEN commit." https://github.com/drmrd/vernacular/pull/1013
+  - drmrd/vernacular issue:1036: "- The contributing guide now says that the weekly mutation job runs in incremental mode from the `stryker-incremental` branch, and that a run from scratch does not fit in the 360-minute job." https://github.com/drmrd/vernacular/pull/1036
+  - drmrd/vernacular issue:1037: "When a change invalidates many results (a large refactor of `core/`, a change to widely shared test helpers, or a Stryker upgrade), the job can hit its 360-minute limit with no early sign." https://github.com/drmrd/vernacular/issues/1037
+  - drmrd/vernacular issue:1076: "The warnings hide any real finding in the hand-written lines of the same commit, and the long run holds HEAD in place for the whole time." https://github.com/drmrd/vernacular/issues/1076
+  - drmrd/vernacular issue:9: "- Per-PR mutation testing (full Stryker is too slow for the inner loop; diff-only mutation is a separate later decision)." https://github.com/drmrd/vernacular/pull/9
+  - eventjet/eventjet-json issue:125: "Now that the tests pass, all three shards hit their 15-minute step timeout." https://github.com/eventjet/eventjet-json/pull/125
+  - eventjet/eventjet-json issue:129: "- **Slower Infection runs.** `PhpDocReadingTest` was a separate class so that Infection ran its cases only against doc-comment code." https://github.com/eventjet/eventjet-json/pull/129
+  - eventjet/eventjet-json issue:18: "- Composer's five-minute wrapper limit interrupted the combined check; the normal mutation command completed separately with `COMPOSER_PROCESS_TIMEOUT=0`." https://github.com/eventjet/eventjet-json/pull/18
+  - eventjet/eventjet-json issue:63: "The mutation job's time allowance is increased for the larger test suite; its thresholds are unchanged." https://github.com/eventjet/eventjet-json/pull/63
+  - eventjet/eventjet-json issue:75: "Infection stopped such a run after 60 seconds, but the child process of an isolated test kept running and used the CPU for the rest of the job, which then hit the 15-minute limit." https://github.com/eventjet/eventjet-json/pull/75
+  - eventjet/eventjet-json issue:77: "- Mutation testing does not run the new suite. With 4 threads it takes about 4 minutes, as in #75." https://github.com/eventjet/eventjet-json/pull/77
   - halildeu/platform-web commit:940c4c4b83d5d0b5149052834ff213c4e034b430: "**Chart wrappers excluded** — tests render ECharts canvases that timeout under mutation analysis. Wrappers covered via option-shape + visual regression." https://github.com/Halildeu/platform-web/commit/940c4c4b83d5d0b5149052834ff213c4e034b430
   - halildeu/platform-web issue:200: "**Chart wrappers excluded** — tests render ECharts canvases that timeout under mutation analysis. Wrappers covered via option-shape + visual regression." https://github.com/Halildeu/platform-web/pull/200
   - manji-0/rdra-ish-dsl issue:204: "CPU cost is high. Each mutant rebuilds and reruns the corpus, which takes minutes." https://github.com/manji-0/rdra-ish-dsl/issues/204
@@ -193,29 +208,32 @@ Pain unknown reasons (a repository can have several): history-error 2
   - psyhfm/staff-engagement-poc issue:28: "Deferred (user-run heavy steps): PITest/JaCoCo on employee (Group 5.4) and local Stryker run (6.6)." https://github.com/psyHFM/Staff-Engagement-POC/pull/28
 - narrowing changes whose text mentions a timeout: 1
   - Halildeu/platform-web 940c4c4
-- configured-not-running: 5
+- configured-not-running: 7
   - 3rikF/ConsoleProgress
+  - CPS-IT/bravo-handlebars-content
   - Syavne/d-OAuth-Server
   - clementefalcone/goya-ledger
   - kotteletfisk/mtogo
   - tongxin779977/VectaHub
+  - virtengine/bosun
 - uses-action matches: 0
 - excluded maintainer repositories that run mutation testing in CI: 0
 
 ## Hand check (AC4)
 
-samples: pain-yes 11, running 20, not-running 10, tool-present-unlinked 10, rejected 10, uses-action 0; missing verdicts 61; failures none; rule fix required: no.
+samples: pain-yes 14, running 20, not-running 10, tool-present-unlinked 10, rejected 10, uses-action 0; missing verdicts 64; failures none; rule fix required: no.
 
-- pain-yes: JoaoPucci/ani-gui, NotPellew/Thalvi, anesis-dev/anesis-cli, boredompeaks/perfume-store-backend, breimanntools/aaanalysis, erenmeren/alice, ext-sakamoro/ALICE-Zip, lucasreali/hive, sandreialexandru/Smart-Heating-Control, ttu/emergency-supply-tracker, warpllm/warpllm
-- running: DhirendraHudda98/ParkIndia, Gusto/baerly-storage, Halildeu/platform-web, JoaoPucci/ani-gui, Lex-Studios/Stellar-Spend, NotPellew/Thalvi, SuarezPM/kitty-code, anesis-dev/anesis-cli, boredompeaks/perfume-store-backend, breimanntools/aaanalysis, codeigniter4/shield, eclipxe13/enum, erenmeren/alice, ext-sakamoro/ALICE-Zip, lucasreali/hive, manji-0/rdra-ish-dsl, psyHFM/Staff-Engagement-POC, sandreialexandru/Smart-Heating-Control, ttu/emergency-supply-tracker, warpllm/warpllm
-- not-running: BestDevOfc/CTFs_and_hacking_solutions, CSCI-435-SE/excalidraw, clementefalcone/goya-ledger, ensj/trade-blotter, hongyime/sgConnectSphere2026, jmandel/smart-permission-tickets-ri, noam0127/beagu-index, radarlabs/radar-sdk-js, shivyadavus/open-kioku, triciaaleee/SPM-G6T5
-- tool-present-unlinked: Azure/aks-durable-agents, Raftersecurity/rafter-secrets, Shehabhub/ORVION, TrillionniumFoundation/HeptaKernel, Vaddi-Srisanth/Ion_IDE, assertpy/assertpy, evelagin/evetis-wb-analytics, lecomputeur/vibez, luis-mc/dev-standards, unicity-sphere/sphere-sdk
-- rejected: gusto/baerly-storage|issue:400, halildeu/platform-web|issue:103, halildeu/platform-web|issue:1036, halildeu/platform-web|issue:917, lex-studios/stellar-spend|issue:1223, lex-studios/stellar-spend|issue:1522, lex-studios/stellar-spend|issue:1560, lex-studios/stellar-spend|issue:668, notpellew/thalvi|issue:304, psyhfm/staff-engagement-poc|issue:33
+- pain-yes: JoaoPucci/ani-gui, NotPellew/Thalvi, adfree-app/adfree, anesis-dev/anesis-cli, boredompeaks/perfume-store-backend, breimanntools/aaanalysis, co3moz/aperio, drmrd/vernacular, erenmeren/alice, ext-sakamoro/ALICE-Zip, lucasreali/hive, sandreialexandru/Smart-Heating-Control, ttu/emergency-supply-tracker, warpllm/warpllm
+- running: AndreasLohr/mailgun-dotnet, DhirendraHudda98/ParkIndia, Gusto/baerly-storage, JoaoPucci/ani-gui, Lex-Studios/Stellar-Spend, RoRoche/kstreamsmatchers, SafeVixAI/SafeVixAI, SuarezPM/kitty-code, adfree-app/adfree, aeterna-universe/aeterna, boredompeaks/perfume-store-backend, drmrd/vernacular, erenmeren/alice, ext-sakamoro/ALICE-Zip, hemsoft-dev/hs-buddy, lucasreali/hive, manji-0/rdra-ish-dsl, osolmaz/harbor-hf-customization, ryusoh/networking, ttu/emergency-supply-tracker
+- not-running: Assyauq26/Gheverhan, Ban-NUE/InformationHeritageGallery, TeaShaman-cyber/nakama-test, boldaxolotl/booley, braintrustdata/braintrust-sdk-java, digistackops-EMART-project/Digistack-Emart-App, ensj/trade-blotter, fortress07/LLM-Data-Poisoning-Simulation-Sandbox, fptu-se-su26/swp391-su26-ai-audit-project-swp391_se20a04_group-03-1, hyperpolymath/cccp
+- tool-present-unlinked: Canhada-Labs/ceo-orchestration, TOOleksandr-0101/TeleBlast, TrillionniumFoundation/HeptaKernel, aspectflow/reyta-transfer-protocol, assertpy/assertpy, diegonmarcos/cloudy_db_assets-cdn, kajisha/quint-tree-sitter, lecomputeur/vibez, ppcavalcante/flow-orchestrator, sandeepannandi/Cipher
+- rejected: eventjet/eventjet-json|issue:83, gusto/baerly-storage|issue:159, gusto/baerly-storage|issue:176, gusto/baerly-storage|issue:188, halildeu/platform-web|issue:917, lex-studios/stellar-spend|issue:1129, notpellew/thalvi|issue:40, notpellew/thalvi|issue:404, notpellew/thalvi|issue:655, ryusoh/networking|issue:136
 
 ## Budget
 
 - chunk 1: 150 candidates, 2573 requests, 17.15 per candidate, 129.0 per running repository, X-RateLimit-Remaining {'core': 3646}, 102.7 min, methods ['GET'], stopped None
 - chunk 2: 150 candidates, 2721 requests, 18.14 per candidate, 66.2 per running repository, X-RateLimit-Remaining {'core': 698}, 127.2 min, methods ['GET'], stopped None
+- chunk 3: 150 candidates, 3984 requests, 26.56 per candidate, 159.23 per running repository, X-RateLimit-Remaining {'core': 3753}, 33.6 min, methods ['GET'], stopped None
 - pool: 58715, requests per candidate observed 17.15, requests per running repository observed 129.0, X-RateLimit-Remaining observed {'core': 3646}, fits 24 h: no
 
 ## Limits
