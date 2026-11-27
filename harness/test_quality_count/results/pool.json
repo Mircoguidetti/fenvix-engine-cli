@@ -1,0 +1,331 @@
+{
+ "N": 58715,
+ "candidates": 57499,
+ "drop_reachable_at": 11275,
+ "incomplete_leaves": 0,
+ "leaves": 341,
+ "per_query": {
+  "A \"cargo mutants\"": {
+   "contribution": 0,
+   "incomplete_leaves": 0,
+   "leaves": 6,
+   "only_this_query": 0,
+   "repos": 888,
+   "total_count": 1238,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "A cargo-mutants": {
+   "contribution": 6,
+   "incomplete_leaves": 0,
+   "leaves": 7,
+   "only_this_query": 6,
+   "repos": 1324,
+   "total_count": 1806,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "A cosmic-ray": {
+   "contribution": 4,
+   "incomplete_leaves": 0,
+   "leaves": 1,
+   "only_this_query": 4,
+   "repos": 78,
+   "total_count": 101,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "A go-mutesting": {
+   "contribution": 2,
+   "incomplete_leaves": 0,
+   "leaves": 1,
+   "only_this_query": 2,
+   "repos": 34,
+   "total_count": 39,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "A gremlins": {
+   "contribution": 54,
+   "incomplete_leaves": 0,
+   "leaves": 1,
+   "only_this_query": 54,
+   "repos": 415,
+   "total_count": 503,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "A infection": {
+   "contribution": 184,
+   "incomplete_leaves": 0,
+   "leaves": 9,
+   "only_this_query": 184,
+   "repos": 1846,
+   "total_count": 2076,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "A mull-runner": {
+   "contribution": 3,
+   "incomplete_leaves": 0,
+   "leaves": 1,
+   "only_this_query": 3,
+   "repos": 28,
+   "total_count": 64,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "A mutant": {
+   "contribution": 1175,
+   "incomplete_leaves": 0,
+   "leaves": 15,
+   "only_this_query": 1175,
+   "repos": 6427,
+   "total_count": 8202,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "A mutatest": {
+   "contribution": 4,
+   "incomplete_leaves": 0,
+   "leaves": 1,
+   "only_this_query": 4,
+   "repos": 9,
+   "total_count": 10,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "A mutation": {
+   "contribution": 21736,
+   "incomplete_leaves": 0,
+   "leaves": 76,
+   "only_this_query": 21736,
+   "repos": 31278,
+   "total_count": 49855,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "A mutationCoverage": {
+   "contribution": 0,
+   "incomplete_leaves": 0,
+   "leaves": 1,
+   "only_this_query": 0,
+   "repos": 516,
+   "total_count": 587,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "A muter": {
+   "contribution": 98,
+   "incomplete_leaves": 0,
+   "leaves": 1,
+   "only_this_query": 98,
+   "repos": 141,
+   "total_count": 170,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "A mutmut": {
+   "contribution": 23,
+   "incomplete_leaves": 0,
+   "leaves": 7,
+   "only_this_query": 23,
+   "repos": 1101,
+   "total_count": 1224,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "A pitest": {
+   "contribution": 1782,
+   "incomplete_leaves": 0,
+   "leaves": 10,
+   "only_this_query": 1782,
+   "repos": 3121,
+   "total_count": 3774,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "A stryker": {
+   "contribution": 56,
+   "incomplete_leaves": 0,
+   "leaves": 9,
+   "only_this_query": 56,
+   "repos": 2997,
+   "total_count": 3525,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "B cosmic-ray filename:cosmic-ray.toml": {
+   "contribution": 55,
+   "incomplete_leaves": 0,
+   "leaves": 1,
+   "only_this_query": 55,
+   "repos": 115,
+   "total_count": 134,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "B infection filename:composer.json": {
+   "contribution": 2283,
+   "incomplete_leaves": 0,
+   "leaves": 16,
+   "only_this_query": 2283,
+   "repos": 5047,
+   "total_count": 6374,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "B infection filename:infection.json": {
+   "contribution": 1146,
+   "incomplete_leaves": 0,
+   "leaves": 21,
+   "only_this_query": 538,
+   "repos": 3943,
+   "total_count": 5707,
+   "truncated_leaves": 1,
+   "unread_hits": 608
+  },
+  "B infection filename:infection.json.dist": {
+   "contribution": 643,
+   "incomplete_leaves": 0,
+   "leaves": 20,
+   "only_this_query": 35,
+   "repos": 1925,
+   "total_count": 2608,
+   "truncated_leaves": 1,
+   "unread_hits": 608
+  },
+  "B infection filename:infection.json5": {
+   "contribution": 19,
+   "incomplete_leaves": 0,
+   "leaves": 10,
+   "only_this_query": 19,
+   "repos": 1242,
+   "total_count": 1293,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "B mutant filename:.mutant.yml": {
+   "contribution": 16,
+   "incomplete_leaves": 0,
+   "leaves": 1,
+   "only_this_query": 16,
+   "repos": 37,
+   "total_count": 80,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "B mutant filename:mutant.yml path:config": {
+   "contribution": 7,
+   "incomplete_leaves": 0,
+   "leaves": 1,
+   "only_this_query": 7,
+   "repos": 12,
+   "total_count": 12,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "B mutants filename:mutants.toml path:.cargo": {
+   "contribution": 296,
+   "incomplete_leaves": 0,
+   "leaves": 6,
+   "only_this_query": 296,
+   "repos": 1021,
+   "total_count": 1035,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "B mutmut filename:pyproject.toml": {
+   "contribution": 1323,
+   "incomplete_leaves": 0,
+   "leaves": 9,
+   "only_this_query": 1323,
+   "repos": 2455,
+   "total_count": 2819,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "B mutmut filename:setup.cfg": {
+   "contribution": 268,
+   "incomplete_leaves": 0,
+   "leaves": 1,
+   "only_this_query": 268,
+   "repos": 445,
+   "total_count": 561,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "B pitest filename:build.gradle": {
+   "contribution": 2090,
+   "incomplete_leaves": 0,
+   "leaves": 14,
+   "only_this_query": 2090,
+   "repos": 3435,
+   "total_count": 5706,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "B pitest filename:build.gradle.kts": {
+   "contribution": 29,
+   "incomplete_leaves": 0,
+   "leaves": 8,
+   "only_this_query": 29,
+   "repos": 1165,
+   "total_count": 1734,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "B pitest filename:pom.xml": {
+   "contribution": 6400,
+   "incomplete_leaves": 0,
+   "leaves": 22,
+   "only_this_query": 6400,
+   "repos": 7400,
+   "total_count": 12877,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "B stryker filename:package.json": {
+   "contribution": 1426,
+   "incomplete_leaves": 0,
+   "leaves": 21,
+   "only_this_query": 1426,
+   "repos": 6350,
+   "total_count": 10339,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "B stryker filename:stryker-config.json": {
+   "contribution": 414,
+   "incomplete_leaves": 0,
+   "leaves": 11,
+   "only_this_query": 414,
+   "repos": 828,
+   "total_count": 1519,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "B stryker filename:stryker.conf": {
+   "contribution": 135,
+   "incomplete_leaves": 0,
+   "leaves": 19,
+   "only_this_query": 135,
+   "repos": 4978,
+   "total_count": 7460,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  },
+  "B stryker filename:stryker.config": {
+   "contribution": 3,
+   "incomplete_leaves": 0,
+   "leaves": 14,
+   "only_this_query": 3,
+   "repos": 3502,
+   "total_count": 4928,
+   "truncated_leaves": 0,
+   "unread_hits": 0
+  }
+ },
+ "truncated_leaves": 2,
+ "truncated_missing": 1216
+}
