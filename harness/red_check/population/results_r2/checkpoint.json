@@ -1,6 +1,6 @@
 {
  "graphql_requests": 183,
- "next": 33,
+ "next": 42,
  "oracle_requests": 24,
  "repos": {
   "adamvangrover/adam": {
@@ -230,6 +230,538 @@
    ],
    "pull_pages": 2,
    "read": 18,
+   "status": "done"
+  },
+  "adroeed100/notepad.web": {
+   "done_urls": [
+    "https://github.com/Adroeed100/Notepad.web/pull/2",
+    "https://github.com/Adroeed100/Notepad.web/pull/1"
+   ],
+   "n_agent_prs": 2,
+   "name": "Adroeed100/Notepad.web",
+   "pr_rows": {
+    "https://github.com/Adroeed100/Notepad.web/pull/1": {
+     "created_at": "2026-11-08T21:47:34Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 1,
+     "repo": "Adroeed100/Notepad.web",
+     "url": "https://github.com/Adroeed100/Notepad.web/pull/1"
+    },
+    "https://github.com/Adroeed100/Notepad.web/pull/2": {
+     "created_at": "2026-11-08T21:55:32Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 2,
+     "repo": "Adroeed100/Notepad.web",
+     "url": "https://github.com/Adroeed100/Notepad.web/pull/2"
+    }
+   },
+   "prs": [
+    "https://github.com/Adroeed100/Notepad.web/pull/2",
+    "https://github.com/Adroeed100/Notepad.web/pull/1"
+   ],
+   "pull_note": null,
+   "pull_pages": 1,
+   "read": 2,
+   "status": "done"
+  },
+  "ai-dynamo/dynamo": {
+   "done_urls": [
+    "https://github.com/ai-dynamo/dynamo/pull/19623",
+    "https://github.com/ai-dynamo/dynamo/pull/19606",
+    "https://github.com/ai-dynamo/dynamo/pull/19605",
+    "https://github.com/ai-dynamo/dynamo/pull/19603",
+    "https://github.com/ai-dynamo/dynamo/pull/19597",
+    "https://github.com/ai-dynamo/dynamo/pull/19596",
+    "https://github.com/ai-dynamo/dynamo/pull/19593",
+    "https://github.com/ai-dynamo/dynamo/pull/19586",
+    "https://github.com/ai-dynamo/dynamo/pull/19585",
+    "https://github.com/ai-dynamo/dynamo/pull/19582",
+    "https://github.com/ai-dynamo/dynamo/pull/19581",
+    "https://github.com/ai-dynamo/dynamo/pull/19572",
+    "https://github.com/ai-dynamo/dynamo/pull/19545",
+    "https://github.com/ai-dynamo/dynamo/pull/19544",
+    "https://github.com/ai-dynamo/dynamo/pull/19543",
+    "https://github.com/ai-dynamo/dynamo/pull/19541",
+    "https://github.com/ai-dynamo/dynamo/pull/19535",
+    "https://github.com/ai-dynamo/dynamo/pull/19534",
+    "https://github.com/ai-dynamo/dynamo/pull/19532",
+    "https://github.com/ai-dynamo/dynamo/pull/19531",
+    "https://github.com/ai-dynamo/dynamo/pull/19530",
+    "https://github.com/ai-dynamo/dynamo/pull/19522",
+    "https://github.com/ai-dynamo/dynamo/pull/19507",
+    "https://github.com/ai-dynamo/dynamo/pull/19504",
+    "https://github.com/ai-dynamo/dynamo/pull/19494",
+    "https://github.com/ai-dynamo/dynamo/pull/19491",
+    "https://github.com/ai-dynamo/dynamo/pull/19478",
+    "https://github.com/ai-dynamo/dynamo/pull/19471",
+    "https://github.com/ai-dynamo/dynamo/pull/19454",
+    "https://github.com/ai-dynamo/dynamo/pull/19453",
+    "https://github.com/ai-dynamo/dynamo/pull/19452",
+    "https://github.com/ai-dynamo/dynamo/pull/19440",
+    "https://github.com/ai-dynamo/dynamo/pull/19438",
+    "https://github.com/ai-dynamo/dynamo/pull/19433",
+    "https://github.com/ai-dynamo/dynamo/pull/19432",
+    "https://github.com/ai-dynamo/dynamo/pull/19429",
+    "https://github.com/ai-dynamo/dynamo/pull/19427",
+    "https://github.com/ai-dynamo/dynamo/pull/19420",
+    "https://github.com/ai-dynamo/dynamo/pull/19419",
+    "https://github.com/ai-dynamo/dynamo/pull/19413"
+   ],
+   "n_agent_prs": 88,
+   "name": "ai-dynamo/dynamo",
+   "pr_rows": {
+    "https://github.com/ai-dynamo/dynamo/pull/19413": {
+     "created_at": "2026-11-23T19:39:42Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19413,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19413"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19419": {
+     "created_at": "2026-11-23T21:20:21Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19419,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19419"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19420": {
+     "created_at": "2026-11-23T21:47:29Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19420,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19420"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19427": {
+     "created_at": "2026-11-23T22:58:14Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19427,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19427"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19429": {
+     "created_at": "2026-11-23T23:03:55Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19429,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19429"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19432": {
+     "created_at": "2026-11-23T23:40:55Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19432,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19432"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19433": {
+     "created_at": "2026-11-23T23:48:20Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19433,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19433"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19438": {
+     "created_at": "2026-11-24T00:26:32Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19438,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19438"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19440": {
+     "created_at": "2026-11-24T00:31:53Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19440,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19440"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19452": {
+     "created_at": "2026-11-24T05:41:46Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19452,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19452"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19453": {
+     "created_at": "2026-11-24T05:53:04Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19453,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19453"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19454": {
+     "created_at": "2026-11-24T06:38:58Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19454,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19454"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19471": {
+     "created_at": "2026-11-24T12:47:54Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19471,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19471"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19478": {
+     "created_at": "2026-11-24T16:49:45Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19478,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19478"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19491": {
+     "created_at": "2026-11-24T18:24:40Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19491,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19491"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19494": {
+     "created_at": "2026-11-24T19:18:18Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19494,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19494"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19504": {
+     "created_at": "2026-11-24T22:42:48Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19504,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19504"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19507": {
+     "created_at": "2026-11-24T22:58:22Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19507,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19507"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19522": {
+     "created_at": "2026-11-25T00:02:54Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19522,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19522"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19530": {
+     "created_at": "2026-11-25T00:52:39Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19530,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19530"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19531": {
+     "created_at": "2026-11-25T01:08:55Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19531,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19531"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19532": {
+     "created_at": "2026-11-25T01:10:15Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19532,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19532"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19534": {
+     "created_at": "2026-11-25T02:14:19Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19534,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19534"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19535": {
+     "created_at": "2026-11-25T02:29:54Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19535,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19535"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19541": {
+     "created_at": "2026-11-25T04:44:55Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19541,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19541"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19543": {
+     "created_at": "2026-11-25T05:35:19Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19543,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19543"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19544": {
+     "created_at": "2026-11-25T05:52:19Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19544,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19544"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19545": {
+     "created_at": "2026-11-25T06:20:31Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19545,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19545"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19572": {
+     "created_at": "2026-11-25T14:55:16Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 19572,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19572"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19581": {
+     "created_at": "2026-11-25T19:17:49Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19581,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19581"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19582": {
+     "created_at": "2026-11-25T19:20:02Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19582,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19582"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19585": {
+     "created_at": "2026-11-25T20:20:24Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19585,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19585"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19586": {
+     "created_at": "2026-11-25T20:24:44Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19586,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19586"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19593": {
+     "created_at": "2026-11-25T20:36:57Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19593,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19593"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19596": {
+     "created_at": "2026-11-25T22:29:04Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19596,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19596"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19597": {
+     "created_at": "2026-11-25T23:54:52Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19597,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19597"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19603": {
+     "created_at": "2026-11-26T00:30:23Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19603,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19603"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19605": {
+     "created_at": "2026-11-26T02:28:11Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19605,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19605"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19606": {
+     "created_at": "2026-11-26T02:46:41Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19606,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19606"
+    },
+    "https://github.com/ai-dynamo/dynamo/pull/19623": {
+     "created_at": "2026-11-26T19:13:04Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 19623,
+     "repo": "ai-dynamo/dynamo",
+     "url": "https://github.com/ai-dynamo/dynamo/pull/19623"
+    }
+   },
+   "prs": [
+    "https://github.com/ai-dynamo/dynamo/pull/19623",
+    "https://github.com/ai-dynamo/dynamo/pull/19606",
+    "https://github.com/ai-dynamo/dynamo/pull/19605",
+    "https://github.com/ai-dynamo/dynamo/pull/19603",
+    "https://github.com/ai-dynamo/dynamo/pull/19597",
+    "https://github.com/ai-dynamo/dynamo/pull/19596",
+    "https://github.com/ai-dynamo/dynamo/pull/19593",
+    "https://github.com/ai-dynamo/dynamo/pull/19586",
+    "https://github.com/ai-dynamo/dynamo/pull/19585",
+    "https://github.com/ai-dynamo/dynamo/pull/19582",
+    "https://github.com/ai-dynamo/dynamo/pull/19581",
+    "https://github.com/ai-dynamo/dynamo/pull/19572",
+    "https://github.com/ai-dynamo/dynamo/pull/19545",
+    "https://github.com/ai-dynamo/dynamo/pull/19544",
+    "https://github.com/ai-dynamo/dynamo/pull/19543",
+    "https://github.com/ai-dynamo/dynamo/pull/19541",
+    "https://github.com/ai-dynamo/dynamo/pull/19535",
+    "https://github.com/ai-dynamo/dynamo/pull/19534",
+    "https://github.com/ai-dynamo/dynamo/pull/19532",
+    "https://github.com/ai-dynamo/dynamo/pull/19531",
+    "https://github.com/ai-dynamo/dynamo/pull/19530",
+    "https://github.com/ai-dynamo/dynamo/pull/19522",
+    "https://github.com/ai-dynamo/dynamo/pull/19507",
+    "https://github.com/ai-dynamo/dynamo/pull/19504",
+    "https://github.com/ai-dynamo/dynamo/pull/19494",
+    "https://github.com/ai-dynamo/dynamo/pull/19491",
+    "https://github.com/ai-dynamo/dynamo/pull/19478",
+    "https://github.com/ai-dynamo/dynamo/pull/19471",
+    "https://github.com/ai-dynamo/dynamo/pull/19454",
+    "https://github.com/ai-dynamo/dynamo/pull/19453",
+    "https://github.com/ai-dynamo/dynamo/pull/19452",
+    "https://github.com/ai-dynamo/dynamo/pull/19440",
+    "https://github.com/ai-dynamo/dynamo/pull/19438",
+    "https://github.com/ai-dynamo/dynamo/pull/19433",
+    "https://github.com/ai-dynamo/dynamo/pull/19432",
+    "https://github.com/ai-dynamo/dynamo/pull/19429",
+    "https://github.com/ai-dynamo/dynamo/pull/19427",
+    "https://github.com/ai-dynamo/dynamo/pull/19420",
+    "https://github.com/ai-dynamo/dynamo/pull/19419",
+    "https://github.com/ai-dynamo/dynamo/pull/19413"
+   ],
+   "pull_note": "page_cap",
+   "pull_pages": 3,
+   "read": 40,
    "status": "done"
   },
   "airbytehq/airbyte": {
@@ -724,6 +1256,1523 @@
    "pull_pages": 3,
    "read": 40,
    "status": "done"
+  },
+  "al-ummah-now/alummahnow": {
+   "done_urls": [
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2090",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2089",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2088",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2086",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2085",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2084",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2083",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2082",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2081",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2080",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2078",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2077",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2076",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2075",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2074",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2072",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2071",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2070",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2069",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2068",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2067",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2066",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2065",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2064",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2063",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2062",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2061",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2060",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2059",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2058",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2057",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2056",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2055",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2054",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2053",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2052",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2051",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2050",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2049",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2048"
+   ],
+   "n_agent_prs": 233,
+   "name": "Al-Ummah-Now/AlUmmahNow",
+   "pr_rows": {
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2048": {
+     "created_at": "2026-11-25T19:14:09Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2048,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2048"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2049": {
+     "created_at": "2026-11-25T19:14:45Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2049,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2049"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2050": {
+     "created_at": "2026-11-25T19:18:47Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2050,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2050"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2051": {
+     "created_at": "2026-11-25T19:19:42Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2051,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2051"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2052": {
+     "created_at": "2026-11-25T19:48:14Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2052,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2052"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2053": {
+     "created_at": "2026-11-25T20:10:12Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2053,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2053"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2054": {
+     "created_at": "2026-11-25T20:13:18Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2054,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2054"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2055": {
+     "created_at": "2026-11-25T20:30:35Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2055,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2055"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2056": {
+     "created_at": "2026-11-25T20:55:48Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2056,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2056"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2057": {
+     "created_at": "2026-11-25T21:08:55Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2057,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2057"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2058": {
+     "created_at": "2026-11-25T21:09:10Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2058,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2058"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2059": {
+     "created_at": "2026-11-25T21:18:51Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2059,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2059"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2060": {
+     "created_at": "2026-11-25T21:18:55Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2060,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2060"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2061": {
+     "created_at": "2026-11-25T21:25:30Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2061,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2061"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2062": {
+     "created_at": "2026-11-25T21:28:09Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2062,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2062"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2063": {
+     "created_at": "2026-11-25T21:31:06Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2063,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2063"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2064": {
+     "created_at": "2026-11-25T21:43:13Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2064,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2064"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2065": {
+     "created_at": "2026-11-25T21:43:16Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2065,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2065"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2066": {
+     "created_at": "2026-11-25T21:45:39Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2066,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2066"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2067": {
+     "created_at": "2026-11-25T21:47:54Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2067,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2067"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2068": {
+     "created_at": "2026-11-25T21:48:13Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2068,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2068"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2069": {
+     "created_at": "2026-11-25T22:09:24Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2069,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2069"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2070": {
+     "created_at": "2026-11-25T22:21:20Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2070,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2070"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2071": {
+     "created_at": "2026-11-25T22:25:51Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2071,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2071"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2072": {
+     "created_at": "2026-11-25T22:28:13Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2072,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2072"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2074": {
+     "created_at": "2026-11-25T22:43:32Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2074,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2074"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2075": {
+     "created_at": "2026-11-25T22:46:47Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2075,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2075"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2076": {
+     "created_at": "2026-11-25T22:49:22Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2076,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2076"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2077": {
+     "created_at": "2026-11-25T23:08:25Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2077,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2077"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2078": {
+     "created_at": "2026-11-25T23:16:26Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2078,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2078"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2080": {
+     "created_at": "2026-11-25T23:19:34Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2080,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2080"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2081": {
+     "created_at": "2026-11-25T23:22:54Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2081,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2081"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2082": {
+     "created_at": "2026-11-25T23:27:21Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2082,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2082"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2083": {
+     "created_at": "2026-11-25T23:27:45Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2083,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2083"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2084": {
+     "created_at": "2026-11-25T23:30:43Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2084,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2084"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2085": {
+     "created_at": "2026-11-25T23:31:50Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2085,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2085"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2086": {
+     "created_at": "2026-11-25T23:48:35Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2086,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2086"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2088": {
+     "created_at": "2026-11-25T23:55:18Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2088,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2088"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2089": {
+     "created_at": "2026-11-25T23:58:04Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2089,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2089"
+    },
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2090": {
+     "created_at": "2026-11-26T00:05:16Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 2090,
+     "repo": "Al-Ummah-Now/AlUmmahNow",
+     "url": "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2090"
+    }
+   },
+   "prs": [
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2090",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2089",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2088",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2086",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2085",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2084",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2083",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2082",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2081",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2080",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2078",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2077",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2076",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2075",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2074",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2072",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2071",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2070",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2069",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2068",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2067",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2066",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2065",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2064",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2063",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2062",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2061",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2060",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2059",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2058",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2057",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2056",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2055",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2054",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2053",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2052",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2051",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2050",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2049",
+    "https://github.com/Al-Ummah-Now/AlUmmahNow/pull/2048"
+   ],
+   "pull_note": "page_cap",
+   "pull_pages": 3,
+   "read": 40,
+   "status": "done"
+  },
+  "andersdjohnson/fetch-paginate": {
+   "done_urls": [
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/160",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/154",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/152",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/151",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/150",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/149",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/148",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/146",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/144",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/141",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/140",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/139",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/130",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/128",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/126",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/120"
+   ],
+   "n_agent_prs": 16,
+   "name": "AndersDJohnson/fetch-paginate",
+   "pr_rows": {
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/120": {
+     "created_at": "2026-10-21T13:44:11Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 120,
+     "repo": "AndersDJohnson/fetch-paginate",
+     "url": "https://github.com/AndersDJohnson/fetch-paginate/pull/120"
+    },
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/126": {
+     "created_at": "2026-10-22T05:55:54Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 126,
+     "repo": "AndersDJohnson/fetch-paginate",
+     "url": "https://github.com/AndersDJohnson/fetch-paginate/pull/126"
+    },
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/128": {
+     "created_at": "2026-10-22T05:58:01Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 128,
+     "repo": "AndersDJohnson/fetch-paginate",
+     "url": "https://github.com/AndersDJohnson/fetch-paginate/pull/128"
+    },
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/130": {
+     "created_at": "2026-10-22T06:05:56Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 130,
+     "repo": "AndersDJohnson/fetch-paginate",
+     "url": "https://github.com/AndersDJohnson/fetch-paginate/pull/130"
+    },
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/139": {
+     "created_at": "2026-10-22T07:36:28Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 139,
+     "repo": "AndersDJohnson/fetch-paginate",
+     "url": "https://github.com/AndersDJohnson/fetch-paginate/pull/139"
+    },
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/140": {
+     "created_at": "2026-10-23T03:02:47Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 140,
+     "repo": "AndersDJohnson/fetch-paginate",
+     "url": "https://github.com/AndersDJohnson/fetch-paginate/pull/140"
+    },
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/141": {
+     "created_at": "2026-10-23T03:06:04Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 141,
+     "repo": "AndersDJohnson/fetch-paginate",
+     "url": "https://github.com/AndersDJohnson/fetch-paginate/pull/141"
+    },
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/144": {
+     "created_at": "2026-10-23T03:53:53Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 144,
+     "repo": "AndersDJohnson/fetch-paginate",
+     "url": "https://github.com/AndersDJohnson/fetch-paginate/pull/144"
+    },
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/146": {
+     "created_at": "2026-10-23T04:21:45Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 146,
+     "repo": "AndersDJohnson/fetch-paginate",
+     "url": "https://github.com/AndersDJohnson/fetch-paginate/pull/146"
+    },
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/148": {
+     "created_at": "2026-10-25T16:14:13Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 148,
+     "repo": "AndersDJohnson/fetch-paginate",
+     "url": "https://github.com/AndersDJohnson/fetch-paginate/pull/148"
+    },
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/149": {
+     "created_at": "2026-10-25T16:27:19Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 149,
+     "repo": "AndersDJohnson/fetch-paginate",
+     "url": "https://github.com/AndersDJohnson/fetch-paginate/pull/149"
+    },
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/150": {
+     "created_at": "2026-10-25T16:42:05Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 150,
+     "repo": "AndersDJohnson/fetch-paginate",
+     "url": "https://github.com/AndersDJohnson/fetch-paginate/pull/150"
+    },
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/151": {
+     "created_at": "2026-10-25T21:20:34Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 151,
+     "repo": "AndersDJohnson/fetch-paginate",
+     "url": "https://github.com/AndersDJohnson/fetch-paginate/pull/151"
+    },
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/152": {
+     "created_at": "2026-10-25T21:30:50Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 152,
+     "repo": "AndersDJohnson/fetch-paginate",
+     "url": "https://github.com/AndersDJohnson/fetch-paginate/pull/152"
+    },
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/154": {
+     "created_at": "2026-10-27T20:35:27Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 154,
+     "repo": "AndersDJohnson/fetch-paginate",
+     "url": "https://github.com/AndersDJohnson/fetch-paginate/pull/154"
+    },
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/160": {
+     "created_at": "2026-10-29T02:13:38Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 160,
+     "repo": "AndersDJohnson/fetch-paginate",
+     "url": "https://github.com/AndersDJohnson/fetch-paginate/pull/160"
+    }
+   },
+   "prs": [
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/160",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/154",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/152",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/151",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/150",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/149",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/148",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/146",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/144",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/141",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/140",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/139",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/130",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/128",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/126",
+    "https://github.com/AndersDJohnson/fetch-paginate/pull/120"
+   ],
+   "pull_note": null,
+   "pull_pages": 1,
+   "read": 16,
+   "status": "done"
+  },
+  "aries-serpent/_codex_": {
+   "done_urls": [
+    "https://github.com/Aries-Serpent/_codex_/pull/5773",
+    "https://github.com/Aries-Serpent/_codex_/pull/5767",
+    "https://github.com/Aries-Serpent/_codex_/pull/5761",
+    "https://github.com/Aries-Serpent/_codex_/pull/5758",
+    "https://github.com/Aries-Serpent/_codex_/pull/5755",
+    "https://github.com/Aries-Serpent/_codex_/pull/5747",
+    "https://github.com/Aries-Serpent/_codex_/pull/5746",
+    "https://github.com/Aries-Serpent/_codex_/pull/5718",
+    "https://github.com/Aries-Serpent/_codex_/pull/5717",
+    "https://github.com/Aries-Serpent/_codex_/pull/5715",
+    "https://github.com/Aries-Serpent/_codex_/pull/5709",
+    "https://github.com/Aries-Serpent/_codex_/pull/5708",
+    "https://github.com/Aries-Serpent/_codex_/pull/5706",
+    "https://github.com/Aries-Serpent/_codex_/pull/5700",
+    "https://github.com/Aries-Serpent/_codex_/pull/5695",
+    "https://github.com/Aries-Serpent/_codex_/pull/5694",
+    "https://github.com/Aries-Serpent/_codex_/pull/5690",
+    "https://github.com/Aries-Serpent/_codex_/pull/5688",
+    "https://github.com/Aries-Serpent/_codex_/pull/5686",
+    "https://github.com/Aries-Serpent/_codex_/pull/5685",
+    "https://github.com/Aries-Serpent/_codex_/pull/5673",
+    "https://github.com/Aries-Serpent/_codex_/pull/5671",
+    "https://github.com/Aries-Serpent/_codex_/pull/5663",
+    "https://github.com/Aries-Serpent/_codex_/pull/5660",
+    "https://github.com/Aries-Serpent/_codex_/pull/5658",
+    "https://github.com/Aries-Serpent/_codex_/pull/5656",
+    "https://github.com/Aries-Serpent/_codex_/pull/5649",
+    "https://github.com/Aries-Serpent/_codex_/pull/5643"
+   ],
+   "n_agent_prs": 28,
+   "name": "Aries-Serpent/_codex_",
+   "pr_rows": {
+    "https://github.com/Aries-Serpent/_codex_/pull/5643": {
+     "created_at": "2026-09-28T15:52:22Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5643,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5643"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5649": {
+     "created_at": "2026-09-29T06:29:11Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5649,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5649"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5656": {
+     "created_at": "2026-10-02T21:13:15Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5656,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5656"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5658": {
+     "created_at": "2026-10-03T05:41:23Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5658,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5658"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5660": {
+     "created_at": "2026-10-03T20:07:16Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5660,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5660"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5663": {
+     "created_at": "2026-10-04T22:57:37Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5663,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5663"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5671": {
+     "created_at": "2026-10-05T19:49:26Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5671,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5671"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5673": {
+     "created_at": "2026-10-05T21:51:47Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5673,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5673"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5685": {
+     "created_at": "2026-10-07T03:37:53Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5685,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5685"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5686": {
+     "created_at": "2026-10-08T01:18:53Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5686,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5686"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5688": {
+     "created_at": "2026-10-08T23:20:20Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5688,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5688"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5690": {
+     "created_at": "2026-10-10T17:22:01Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5690,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5690"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5694": {
+     "created_at": "2026-10-11T04:31:52Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5694,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5694"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5695": {
+     "created_at": "2026-10-11T22:39:09Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5695,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5695"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5700": {
+     "created_at": "2026-10-16T05:49:32Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5700,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5700"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5706": {
+     "created_at": "2026-10-21T04:06:39Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5706,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5706"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5708": {
+     "created_at": "2026-10-24T02:52:43Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5708,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5708"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5709": {
+     "created_at": "2026-10-24T06:26:02Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5709,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5709"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5715": {
+     "created_at": "2026-10-24T09:06:38Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5715,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5715"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5717": {
+     "created_at": "2026-10-25T03:35:56Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5717,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5717"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5718": {
+     "created_at": "2026-10-25T05:09:40Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5718,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5718"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5746": {
+     "created_at": "2026-11-01T19:10:48Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5746,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5746"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5747": {
+     "created_at": "2026-11-02T03:37:55Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5747,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5747"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5755": {
+     "created_at": "2026-11-03T08:00:20Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5755,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5755"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5758": {
+     "created_at": "2026-11-03T22:32:22Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5758,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5758"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5761": {
+     "created_at": "2026-11-06T07:16:18Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5761,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5761"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5767": {
+     "created_at": "2026-11-09T04:23:05Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5767,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5767"
+    },
+    "https://github.com/Aries-Serpent/_codex_/pull/5773": {
+     "created_at": "2026-11-10T04:10:51Z",
+     "families": [
+      "copilot"
+     ],
+     "family": "copilot",
+     "number": 5773,
+     "repo": "Aries-Serpent/_codex_",
+     "url": "https://github.com/Aries-Serpent/_codex_/pull/5773"
+    }
+   },
+   "prs": [
+    "https://github.com/Aries-Serpent/_codex_/pull/5773",
+    "https://github.com/Aries-Serpent/_codex_/pull/5767",
+    "https://github.com/Aries-Serpent/_codex_/pull/5761",
+    "https://github.com/Aries-Serpent/_codex_/pull/5758",
+    "https://github.com/Aries-Serpent/_codex_/pull/5755",
+    "https://github.com/Aries-Serpent/_codex_/pull/5747",
+    "https://github.com/Aries-Serpent/_codex_/pull/5746",
+    "https://github.com/Aries-Serpent/_codex_/pull/5718",
+    "https://github.com/Aries-Serpent/_codex_/pull/5717",
+    "https://github.com/Aries-Serpent/_codex_/pull/5715",
+    "https://github.com/Aries-Serpent/_codex_/pull/5709",
+    "https://github.com/Aries-Serpent/_codex_/pull/5708",
+    "https://github.com/Aries-Serpent/_codex_/pull/5706",
+    "https://github.com/Aries-Serpent/_codex_/pull/5700",
+    "https://github.com/Aries-Serpent/_codex_/pull/5695",
+    "https://github.com/Aries-Serpent/_codex_/pull/5694",
+    "https://github.com/Aries-Serpent/_codex_/pull/5690",
+    "https://github.com/Aries-Serpent/_codex_/pull/5688",
+    "https://github.com/Aries-Serpent/_codex_/pull/5686",
+    "https://github.com/Aries-Serpent/_codex_/pull/5685",
+    "https://github.com/Aries-Serpent/_codex_/pull/5673",
+    "https://github.com/Aries-Serpent/_codex_/pull/5671",
+    "https://github.com/Aries-Serpent/_codex_/pull/5663",
+    "https://github.com/Aries-Serpent/_codex_/pull/5660",
+    "https://github.com/Aries-Serpent/_codex_/pull/5658",
+    "https://github.com/Aries-Serpent/_codex_/pull/5656",
+    "https://github.com/Aries-Serpent/_codex_/pull/5649",
+    "https://github.com/Aries-Serpent/_codex_/pull/5643"
+   ],
+   "pull_note": null,
+   "pull_pages": 3,
+   "read": 28,
+   "status": "done"
+  },
+  "backspring-labs/squad-ops": {
+   "done_urls": [
+    "https://github.com/backspring-labs/squad-ops/pull/3281",
+    "https://github.com/backspring-labs/squad-ops/pull/3280",
+    "https://github.com/backspring-labs/squad-ops/pull/3279",
+    "https://github.com/backspring-labs/squad-ops/pull/3278",
+    "https://github.com/backspring-labs/squad-ops/pull/3277",
+    "https://github.com/backspring-labs/squad-ops/pull/3276",
+    "https://github.com/backspring-labs/squad-ops/pull/3275",
+    "https://github.com/backspring-labs/squad-ops/pull/3273",
+    "https://github.com/backspring-labs/squad-ops/pull/3271",
+    "https://github.com/backspring-labs/squad-ops/pull/3270",
+    "https://github.com/backspring-labs/squad-ops/pull/3269",
+    "https://github.com/backspring-labs/squad-ops/pull/3267",
+    "https://github.com/backspring-labs/squad-ops/pull/3264"
+   ],
+   "n_agent_prs": 288,
+   "name": "backspring-labs/squad-ops",
+   "pr_rows": {
+    "https://github.com/backspring-labs/squad-ops/pull/3227": {
+     "created_at": "2026-11-19T02:31:43Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3227,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3227"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3228": {
+     "created_at": "2026-11-19T02:51:05Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3228,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3228"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3229": {
+     "created_at": "2026-11-19T03:00:06Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3229,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3229"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3231": {
+     "created_at": "2026-11-19T15:39:57Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3231,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3231"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3233": {
+     "created_at": "2026-11-19T16:00:59Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3233,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3233"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3234": {
+     "created_at": "2026-11-19T16:33:46Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3234,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3234"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3237": {
+     "created_at": "2026-11-19T20:04:05Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3237,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3237"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3238": {
+     "created_at": "2026-11-19T20:04:46Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3238,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3238"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3239": {
+     "created_at": "2026-11-19T21:21:16Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3239,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3239"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3241": {
+     "created_at": "2026-11-20T15:58:13Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3241,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3241"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3242": {
+     "created_at": "2026-11-20T17:07:24Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3242,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3242"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3245": {
+     "created_at": "2026-11-20T17:18:04Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3245,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3245"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3246": {
+     "created_at": "2026-11-20T17:39:03Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3246,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3246"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3247": {
+     "created_at": "2026-11-20T18:00:00Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3247,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3247"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3248": {
+     "created_at": "2026-11-20T18:16:50Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3248,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3248"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3249": {
+     "created_at": "2026-11-20T18:45:26Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3249,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3249"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3252": {
+     "created_at": "2026-11-26T15:50:26Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3252,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3252"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3253": {
+     "created_at": "2026-11-26T16:09:01Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3253,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3253"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3254": {
+     "created_at": "2026-11-26T16:32:20Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3254,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3254"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3255": {
+     "created_at": "2026-11-26T16:37:04Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3255,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3255"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3256": {
+     "created_at": "2026-11-26T16:39:35Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3256,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3256"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3257": {
+     "created_at": "2026-11-26T16:44:01Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3257,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3257"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3258": {
+     "created_at": "2026-11-26T17:09:18Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3258,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3258"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3259": {
+     "created_at": "2026-11-26T17:28:33Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3259,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3259"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3260": {
+     "created_at": "2026-11-26T17:31:34Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3260,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3260"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3262": {
+     "created_at": "2026-11-26T17:41:12Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3262,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3262"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3263": {
+     "created_at": "2026-11-26T17:57:41Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3263,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3263"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3264": {
+     "created_at": "2026-11-26T18:03:55Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3264,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3264"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3267": {
+     "created_at": "2026-11-26T22:10:13Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3267,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3267"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3269": {
+     "created_at": "2026-11-26T22:35:05Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3269,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3269"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3270": {
+     "created_at": "2026-11-26T22:39:32Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3270,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3270"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3271": {
+     "created_at": "2026-11-26T22:45:18Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3271,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3271"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3273": {
+     "created_at": "2026-11-26T22:55:39Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3273,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3273"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3275": {
+     "created_at": "2026-11-26T23:02:55Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3275,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3275"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3276": {
+     "created_at": "2026-11-26T23:18:53Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3276,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3276"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3277": {
+     "created_at": "2026-11-26T23:23:29Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3277,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3277"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3278": {
+     "created_at": "2026-11-26T23:32:03Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3278,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3278"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3279": {
+     "created_at": "2026-11-26T23:45:14Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3279,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3279"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3280": {
+     "created_at": "2026-11-26T23:53:20Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3280,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3280"
+    },
+    "https://github.com/backspring-labs/squad-ops/pull/3281": {
+     "created_at": "2026-11-26T23:58:24Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 3281,
+     "repo": "backspring-labs/squad-ops",
+     "url": "https://github.com/backspring-labs/squad-ops/pull/3281"
+    }
+   },
+   "prs": [
+    "https://github.com/backspring-labs/squad-ops/pull/3281",
+    "https://github.com/backspring-labs/squad-ops/pull/3280",
+    "https://github.com/backspring-labs/squad-ops/pull/3279",
+    "https://github.com/backspring-labs/squad-ops/pull/3278",
+    "https://github.com/backspring-labs/squad-ops/pull/3277",
+    "https://github.com/backspring-labs/squad-ops/pull/3276",
+    "https://github.com/backspring-labs/squad-ops/pull/3275",
+    "https://github.com/backspring-labs/squad-ops/pull/3273",
+    "https://github.com/backspring-labs/squad-ops/pull/3271",
+    "https://github.com/backspring-labs/squad-ops/pull/3270",
+    "https://github.com/backspring-labs/squad-ops/pull/3269",
+    "https://github.com/backspring-labs/squad-ops/pull/3267",
+    "https://github.com/backspring-labs/squad-ops/pull/3264",
+    "https://github.com/backspring-labs/squad-ops/pull/3263",
+    "https://github.com/backspring-labs/squad-ops/pull/3262",
+    "https://github.com/backspring-labs/squad-ops/pull/3260",
+    "https://github.com/backspring-labs/squad-ops/pull/3259",
+    "https://github.com/backspring-labs/squad-ops/pull/3258",
+    "https://github.com/backspring-labs/squad-ops/pull/3257",
+    "https://github.com/backspring-labs/squad-ops/pull/3256",
+    "https://github.com/backspring-labs/squad-ops/pull/3255",
+    "https://github.com/backspring-labs/squad-ops/pull/3254",
+    "https://github.com/backspring-labs/squad-ops/pull/3253",
+    "https://github.com/backspring-labs/squad-ops/pull/3252",
+    "https://github.com/backspring-labs/squad-ops/pull/3249",
+    "https://github.com/backspring-labs/squad-ops/pull/3248",
+    "https://github.com/backspring-labs/squad-ops/pull/3247",
+    "https://github.com/backspring-labs/squad-ops/pull/3246",
+    "https://github.com/backspring-labs/squad-ops/pull/3245",
+    "https://github.com/backspring-labs/squad-ops/pull/3242",
+    "https://github.com/backspring-labs/squad-ops/pull/3241",
+    "https://github.com/backspring-labs/squad-ops/pull/3239",
+    "https://github.com/backspring-labs/squad-ops/pull/3238",
+    "https://github.com/backspring-labs/squad-ops/pull/3237",
+    "https://github.com/backspring-labs/squad-ops/pull/3234",
+    "https://github.com/backspring-labs/squad-ops/pull/3233",
+    "https://github.com/backspring-labs/squad-ops/pull/3231",
+    "https://github.com/backspring-labs/squad-ops/pull/3229",
+    "https://github.com/backspring-labs/squad-ops/pull/3228",
+    "https://github.com/backspring-labs/squad-ops/pull/3227"
+   ],
+   "pull_note": "page_cap",
+   "pull_pages": 3,
+   "read": 13,
+   "status": "reading"
   },
   "berriai/litellm": {
    "done_urls": [
@@ -12253,7 +14302,39 @@
     "https://github.com/ryusoh/fund/pull/757",
     "https://github.com/ryusoh/fund/pull/756",
     "https://github.com/ryusoh/fund/pull/755",
-    "https://github.com/ryusoh/fund/pull/753"
+    "https://github.com/ryusoh/fund/pull/753",
+    "https://github.com/ryusoh/fund/pull/752",
+    "https://github.com/ryusoh/fund/pull/751",
+    "https://github.com/ryusoh/fund/pull/750",
+    "https://github.com/ryusoh/fund/pull/749",
+    "https://github.com/ryusoh/fund/pull/748",
+    "https://github.com/ryusoh/fund/pull/743",
+    "https://github.com/ryusoh/fund/pull/742",
+    "https://github.com/ryusoh/fund/pull/741",
+    "https://github.com/ryusoh/fund/pull/740",
+    "https://github.com/ryusoh/fund/pull/739",
+    "https://github.com/ryusoh/fund/pull/736",
+    "https://github.com/ryusoh/fund/pull/735",
+    "https://github.com/ryusoh/fund/pull/734",
+    "https://github.com/ryusoh/fund/pull/733",
+    "https://github.com/ryusoh/fund/pull/732",
+    "https://github.com/ryusoh/fund/pull/731",
+    "https://github.com/ryusoh/fund/pull/728",
+    "https://github.com/ryusoh/fund/pull/727",
+    "https://github.com/ryusoh/fund/pull/726",
+    "https://github.com/ryusoh/fund/pull/725",
+    "https://github.com/ryusoh/fund/pull/724",
+    "https://github.com/ryusoh/fund/pull/723",
+    "https://github.com/ryusoh/fund/pull/722",
+    "https://github.com/ryusoh/fund/pull/721",
+    "https://github.com/ryusoh/fund/pull/720",
+    "https://github.com/ryusoh/fund/pull/719",
+    "https://github.com/ryusoh/fund/pull/718",
+    "https://github.com/ryusoh/fund/pull/713",
+    "https://github.com/ryusoh/fund/pull/712",
+    "https://github.com/ryusoh/fund/pull/711",
+    "https://github.com/ryusoh/fund/pull/710",
+    "https://github.com/ryusoh/fund/pull/709"
    ],
    "n_agent_prs": 49,
    "name": "ryusoh/fund",
@@ -12703,8 +14784,768 @@
    ],
    "pull_note": null,
    "pull_pages": 1,
-   "read": 8,
-   "status": "reading"
+   "read": 40,
+   "status": "done"
+  },
+  "shayfly/desktop-tutorial": {
+   "done_urls": [
+    "https://github.com/Shayfly/desktop-tutorial/pull/538",
+    "https://github.com/Shayfly/desktop-tutorial/pull/537",
+    "https://github.com/Shayfly/desktop-tutorial/pull/536",
+    "https://github.com/Shayfly/desktop-tutorial/pull/535",
+    "https://github.com/Shayfly/desktop-tutorial/pull/531",
+    "https://github.com/Shayfly/desktop-tutorial/pull/508",
+    "https://github.com/Shayfly/desktop-tutorial/pull/504",
+    "https://github.com/Shayfly/desktop-tutorial/pull/500",
+    "https://github.com/Shayfly/desktop-tutorial/pull/444",
+    "https://github.com/Shayfly/desktop-tutorial/pull/436",
+    "https://github.com/Shayfly/desktop-tutorial/pull/418",
+    "https://github.com/Shayfly/desktop-tutorial/pull/416",
+    "https://github.com/Shayfly/desktop-tutorial/pull/414",
+    "https://github.com/Shayfly/desktop-tutorial/pull/405",
+    "https://github.com/Shayfly/desktop-tutorial/pull/403",
+    "https://github.com/Shayfly/desktop-tutorial/pull/402",
+    "https://github.com/Shayfly/desktop-tutorial/pull/401",
+    "https://github.com/Shayfly/desktop-tutorial/pull/399",
+    "https://github.com/Shayfly/desktop-tutorial/pull/398",
+    "https://github.com/Shayfly/desktop-tutorial/pull/397",
+    "https://github.com/Shayfly/desktop-tutorial/pull/362"
+   ],
+   "n_agent_prs": 21,
+   "name": "Shayfly/desktop-tutorial",
+   "pr_rows": {
+    "https://github.com/Shayfly/desktop-tutorial/pull/362": {
+     "created_at": "2026-11-14T22:30:07Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 362,
+     "repo": "Shayfly/desktop-tutorial",
+     "url": "https://github.com/Shayfly/desktop-tutorial/pull/362"
+    },
+    "https://github.com/Shayfly/desktop-tutorial/pull/397": {
+     "created_at": "2026-11-15T20:25:14Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 397,
+     "repo": "Shayfly/desktop-tutorial",
+     "url": "https://github.com/Shayfly/desktop-tutorial/pull/397"
+    },
+    "https://github.com/Shayfly/desktop-tutorial/pull/398": {
+     "created_at": "2026-11-15T20:45:17Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 398,
+     "repo": "Shayfly/desktop-tutorial",
+     "url": "https://github.com/Shayfly/desktop-tutorial/pull/398"
+    },
+    "https://github.com/Shayfly/desktop-tutorial/pull/399": {
+     "created_at": "2026-11-15T20:54:18Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 399,
+     "repo": "Shayfly/desktop-tutorial",
+     "url": "https://github.com/Shayfly/desktop-tutorial/pull/399"
+    },
+    "https://github.com/Shayfly/desktop-tutorial/pull/401": {
+     "created_at": "2026-11-15T21:13:11Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 401,
+     "repo": "Shayfly/desktop-tutorial",
+     "url": "https://github.com/Shayfly/desktop-tutorial/pull/401"
+    },
+    "https://github.com/Shayfly/desktop-tutorial/pull/402": {
+     "created_at": "2026-11-15T21:37:34Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 402,
+     "repo": "Shayfly/desktop-tutorial",
+     "url": "https://github.com/Shayfly/desktop-tutorial/pull/402"
+    },
+    "https://github.com/Shayfly/desktop-tutorial/pull/403": {
+     "created_at": "2026-11-15T22:36:01Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 403,
+     "repo": "Shayfly/desktop-tutorial",
+     "url": "https://github.com/Shayfly/desktop-tutorial/pull/403"
+    },
+    "https://github.com/Shayfly/desktop-tutorial/pull/405": {
+     "created_at": "2026-11-16T00:15:56Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 405,
+     "repo": "Shayfly/desktop-tutorial",
+     "url": "https://github.com/Shayfly/desktop-tutorial/pull/405"
+    },
+    "https://github.com/Shayfly/desktop-tutorial/pull/414": {
+     "created_at": "2026-11-16T07:30:51Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 414,
+     "repo": "Shayfly/desktop-tutorial",
+     "url": "https://github.com/Shayfly/desktop-tutorial/pull/414"
+    },
+    "https://github.com/Shayfly/desktop-tutorial/pull/416": {
+     "created_at": "2026-11-16T09:05:19Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 416,
+     "repo": "Shayfly/desktop-tutorial",
+     "url": "https://github.com/Shayfly/desktop-tutorial/pull/416"
+    },
+    "https://github.com/Shayfly/desktop-tutorial/pull/418": {
+     "created_at": "2026-11-16T10:31:19Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 418,
+     "repo": "Shayfly/desktop-tutorial",
+     "url": "https://github.com/Shayfly/desktop-tutorial/pull/418"
+    },
+    "https://github.com/Shayfly/desktop-tutorial/pull/436": {
+     "created_at": "2026-11-17T11:46:05Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 436,
+     "repo": "Shayfly/desktop-tutorial",
+     "url": "https://github.com/Shayfly/desktop-tutorial/pull/436"
+    },
+    "https://github.com/Shayfly/desktop-tutorial/pull/444": {
+     "created_at": "2026-11-17T21:11:18Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 444,
+     "repo": "Shayfly/desktop-tutorial",
+     "url": "https://github.com/Shayfly/desktop-tutorial/pull/444"
+    },
+    "https://github.com/Shayfly/desktop-tutorial/pull/500": {
+     "created_at": "2026-11-22T15:59:38Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 500,
+     "repo": "Shayfly/desktop-tutorial",
+     "url": "https://github.com/Shayfly/desktop-tutorial/pull/500"
+    },
+    "https://github.com/Shayfly/desktop-tutorial/pull/504": {
+     "created_at": "2026-11-22T20:55:56Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 504,
+     "repo": "Shayfly/desktop-tutorial",
+     "url": "https://github.com/Shayfly/desktop-tutorial/pull/504"
+    },
+    "https://github.com/Shayfly/desktop-tutorial/pull/508": {
+     "created_at": "2026-11-22T22:59:16Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 508,
+     "repo": "Shayfly/desktop-tutorial",
+     "url": "https://github.com/Shayfly/desktop-tutorial/pull/508"
+    },
+    "https://github.com/Shayfly/desktop-tutorial/pull/531": {
+     "created_at": "2026-11-25T17:59:21Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 531,
+     "repo": "Shayfly/desktop-tutorial",
+     "url": "https://github.com/Shayfly/desktop-tutorial/pull/531"
+    },
+    "https://github.com/Shayfly/desktop-tutorial/pull/535": {
+     "created_at": "2026-11-26T08:07:06Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 535,
+     "repo": "Shayfly/desktop-tutorial",
+     "url": "https://github.com/Shayfly/desktop-tutorial/pull/535"
+    },
+    "https://github.com/Shayfly/desktop-tutorial/pull/536": {
+     "created_at": "2026-11-26T10:22:03Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 536,
+     "repo": "Shayfly/desktop-tutorial",
+     "url": "https://github.com/Shayfly/desktop-tutorial/pull/536"
+    },
+    "https://github.com/Shayfly/desktop-tutorial/pull/537": {
+     "created_at": "2026-11-26T13:02:47Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 537,
+     "repo": "Shayfly/desktop-tutorial",
+     "url": "https://github.com/Shayfly/desktop-tutorial/pull/537"
+    },
+    "https://github.com/Shayfly/desktop-tutorial/pull/538": {
+     "created_at": "2026-11-26T13:11:08Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 538,
+     "repo": "Shayfly/desktop-tutorial",
+     "url": "https://github.com/Shayfly/desktop-tutorial/pull/538"
+    }
+   },
+   "prs": [
+    "https://github.com/Shayfly/desktop-tutorial/pull/538",
+    "https://github.com/Shayfly/desktop-tutorial/pull/537",
+    "https://github.com/Shayfly/desktop-tutorial/pull/536",
+    "https://github.com/Shayfly/desktop-tutorial/pull/535",
+    "https://github.com/Shayfly/desktop-tutorial/pull/531",
+    "https://github.com/Shayfly/desktop-tutorial/pull/508",
+    "https://github.com/Shayfly/desktop-tutorial/pull/504",
+    "https://github.com/Shayfly/desktop-tutorial/pull/500",
+    "https://github.com/Shayfly/desktop-tutorial/pull/444",
+    "https://github.com/Shayfly/desktop-tutorial/pull/436",
+    "https://github.com/Shayfly/desktop-tutorial/pull/418",
+    "https://github.com/Shayfly/desktop-tutorial/pull/416",
+    "https://github.com/Shayfly/desktop-tutorial/pull/414",
+    "https://github.com/Shayfly/desktop-tutorial/pull/405",
+    "https://github.com/Shayfly/desktop-tutorial/pull/403",
+    "https://github.com/Shayfly/desktop-tutorial/pull/402",
+    "https://github.com/Shayfly/desktop-tutorial/pull/401",
+    "https://github.com/Shayfly/desktop-tutorial/pull/399",
+    "https://github.com/Shayfly/desktop-tutorial/pull/398",
+    "https://github.com/Shayfly/desktop-tutorial/pull/397",
+    "https://github.com/Shayfly/desktop-tutorial/pull/362"
+   ],
+   "pull_note": "page_cap",
+   "pull_pages": 3,
+   "read": 21,
+   "status": "done"
+  },
+  "shizukutanaka/qui-browser": {
+   "done_urls": [
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1291",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1290",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1289",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1288",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1287",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1286",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1285",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1284",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1283",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1282",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1281",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1280",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1279",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1278",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1277",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1276",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1275",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1274",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1273",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1272",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1271",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1270",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1269",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1268",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1267",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1266",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1265",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1264",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1263",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1262",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1261",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1260",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1259",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1258",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1257",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1256",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1255",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1254",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1253",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1252"
+   ],
+   "n_agent_prs": 289,
+   "name": "shizukutanaka/Qui-Browser",
+   "pr_rows": {
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1252": {
+     "created_at": "2026-10-07T14:59:11Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1252,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1252"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1253": {
+     "created_at": "2026-10-07T15:18:15Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1253,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1253"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1254": {
+     "created_at": "2026-10-07T15:38:10Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1254,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1254"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1255": {
+     "created_at": "2026-10-07T16:00:44Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1255,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1255"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1256": {
+     "created_at": "2026-10-07T16:11:35Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1256,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1256"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1257": {
+     "created_at": "2026-10-07T16:24:18Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1257,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1257"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1258": {
+     "created_at": "2026-10-07T16:36:51Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1258,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1258"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1259": {
+     "created_at": "2026-10-07T16:48:56Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1259,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1259"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1260": {
+     "created_at": "2026-10-07T17:01:58Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1260,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1260"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1261": {
+     "created_at": "2026-10-07T17:22:50Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1261,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1261"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1262": {
+     "created_at": "2026-10-07T18:06:11Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1262,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1262"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1263": {
+     "created_at": "2026-10-07T18:49:06Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1263,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1263"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1264": {
+     "created_at": "2026-10-07T19:10:41Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1264,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1264"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1265": {
+     "created_at": "2026-10-07T19:28:23Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1265,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1265"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1266": {
+     "created_at": "2026-10-07T19:40:54Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1266,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1266"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1267": {
+     "created_at": "2026-10-07T19:54:03Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1267,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1267"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1268": {
+     "created_at": "2026-10-07T20:01:47Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1268,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1268"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1269": {
+     "created_at": "2026-10-07T20:41:57Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1269,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1269"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1270": {
+     "created_at": "2026-10-07T21:52:36Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1270,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1270"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1271": {
+     "created_at": "2026-10-07T22:01:18Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1271,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1271"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1272": {
+     "created_at": "2026-10-07T22:38:39Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1272,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1272"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1273": {
+     "created_at": "2026-10-07T23:42:51Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1273,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1273"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1274": {
+     "created_at": "2026-10-08T00:46:27Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1274,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1274"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1275": {
+     "created_at": "2026-10-08T01:01:44Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1275,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1275"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1276": {
+     "created_at": "2026-10-08T01:07:42Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1276,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1276"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1277": {
+     "created_at": "2026-10-08T01:15:00Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1277,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1277"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1278": {
+     "created_at": "2026-10-08T01:21:12Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1278,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1278"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1279": {
+     "created_at": "2026-10-08T01:30:54Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1279,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1279"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1280": {
+     "created_at": "2026-10-08T01:44:57Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1280,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1280"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1281": {
+     "created_at": "2026-10-08T02:02:07Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1281,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1281"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1282": {
+     "created_at": "2026-10-08T03:15:05Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1282,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1282"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1283": {
+     "created_at": "2026-10-08T03:53:29Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1283,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1283"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1284": {
+     "created_at": "2026-10-08T04:37:37Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1284,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1284"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1285": {
+     "created_at": "2026-10-14T07:42:09Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1285,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1285"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1286": {
+     "created_at": "2026-10-14T18:08:35Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1286,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1286"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1287": {
+     "created_at": "2026-11-03T05:31:45Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1287,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1287"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1288": {
+     "created_at": "2026-11-03T06:38:19Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1288,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1288"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1289": {
+     "created_at": "2026-11-03T11:48:07Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1289,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1289"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1290": {
+     "created_at": "2026-11-03T13:24:04Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1290,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1290"
+    },
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1291": {
+     "created_at": "2026-11-03T15:08:01Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 1291,
+     "repo": "shizukutanaka/Qui-Browser",
+     "url": "https://github.com/shizukutanaka/Qui-Browser/pull/1291"
+    }
+   },
+   "prs": [
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1291",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1290",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1289",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1288",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1287",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1286",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1285",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1284",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1283",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1282",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1281",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1280",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1279",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1278",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1277",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1276",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1275",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1274",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1273",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1272",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1271",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1270",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1269",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1268",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1267",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1266",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1265",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1264",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1263",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1262",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1261",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1260",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1259",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1258",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1257",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1256",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1255",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1254",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1253",
+    "https://github.com/shizukutanaka/Qui-Browser/pull/1252"
+   ],
+   "pull_note": "page_cap",
+   "pull_pages": 3,
+   "read": 40,
+   "status": "done"
   },
   "statsmodels/statsmodels": {
    "done_urls": [
@@ -13195,6 +16036,500 @@
     "https://github.com/statsmodels/statsmodels/pull/11205",
     "https://github.com/statsmodels/statsmodels/pull/11204"
    ],
+   "pull_pages": 3,
+   "read": 40,
+   "status": "done"
+  },
+  "tracecathq/tracecat": {
+   "done_urls": [
+    "https://github.com/TracecatHQ/tracecat/pull/4299",
+    "https://github.com/TracecatHQ/tracecat/pull/4298",
+    "https://github.com/TracecatHQ/tracecat/pull/4297",
+    "https://github.com/TracecatHQ/tracecat/pull/4296",
+    "https://github.com/TracecatHQ/tracecat/pull/4288",
+    "https://github.com/TracecatHQ/tracecat/pull/4286",
+    "https://github.com/TracecatHQ/tracecat/pull/4284",
+    "https://github.com/TracecatHQ/tracecat/pull/4283",
+    "https://github.com/TracecatHQ/tracecat/pull/4282",
+    "https://github.com/TracecatHQ/tracecat/pull/4273",
+    "https://github.com/TracecatHQ/tracecat/pull/4270",
+    "https://github.com/TracecatHQ/tracecat/pull/4268",
+    "https://github.com/TracecatHQ/tracecat/pull/4267",
+    "https://github.com/TracecatHQ/tracecat/pull/4257",
+    "https://github.com/TracecatHQ/tracecat/pull/4251",
+    "https://github.com/TracecatHQ/tracecat/pull/4243",
+    "https://github.com/TracecatHQ/tracecat/pull/4231",
+    "https://github.com/TracecatHQ/tracecat/pull/4230",
+    "https://github.com/TracecatHQ/tracecat/pull/4229",
+    "https://github.com/TracecatHQ/tracecat/pull/4228",
+    "https://github.com/TracecatHQ/tracecat/pull/4227",
+    "https://github.com/TracecatHQ/tracecat/pull/4226",
+    "https://github.com/TracecatHQ/tracecat/pull/4225",
+    "https://github.com/TracecatHQ/tracecat/pull/4224",
+    "https://github.com/TracecatHQ/tracecat/pull/4218",
+    "https://github.com/TracecatHQ/tracecat/pull/4217",
+    "https://github.com/TracecatHQ/tracecat/pull/4214",
+    "https://github.com/TracecatHQ/tracecat/pull/4209",
+    "https://github.com/TracecatHQ/tracecat/pull/4208",
+    "https://github.com/TracecatHQ/tracecat/pull/4204",
+    "https://github.com/TracecatHQ/tracecat/pull/4203",
+    "https://github.com/TracecatHQ/tracecat/pull/4202",
+    "https://github.com/TracecatHQ/tracecat/pull/4201",
+    "https://github.com/TracecatHQ/tracecat/pull/4199",
+    "https://github.com/TracecatHQ/tracecat/pull/4192",
+    "https://github.com/TracecatHQ/tracecat/pull/4191",
+    "https://github.com/TracecatHQ/tracecat/pull/4190",
+    "https://github.com/TracecatHQ/tracecat/pull/4189",
+    "https://github.com/TracecatHQ/tracecat/pull/4188",
+    "https://github.com/TracecatHQ/tracecat/pull/4185"
+   ],
+   "n_agent_prs": 108,
+   "name": "TracecatHQ/tracecat",
+   "pr_rows": {
+    "https://github.com/TracecatHQ/tracecat/pull/4185": {
+     "created_at": "2026-11-16T00:56:46Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4185,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4185"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4188": {
+     "created_at": "2026-11-16T02:19:18Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4188,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4188"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4189": {
+     "created_at": "2026-11-16T02:43:37Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4189,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4189"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4190": {
+     "created_at": "2026-11-16T02:56:50Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4190,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4190"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4191": {
+     "created_at": "2026-11-16T03:22:45Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4191,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4191"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4192": {
+     "created_at": "2026-11-16T04:31:19Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4192,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4192"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4199": {
+     "created_at": "2026-11-17T02:57:53Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4199,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4199"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4201": {
+     "created_at": "2026-11-17T14:57:43Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4201,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4201"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4202": {
+     "created_at": "2026-11-17T15:43:40Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4202,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4202"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4203": {
+     "created_at": "2026-11-17T16:46:53Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 4203,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4203"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4204": {
+     "created_at": "2026-11-17T17:01:34Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4204,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4204"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4208": {
+     "created_at": "2026-11-17T20:08:34Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4208,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4208"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4209": {
+     "created_at": "2026-11-17T21:42:25Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4209,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4209"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4214": {
+     "created_at": "2026-11-18T00:12:31Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4214,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4214"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4217": {
+     "created_at": "2026-11-18T01:59:54Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4217,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4217"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4218": {
+     "created_at": "2026-11-18T02:21:12Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 4218,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4218"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4224": {
+     "created_at": "2026-11-18T18:09:35Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 4224,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4224"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4225": {
+     "created_at": "2026-11-18T18:09:38Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 4225,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4225"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4226": {
+     "created_at": "2026-11-18T18:09:45Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 4226,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4226"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4227": {
+     "created_at": "2026-11-18T18:10:33Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 4227,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4227"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4228": {
+     "created_at": "2026-11-18T18:10:50Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 4228,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4228"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4229": {
+     "created_at": "2026-11-18T22:08:18Z",
+     "families": [
+      "claude_code"
+     ],
+     "family": "claude_code",
+     "number": 4229,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4229"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4230": {
+     "created_at": "2026-11-18T23:10:54Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4230,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4230"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4231": {
+     "created_at": "2026-11-18T23:36:22Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4231,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4231"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4243": {
+     "created_at": "2026-11-20T02:04:35Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4243,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4243"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4251": {
+     "created_at": "2026-11-20T13:59:29Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4251,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4251"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4257": {
+     "created_at": "2026-11-22T21:31:43Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4257,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4257"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4267": {
+     "created_at": "2026-11-23T21:03:57Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4267,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4267"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4268": {
+     "created_at": "2026-11-23T21:17:46Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4268,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4268"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4270": {
+     "created_at": "2026-11-23T22:25:54Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4270,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4270"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4273": {
+     "created_at": "2026-11-24T14:52:00Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4273,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4273"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4282": {
+     "created_at": "2026-11-25T16:06:14Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4282,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4282"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4283": {
+     "created_at": "2026-11-25T16:32:43Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4283,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4283"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4284": {
+     "created_at": "2026-11-25T16:34:02Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4284,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4284"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4286": {
+     "created_at": "2026-11-25T17:48:24Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4286,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4286"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4288": {
+     "created_at": "2026-11-25T20:15:55Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4288,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4288"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4296": {
+     "created_at": "2026-11-26T13:15:54Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4296,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4296"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4297": {
+     "created_at": "2026-11-26T13:24:52Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4297,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4297"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4298": {
+     "created_at": "2026-11-26T13:46:45Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4298,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4298"
+    },
+    "https://github.com/TracecatHQ/tracecat/pull/4299": {
+     "created_at": "2026-11-26T14:11:21Z",
+     "families": [
+      "devin"
+     ],
+     "family": "devin",
+     "number": 4299,
+     "repo": "TracecatHQ/tracecat",
+     "url": "https://github.com/TracecatHQ/tracecat/pull/4299"
+    }
+   },
+   "prs": [
+    "https://github.com/TracecatHQ/tracecat/pull/4299",
+    "https://github.com/TracecatHQ/tracecat/pull/4298",
+    "https://github.com/TracecatHQ/tracecat/pull/4297",
+    "https://github.com/TracecatHQ/tracecat/pull/4296",
+    "https://github.com/TracecatHQ/tracecat/pull/4288",
+    "https://github.com/TracecatHQ/tracecat/pull/4286",
+    "https://github.com/TracecatHQ/tracecat/pull/4284",
+    "https://github.com/TracecatHQ/tracecat/pull/4283",
+    "https://github.com/TracecatHQ/tracecat/pull/4282",
+    "https://github.com/TracecatHQ/tracecat/pull/4273",
+    "https://github.com/TracecatHQ/tracecat/pull/4270",
+    "https://github.com/TracecatHQ/tracecat/pull/4268",
+    "https://github.com/TracecatHQ/tracecat/pull/4267",
+    "https://github.com/TracecatHQ/tracecat/pull/4257",
+    "https://github.com/TracecatHQ/tracecat/pull/4251",
+    "https://github.com/TracecatHQ/tracecat/pull/4243",
+    "https://github.com/TracecatHQ/tracecat/pull/4231",
+    "https://github.com/TracecatHQ/tracecat/pull/4230",
+    "https://github.com/TracecatHQ/tracecat/pull/4229",
+    "https://github.com/TracecatHQ/tracecat/pull/4228",
+    "https://github.com/TracecatHQ/tracecat/pull/4227",
+    "https://github.com/TracecatHQ/tracecat/pull/4226",
+    "https://github.com/TracecatHQ/tracecat/pull/4225",
+    "https://github.com/TracecatHQ/tracecat/pull/4224",
+    "https://github.com/TracecatHQ/tracecat/pull/4218",
+    "https://github.com/TracecatHQ/tracecat/pull/4217",
+    "https://github.com/TracecatHQ/tracecat/pull/4214",
+    "https://github.com/TracecatHQ/tracecat/pull/4209",
+    "https://github.com/TracecatHQ/tracecat/pull/4208",
+    "https://github.com/TracecatHQ/tracecat/pull/4204",
+    "https://github.com/TracecatHQ/tracecat/pull/4203",
+    "https://github.com/TracecatHQ/tracecat/pull/4202",
+    "https://github.com/TracecatHQ/tracecat/pull/4201",
+    "https://github.com/TracecatHQ/tracecat/pull/4199",
+    "https://github.com/TracecatHQ/tracecat/pull/4192",
+    "https://github.com/TracecatHQ/tracecat/pull/4191",
+    "https://github.com/TracecatHQ/tracecat/pull/4190",
+    "https://github.com/TracecatHQ/tracecat/pull/4189",
+    "https://github.com/TracecatHQ/tracecat/pull/4188",
+    "https://github.com/TracecatHQ/tracecat/pull/4185"
+   ],
+   "pull_note": "page_cap",
    "pull_pages": 3,
    "read": 40,
    "status": "done"
@@ -13814,8 +17149,8 @@
    "status": "done"
   }
  },
- "repos_read": 32,
- "requests": 3596,
+ "repos_read": 41,
+ "requests": 4752,
  "rule": "all_eligible",
  "rule_changed_at_next": 31,
  "rule_changed_at_requests": 3365,
