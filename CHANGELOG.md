@@ -26,12 +26,25 @@ All notable changes of the fenvix engine. One version for every component (`rele
   - timers: unchanged (virtual; the runner timeouts stay virtual, G-0144). `--det-timers=real` as before.
   - `selfcert.generate(commonName, { notBefore, notAfter })` takes an optional validity.
 
+### Fixed
+- Node `--det`: a test that waits on real work is no longer timed out by the virtual clock in three shapes
+  (P3, 2026-11-27; the regression test (b), `node/test/host-values-timers.test.js`, passes):
+  - Vitest's `vi.waitFor` / `expect.poll` (the runner's safe timers a test starts, not its deadlines) count as
+    pending work: virtual time runs at real pace while a poll waits (`node/test/p3-timers-safe-poll.test.js`).
+  - after a test started a child process or a worker, its timers of up to 1000 ms (`DETJS_CHILD_PACE_MS`) run at
+    real pace: a `Date.now()` poll loop waiting on what the child, or a process it left behind, does no longer runs
+    out in virtual time; longer timers and other tests stay virtual (`node/test/p3-timers-child.test.js`).
+  - node-sqlite3 (npm `sqlite3`) calls in flight count as pending work (they run on the thread pool and leave no
+    active resource): no virtual jump to a pool's long guard timer past the runner deadline
+    (`node/test/native-work.test.js`). alakajam under `--det`: 114 failed (105-107 "Test timed out in 5000ms",
+    7-9 SQLITE_BUSY) before, 217 passed / 4 skipped as in the plain run after (2 runs each).
+
 ### Known defects
-- Node `--det`: a test that waits on real work (a `vi.waitFor` poll on the runner's real timers, a detached
-  grandchild writing a file) can still be timed out by the virtual clock. The regression test
-  `node/test/host-values-timers.test.js` ("(b) a test waiting on real work is not timed out by the virtual clock")
-  fails on purpose until it is fixed; codex-multi-auth keeps 69 such flips under `--det` (bound 60). Tracked as the
-  separate work item "remaining --det timer flips" (harness/det_host_values/REPORT.md section 7).
+- Node `--det`: other native addons that run work on the thread pool are not counted yet: `hnswlib-node` and
+  `sharp` were probed with the same blind spot (harness/p3_flips/NATIVE.md); a test waiting on them next to a long
+  timer can still be timed out by the virtual clock.
+- Node `--det`: timer-caused flips remain where none of the shapes above applies (runner hook / test timeouts on
+  drydock and agentic-qe among them; harness/p3_flips/REPORT.md).
 
 ## [0.1.0]
 
