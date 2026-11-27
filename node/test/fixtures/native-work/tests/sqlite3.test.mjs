@@ -46,6 +46,8 @@ test('leaves a slow query running on the pool connection', () => {
   connectionFree = new Promise((r) => db.all(SLOW, () => db.close(r)));
 });
 
+test.skip('a skipped test in between does not end the query\'s pending work', () => {});
+
 test('the next test waits for that connection with a 60 s guard timer pending and is not timed out', async () => {
   const guard = setTimeout(() => {}, 60000);
   await connectionFree;
@@ -61,6 +63,15 @@ test('each with only a row callback and zero rows releases its pending work (20 
   await sleep(20000);
 }, 30000);
 
+test('each() on a finalized statement (only its row callback is called, with an error) releases its pending work', async () => {
+  const db = new sqlite3.Database(':memory:');
+  const st = db.prepare('SELECT 1');
+  await new Promise((r) => st.finalize(r));
+  await new Promise((r) => st.each((e) => { if (e) r(); }));
+  await new Promise((r) => db.close(r));
+  await sleep(20000);
+}, 30000);
+
 test('a query on a closed database (its statement fails in the constructor) releases its pending work', async () => {
   const db = new sqlite3.Database(':memory:');
   await new Promise((r) => db.close(r));
@@ -68,7 +79,7 @@ test('a query on a closed database (its statement fails in the constructor) rele
   await sleep(20000);
 }, 30000);
 
-test('a statement prepared without a callback that fails: its queued call is released when the test ends', async () => {
+test('a statement prepared without a callback that fails: its queued call never calls back', async () => {
   const db = new sqlite3.Database(':memory:');
   db.on('error', () => {});
   const bad = db.prepare('SELECT * FROM missing_three');
@@ -77,7 +88,7 @@ test('a statement prepared without a callback that fails: its queued call is rel
   await new Promise((r) => setImmediate(r));
 }, 30000);
 
-test('the test after it may still count that call (released at the end of the test after the one that started it)', () => {});
+test('the test after it: that call stops counting a few real seconds after its test ended', async () => { await sleep(20000); }, 30000);
 
 test('the next test: a 20 s virtual sleep stays virtual', async () => {
   await sleep(20000);
