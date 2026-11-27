@@ -1,0 +1,50 @@
+'use strict';
+// Native addon work as pending work (founder decision D2 = A, 2026-11-27; alakajam: 106 "Test timed out in 5000ms",
+// 7 SQLITE_BUSY): node-sqlite3 runs its queries on the libuv thread pool and leaves no active resource, so the
+// virtual driver saw nothing pending and jumped to a long guard timer past the runner's deadline. Its native calls
+// with a callback now count as pending until the callback runs (src/sched.js, as for crypto and zlib).
+// Fixture: test/fixtures/native-work.
+//
+// protects: a test waiting on a node-sqlite3 query, with a long timer of its own pending, is not timed out by a
+//   virtual jump (the plain run passes); a failing query (error callback) also ends its pending work.
+// fails_when: node-sqlite3's Database / Statement callbacks are not counted as pending; or the count is not
+//   released when the callback runs (a later virtual sleep then runs at real pace: 20 s must take under 15 s).
+// no_claim: native calls without a callback (stmt.finalize()), the Database constructor's open callback and other
+//   addons (listed in harness/p3_flips/NATIVE.md) are not covered. Needs node-sqlite3 5.1.7 from the npm registry
+//   (installed once into test/.tmp/pkgs-sqlite3); if it cannot be installed the test fails, it does not skip.
+// Run: cd node && node --test --test-concurrency=1 test/native-work.test.js
+const { test } = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const { spawnSync } = require('node:child_process');
+const { BIN, TMP } = require('./helpers');
+
+const PKGS = path.join(TMP, 'pkgs-sqlite3');
+function sqlite3() {
+  const main = path.join(PKGS, 'node_modules', 'sqlite3', 'package.json');
+  if (!fs.existsSync(main)) {
+    fs.mkdirSync(PKGS, { recursive: true });
+    fs.writeFileSync(path.join(PKGS, 'package.json'), JSON.stringify({ name: 'pkgs-sqlite3', private: true }));
+    const r = spawnSync('npm', ['install', '--no-audit', '--no-fund', 'sqlite3@5.1.7'], { cwd: PKGS, encoding: 'utf8', timeout: 600000 });
+    assert.equal(r.status, 0, `node-sqlite3 5.1.7 could not be installed\n${r.stdout}\n${r.stderr}`);
+  }
+  return path.join(PKGS, 'package.json');
+}
+
+test('a node-sqlite3 query in flight is pending work: no virtual jump to the runner deadline', { timeout: 900000 }, () => {
+  const src = path.join(__dirname, 'fixtures', 'native-work');
+  const dir = path.join(TMP, 'native-work');
+  fs.rmSync(dir, { recursive: true, force: true });
+  fs.cpSync(src, dir, { recursive: true });
+  const env = { ...process.env, FIXTURE_SQLITE3: sqlite3() };
+  for (const k of ['CI', 'GITHUB_ACTIONS', 'DETJS', 'NODE_OPTIONS', 'NODE_TEST_CONTEXT', 'DETJS_EPOCH', 'DETJS_CACHE_DIR']) delete env[k];
+  const plain = spawnSync(process.execPath, [path.join(__dirname, '..', 'node_modules', 'vitest', 'vitest.mjs'), 'run', '-t', 'in flight|statement methods'], { cwd: dir, encoding: 'utf8', env });
+  assert.equal(plain.status, 0, `the plain run passes\n${plain.stdout}\n${plain.stderr}`);
+  const t0 = Date.now();
+  const r = spawnSync(process.execPath, [BIN, 'vitest', 'run', '--det', '--det-workers=1'], { cwd: dir, encoding: 'utf8', env, timeout: 240000 });
+  const wall = (Date.now() - t0) / 1000;
+  const text = `${(r.stdout || '').slice(-3000)}\n${(r.stderr || '').slice(-2000)}`;
+  assert.equal(r.status, 0, `the --det run passes too\n${text}`);
+  assert.ok(wall < 15, `20 s of virtual sleep after the queries took ${wall} s of real time (pending work not released)\n${text}`);
+});
