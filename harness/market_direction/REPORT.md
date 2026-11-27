@@ -53,3 +53,13 @@ R < 3 depends on the pre-registered classification: with the borderline companie
 | no_control | 0 |
 | error | 0 |
 
+
+## Run status (in progress; replaced by the final build)
+
+Updated 2026-11-27 05:12 UTC. Part 1 reading is running; this REPORT body is the earlier Part-2-only build and is not the final result.
+
+- Reading deadline: 2026-11-28 01:44:55 UTC (48 h budget per PREREG section 1.4, coordinator 2026-11-26 14:21 UTC).
+- Complete pairs so far: 34 (results/chunks.jsonl, chunks 8-11).
+- Calls per new complete pair by chunk: 8: 2,091; 9: 2,831; 10: 1,463; 11: 1,433.
+- Request 12 pushed 2026-11-27 04:31 UTC (27a052b), expected about 09:20 UTC.
+- Projection at 8.5 pairs per chunk: about 72 pairs by the deadline, under 100, so Part 1 would be NO DECISION.
