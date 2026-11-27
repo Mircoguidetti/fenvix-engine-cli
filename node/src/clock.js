@@ -320,6 +320,9 @@ function normDelay(ms) {
   return ms;
 }
 
+const POLL_WHY = 'a virtual timer fired at real pace while a runner poll (vi.waitFor / expect.poll) was pending (real time decided the order)';
+const CHILD_WHY = 'a virtual timer fired at real pace after the test started a child process (real time decided the order)';
+
 class Driver {
   constructor() {
     this.queue = [];
@@ -582,20 +585,6 @@ class Driver {
     const paced = !fastMode && this.mode === 'virtual' && (ownPoll || this.childPaced());
     const t = this.queue.shift();
     this.progress += 1;
-    let pacedWhy = null;
-    if (!fastMode && this.mode === 'virtual' && t._test === STATE.testId && STATE.testId !== null) {
-      // chosen before I/O that is still pending: a decision real time made (Level 1, recorded)
-      const p = sched.pending();
-      if (p.length) sched.timerChosen(t._site, p.length);
-      else if (paced) pacedWhy = true;
-    } else if (paced && t._test !== null && t._test !== undefined) pacedWhy = true; // a concurrent test's timer
-    if (pacedWhy) {
-      // at the real pace a runner poll of the timer's test (P1) or its child (P2) set: also a decision real time made,
-      // recorded in the timer's own context (a concurrent test's flag goes to that test), with its callback below
-      pacedWhy = ownPoll
-        ? 'a virtual timer fired at real pace while a runner poll (vi.waitFor / expect.poll) was pending (real time decided the order)'
-        : 'a virtual timer fired at real pace after the test started a child process (real time decided the order)';
-    }
     if (fastMode) {
       this.fastFired += 1;
       if (this.fastFired > this.budget && !this.budgetHit) {
@@ -605,8 +594,24 @@ class Driver {
     }
     t._active = false;
     try {
-      // a concurrent test's timer runs in its own context: its clock jumps, its events, its callback
-      const run = () => { if (pacedWhy) sched.timerChosen(t._site, 0, pacedWhy); this.runTimer(t); };
+      // a concurrent test's timer runs in its own context: its clock jumps, its events, its callback, and the record of
+      // a choice real time made (decided there: STATE.testId is the timer's test; a timer of a test that ended, or of
+      // none, records nothing)
+      const run = () => {
+        let err = null;
+        try {
+          if (!fastMode && this.mode === 'virtual' && t._test === STATE.testId && STATE.testId !== null) {
+            // chosen before I/O that is still pending: a decision real time made (Level 1, recorded)
+            const p = sched.pending();
+            if (p.length) sched.timerChosen(t._site, p.length);
+            // at the real pace a runner poll of the timer's test (P1) or its child (P2) set: also a decision real
+            // time made
+            else if (paced) sched.timerChosen(t._site, 0, ownPoll ? POLL_WHY : CHILD_WHY);
+          }
+        } catch (e) { err = e; } // the record failed: the user's callback still runs, then the error surfaces
+        this.runTimer(t);
+        if (err) throw err;
+      };
       if (concur.active()) concur.within(t._ctx && !t._ctx.done ? t._ctx : undefined, run);
       else run();
     } finally {
