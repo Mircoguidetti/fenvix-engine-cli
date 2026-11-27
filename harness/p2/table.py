@@ -74,6 +74,7 @@ def summarize(d, repo, rows):
     reps = sorted({r["rep"] for r in rr})
     wall = lambda kind, w, i: next((r["wall_s"] for r in rr if r["kind"] == kind and r["workers"] == w and r["rep"] == i), None)
     ps = {i: wall("plain", 1, i) for i in reps}
+    s1 = {i: wall("serial", 1, i) for i in reps}  # the engine at 1 worker (`--det --det-workers=1`)
     pp = {w: {i: wall("plain_par", w, i) for i in reps} for w in WORKERS}
     par = {w: {i: wall("par", w, i) for i in reps} for w in WORKERS}
     ver = {w: {i: wall("verify", w, i) for i in reps} for w in WORKERS}
@@ -85,6 +86,7 @@ def summarize(d, repo, rows):
          "invalid_plain": [r["rep"] for r in rr if r["kind"] == "plain" and r.get("invalid")]}
     for tag, pick in (("med", lambda dct: med(vals(dct))), ("cold", lambda dct: dct.get(1))):
         PS = pick(ps)
+        S1 = pick(s1)
         PPw = {w: pick(pp[w]) for w in WORKERS}
         Ew = {w: pick(e[w]) for w in WORKERS}
         Pw = {w: pick(par[w]) for w in WORKERS}
@@ -94,7 +96,10 @@ def summarize(d, repo, rows):
         Eb, Ew_best = best(Ew)
         Pb, Pw_best = best(Pw)
         x = {"PS": PS, "PP": PPw, "PP_best": PPb, "PP_w": PPw_best, "E": Ew, "par": Pw, "verify": Vw, "E_best": Eb,
-             "E_w": Ew_best, "par_best": Pb, "par_w": Pw_best}
+             "E_w": Ew_best, "par_best": Pb, "par_w": Pw_best, "S1": S1}
+        # founder rule R1 (2026-11-27): in serial the engine costs at most +5% over the plain serial run
+        if PS and S1:
+            x.update(S1_PS=S1 / PS, w1_within_5pct=S1 <= 1.05 * PS)
         if PS and PPb and Eb:
             sp = PS / PPb
             allow = min(1.3, sp / 2)
@@ -156,6 +161,17 @@ def main_table(d, title, pool=POOL):
                    f"{f2(m['E_PP'])} [{f2(c.get('E_PP'))}] | {f2(m['PS_E'])} [{f2(c.get('PS_E'))}] | "
                    f"{yn(m['meets'])} [{yn(c.get('meets'))}] | {yn(m['meets_par'])} [{yn(c.get('meets_par'))}] |")
     out += ["", f"Repositories meeting both bounds: **{n_meet} of {len(pool)}** on the medians, {n_meet_cold} of {len(pool)} on the cold round.", ""]
+    out += ["## The engine at 1 worker against plain serial (founder rule R1, 2026-11-27: at most +5%)", "",
+            "S1 = the protocol's `serial` row (`--det --det-workers=1`), PS = the `plain` row; median of 3 [cold].", "",
+            "| repo | PS | S1 | S1/PS | within +5% | PS/E |", "|---|---|---|---|---|---|"]
+    for s in sums:
+        if "med" not in s:
+            continue
+        m, c = s["med"], s["cold"]
+        out.append(f"| {s['repo']} | {f2(m['PS'])} [{f2(c['PS'])}] | {f2(m.get('S1'))} [{f2(c.get('S1'))}] | "
+                   f"{f2(m.get('S1_PS'))} [{f2(c.get('S1_PS'))}] | {yn(m.get('w1_within_5pct'))} [{yn(c.get('w1_within_5pct'))}] | "
+                   f"{f2(m.get('PS_E'))} [{f2(c.get('PS_E'))}] |")
+    out += [""]
     out += ["## Per worker count (median [cold])", "", "| repo | PP w2 | PP w4 | E w2 (par+verify) | E w4 (par+verify) | rounds | noisy rows | engine_commit | machine |", "|---|---|---|---|---|---|---|---|---|"]
     for s in sums:
         if "med" not in s:
@@ -194,8 +210,8 @@ def main_table(d, title, pool=POOL):
 def compare(da, db, labels, pool=POOL):
     ra, rb = rows_of(da), rows_of(db)
     out = [f"# {labels[0]} vs {labels[1]}", "", f"`table.py compare {os.path.relpath(da)} {os.path.relpath(db)}`; median [cold].", "",
-           f"| repo | E best {labels[0]} | E best {labels[1]} | saved (median) | saved (cold) | PS/E {labels[0]} → {labels[1]} | E/PP {labels[0]} → {labels[1]} | meets {labels[0]} → {labels[1]} |",
-           "|---|---|---|---|---|---|---|---|"]
+           f"| repo | E best {labels[0]} | E best {labels[1]} | saved (median) | saved (cold) | PS/E {labels[0]} → {labels[1]} | E/PP {labels[0]} → {labels[1]} | meets {labels[0]} → {labels[1]} | S1/PS {labels[0]} → {labels[1]} (≤ 1.05) |",
+           "|---|---|---|---|---|---|---|---|---|"]
     for repo in pool:
         try:
             a, b = summarize(da, repo, ra), summarize(db, repo, rb)
@@ -212,7 +228,8 @@ def compare(da, db, labels, pool=POOL):
         out.append(f"| {repo} | {f2(am.get('E_best'))} [{f2(ac.get('E_best'))}] | {f2(bm.get('E_best'))} [{f2(bc.get('E_best'))}] | "
                    f"{f2((am.get('E_best') or 0) - (bm.get('E_best') or 0))} | {f2((ac.get('E_best') or 0) - (bc.get('E_best') or 0))} | "
                    f"{f2(am.get('PS_E'))} → {f2(bm.get('PS_E'))} | {f2(am.get('E_PP'))} → {f2(bm.get('E_PP'))} | "
-                   f"{yn(am.get('meets'))} → {yn(bm.get('meets'))} [{yn(ac.get('meets'))} → {yn(bc.get('meets'))}] |")
+                   f"{yn(am.get('meets'))} → {yn(bm.get('meets'))} [{yn(ac.get('meets'))} → {yn(bc.get('meets'))}] | "
+                   f"{f2(am.get('S1_PS'))} → {f2(bm.get('S1_PS'))} ({yn(am.get('w1_within_5pct'))} → {yn(bm.get('w1_within_5pct'))}) |")
     return "\n".join(out)
 
 
