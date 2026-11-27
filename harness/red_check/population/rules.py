@@ -84,27 +84,47 @@ RUNNERS = {
 }
 NO_RUNNER, AMBIGUOUS = "no_runner", "ambiguous_runner"
 
+# Revision 2 (PREREG_R2.md R2.4): pytest without the '=' banner, private-mode ANSI escapes, workspace prefixes.
+RUNNERS_V2 = {**RUNNERS, "pytest": re.compile(
+    r"^(?:=+ )?(?:\d+ \w+, )*(\d+) failed(?:, \d+ \w+)* in [\d.]+s(?: \([\d:]+\))?(?: =+)?\s*$")}
+ANSI_PRIVATE = re.compile(r"\x1b\[\?[0-9;]*[A-Za-z]")
+WORKSPACE_PREFIX = re.compile(r"^(?:[@\w./-]+:[\w-]*test[\w-]*:\s+|[@\w./-]+ [\w-]*test[\w-]*:\s+|\[[@\w./-]+\]:?\s+)")
 
-def clean_lines(text: str) -> list[str]:
+
+def clean_lines(text: str, version: int = 1) -> list[str]:
     out = []
     for line in text.splitlines():
         line = line.lstrip("\ufeff")
         line = TS_PREFIX.sub("", line, count=1)
-        out.append(ANSI.sub("", line))
+        line = ANSI.sub("", line)
+        if version >= 2:
+            line = ANSI_PRIVATE.sub("", line)
+        out.append(line)
     return out
 
 
-def detect_runner(text: str) -> tuple[str, int | None]:
-    """(runner | no_runner | ambiguous_runner, index of the summary line kept for the excerpt or None)."""
-    lines = clean_lines(text)
+def _variants(line: str, version: int) -> list[str]:
+    if version < 2:
+        return [line]
+    stripped = WORKSPACE_PREFIX.sub("", line, count=1)
+    return [line] if stripped == line else [line, stripped]
+
+
+def detect_runner(text: str, version: int = 1) -> tuple[str, int | None]:
+    """(runner | no_runner | ambiguous_runner, index of the summary line kept for the excerpt or None).
+    version 1: PREREG.md 2.5; version 2: PREREG_R2.md R2.4."""
+    lines = clean_lines(text, version)
+    runners = RUNNERS_V2 if version >= 2 else RUNNERS
     first: dict[str, int] = {}
     for i, line in enumerate(lines):
-        for name, pat in RUNNERS.items():
+        for name, pat in runners.items():
             if name in first:
                 continue
-            m = pat.search(line)
-            if m and int(m.group(1)) >= 1:
-                first[name] = i
+            for v in _variants(line, version):
+                m = pat.search(v)
+                if m and int(m.group(1)) >= 1:
+                    first[name] = i
+                    break
     if not first:
         return NO_RUNNER, None
     if len(first) > 1:

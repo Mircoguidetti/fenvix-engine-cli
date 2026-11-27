@@ -76,11 +76,12 @@ jobs:
         run: |
           git config user.name "red-check-population-bot"
           git config user.email "red-check-population-bot@users.noreply.github.com"
-          out="$RC_DIR/results"
-          [ -d "$out" ] || exit 0
+          out=""
+          for d in "$RC_DIR/results" "$RC_DIR/results_r2"; do [ -d "$d" ] && out="$out $d"; done
+          [ -n "$out" ] || exit 0
           for i in 1 2 3 4 5 6 7 8; do
             git fetch -q origin "$RC_BRANCH" && git reset -q --soft "origin/$RC_BRANCH" && git reset -q
-            git add -f "$out" && git commit -q -m "red-check-population: results (run ${{ github.run_id }})" || exit 0
+            git add -f $out && git commit -q -m "red-check-population: results (run ${{ github.run_id }})" || exit 0
             git push -q origin "HEAD:$RC_BRANCH" && exit 0
             sleep $((5 + RANDOM % 20))
           done

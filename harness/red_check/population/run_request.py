@@ -16,6 +16,9 @@ def main(argv: list[str]) -> int:
     if kind == "probe":
         import probe
         return probe.main(argv)
+    if kind in ("screen_r2", "collect_r2", "oracle_r2"):
+        import r2
+        return r2.main(argv)
     if kind in ("collect", "oracle"):
         import collect
         return collect.main(argv)

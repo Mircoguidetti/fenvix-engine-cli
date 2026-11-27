@@ -105,11 +105,28 @@ def generate(res: Path, selected: dict | None, handcheck: list[dict]) -> str:
     return "\n".join(L) + "\n"
 
 
-def main() -> int:
-    out = HERE / "REPORT.md"
+def screen_summary(res: Path) -> str:
+    rows = read_jsonl(res / "screen.jsonl")
+    state = _read(res / "checkpoint.json") or {}
+    v = Counter(r["verdict"] for r in rows)
+    rule = Counter(w["rule"] for r in rows if r["verdict"] == "eligible" for w in r.get("workflows") or [])
+    return (f"## Screening (R2.2)\n\n- Candidate repositories screened: {len(rows)} (GraphQL requests: "
+            f"{state.get('graphql_requests', 0)}); verdicts {dict(sorted(v.items()))}\n- Eligible repositories' matching "
+            f"workflow files by rule: {dict(sorted(rule.items()))}\n\n")
+
+
+def main(argv: list[str] | None = None) -> int:
+    """report.py: REPORT.md (rev 1). report.py --r2: REPORT_R2.md (rev 2, results_r2/)."""
+    r2 = "--r2" in (argv if argv is not None else sys.argv[1:])
+    out = HERE / ("REPORT_R2.md" if r2 else "REPORT.md")
     head = out.read_text().split(MARK, 1)[0] if out.exists() else "# C5.3 report\n\n"
-    hc = read_jsonl(HERE / "handcheck.jsonl")
-    out.write_text(head.rstrip("\n") + "\n\n" + generate(HERE / "results", _read(HERE / "selected.json"), hc))
+    if r2:
+        res = HERE / "results_r2"
+        hc = read_jsonl(HERE / "handcheck_r2.jsonl")
+        body = generate(res, _read(HERE / "selected_r2.json"), hc).replace(MARK + "\n", MARK + "\n\n" + screen_summary(res), 1)
+    else:
+        body = generate(HERE / "results", _read(HERE / "selected.json"), read_jsonl(HERE / "handcheck.jsonl"))
+    out.write_text(head.rstrip("\n") + "\n\n" + body)
     print(f"wrote {out}")
     return 0
 

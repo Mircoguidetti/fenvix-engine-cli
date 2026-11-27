@@ -1,0 +1,6 @@
+﻿2026-11-20T10:00:00.1234567Z ##[group]Run pnpm turbo run test
+2026-11-20T10:00:01.1234567Z web:test: cache miss, executing 1a2b3c
+2026-11-20T10:00:02.1234567Z web:test:  [2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m4 passed[39m[22m[90m (5)[39m
+2026-11-20T10:00:03.1234567Z web:test:       Tests  1 failed | 20 passed (21)
+2026-11-20T10:00:04.1234567Z web:test: ERROR: command finished with error: command (/w/apps/web) pnpm run test exited (1)
+2026-11-20T10:00:05.1234567Z ##[error]Process completed with exit code 1.

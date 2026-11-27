@@ -1,0 +1,4 @@
+﻿2026-11-20T10:00:00.1234567Z ##[group]Run python -m pytest -q
+2026-11-20T10:00:01.1234567Z ......
+2026-11-20T10:00:02.1234567Z 6 passed in 0.12s
+2026-11-20T10:00:03.1234567Z ##[error]lint failed afterwards

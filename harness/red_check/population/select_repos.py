@@ -44,10 +44,15 @@ def select(rows: list[dict]) -> dict:
             "repositories": repos}
 
 
-def main() -> int:
-    rows = read_jsonl(HERE / "results" / "prs.jsonl.gz")
+def main(argv: list[str] | None = None) -> int:
+    """select_repos.py            rev 1: results/prs.jsonl.gz -> selected.json
+    select_repos.py --r2       rev 2: results_r2/prs.jsonl.gz -> selected_r2.json"""
+    r2 = "--r2" in (argv if argv is not None else sys.argv[1:])
+    rows = read_jsonl(HERE / ("results_r2" if r2 else "results") / "prs.jsonl.gz")
     out = select(rows)
-    (HERE / "selected.json").write_text(json.dumps(out, indent=1, sort_keys=True) + "\n")
+    if r2:
+        out["rule"] = "PREREG_R2.md R2.5 (PREREG.md 2.7)"
+    (HERE / ("selected_r2.json" if r2 else "selected.json")).write_text(json.dumps(out, indent=1, sort_keys=True) + "\n")
     print(f"selected {out['n_selected']} repositories ({out['n_eligible']} with >= {MIN_COUNT} qualifying PRs)")
     return 0
 

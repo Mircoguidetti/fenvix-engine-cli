@@ -1,0 +1,5 @@
+﻿2026-11-20T10:00:00.1234567Z ##[group]Run python -m pytest -q
+2026-11-20T10:00:01.1234567Z [?25l..F....
+2026-11-20T10:00:02.1234567Z FAILED tests/test_add.py::test_add - assert 2 == 3
+2026-11-20T10:00:03.1234567Z 1 failed, 5 passed, 2 warnings in 0.31s
+2026-11-20T10:00:04.1234567Z ##[error]Process completed with exit code 1.

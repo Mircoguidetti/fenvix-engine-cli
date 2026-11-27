@@ -1,0 +1,6 @@
+﻿2026-11-20T10:00:00.1234567Z ##[group]Run yarn workspaces foreach -A run test
+2026-11-20T10:00:01.1234567Z [api]: ✖ handles empty input (1.1ms)
+2026-11-20T10:00:02.1234567Z [api]: ℹ tests 12
+2026-11-20T10:00:03.1234567Z [api]: ℹ pass 11
+2026-11-20T10:00:04.1234567Z [api]: ℹ fail 1
+2026-11-20T10:00:05.1234567Z ##[error]Process completed with exit code 1.

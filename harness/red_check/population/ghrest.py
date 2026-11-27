@@ -121,5 +121,54 @@ class Client:
         return out
 
 
+def graphql_request(url: str, token: str | None, query: str) -> urllib.request.Request:
+    req = urllib.request.Request(url, data=json.dumps({"query": query}).encode(), method="POST",
+                                 headers={"Content-Type": "application/json", "User-Agent": UA})
+    if token:
+        req.add_unredirected_header("Authorization", f"Bearer {token}")
+    return req
+
+
+class GraphQL:
+    """GraphQL with the same token and pace as ``Client``, counted and rate-tracked apart (PREREG_R2 R2.2)."""
+
+    def __init__(self, client: Client, url: str | None = None):
+        self.c, self.url = client, url or f"{client.api}/graphql"
+        self.n_requests = 0
+        self.remaining = self.limit = self.reset = None
+
+    def low(self, frac: float = 0.2) -> bool:
+        return self.remaining is not None and bool(self.limit) and self.remaining < frac * self.limit
+
+    def query(self, q: str):
+        """(status, parsed body | error text). Retries 5xx/network and rate-limit refusals like ``Client._api``."""
+        for attempt in range(4):
+            wait = self.c.pace - (time.time() - self.c._last)
+            if wait > 0:
+                time.sleep(wait)
+            self.c._last = time.time()
+            self.n_requests += 1
+            try:
+                with self.c.opener.open(graphql_request(self.url, self.c.token, q), timeout=120) as r:
+                    st, h, body = r.status, r.headers, r.read()
+            except urllib.error.HTTPError as e:
+                st, h, body = e.code, e.headers, e.read()
+            except Exception as e:  # noqa: BLE001  network
+                st, h, body = "network", None, str(e)[:300].encode()
+            if h is not None and h.get("X-RateLimit-Remaining") is not None:
+                self.remaining, self.limit = int(h["X-RateLimit-Remaining"]), int(h["X-RateLimit-Limit"])
+                self.reset = int(h.get("X-RateLimit-Reset") or 0)
+            if st in (403, 429) and b"rate limit" in body.lower() and attempt < 3:
+                time.sleep(min(max((self.reset or 0) - time.time(), 0) + 5, 3700) if self.remaining == 0 else 60)
+                continue
+            if (st == "network" or (isinstance(st, int) and st >= 500)) and attempt < 3:
+                time.sleep(10)
+                continue
+            if st == 200:
+                return 200, json.loads(body)
+            return st, body.decode(errors="replace")[:300]
+        return st, body.decode(errors="replace")[:300]
+
+
 def token() -> str:
     return os.environ["GITHUB_TOKEN"]

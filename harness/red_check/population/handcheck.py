@@ -24,12 +24,14 @@ def sample(rows: list[dict], seed: int, k: int = 10) -> list[int]:
 def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--seed", type=int, default=4)
+    ap.add_argument("--r2", action="store_true", help="revision 2 rows (results_r2/)")
     a = ap.parse_args(argv[1:])
-    rows = read_jsonl(HERE / "results" / "prs.jsonl.gz")
+    res = HERE / ("results_r2" if a.r2 else "results")
+    rows = read_jsonl(res / "prs.jsonl.gz")
     by_job = {r["job_id"]: r for r in rows if r["verdict"] == "qualifying"}
     for j in sample(rows, a.seed):
         r = by_job[j]
-        print(j, r["runner"], r["url"], HERE / "results" / "excerpts" / f"{j}.txt.gz")
+        print(j, r["runner"], r["url"], res / "excerpts" / f"{j}.txt.gz")
     return 0
 
 

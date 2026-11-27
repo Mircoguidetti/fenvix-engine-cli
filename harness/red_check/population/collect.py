@@ -60,7 +60,7 @@ def _yaml(src, repo: str, path: str, ref: str):
     return st, wf, None
 
 
-def read_pr(src, pr: dict, store_log=None) -> dict:
+def read_pr(src, pr: dict, store_log=None, version: int = 1) -> dict:
     """Run 2.4 steps 1-6 for one pool PR. ``store_log(job_id, body, text, idx, candidate)`` keeps the log (excerpt,
     artifact)."""
     repo, n = pr["repo"], pr["number"]
@@ -99,9 +99,9 @@ def read_pr(src, pr: dict, store_log=None) -> dict:
              "bytes": len(body), "sha256": hashlib.sha256(body).hexdigest() if body else None, "runner": None}
         if lg["blob_status"] == 200 and body:
             text = body.decode("utf-8", errors="replace")
-            runner, idx = R.detect_runner(text)
+            runner, idx = R.detect_runner(text, version)
             c["runner"] = runner
-            c["summary_line"] = R.clean_lines(text)[idx] if idx is not None else None
+            c["summary_line"] = R.clean_lines(text, version)[idx] if idx is not None else None
             if store_log:
                 store_log(j["id"], body, text, idx, c)
         out["candidates"].append(c)
