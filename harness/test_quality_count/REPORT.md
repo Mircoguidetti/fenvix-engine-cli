@@ -83,18 +83,18 @@ search request, probe or candidate read (no data existed); none changes the deci
 
 ## Decision
 
-**KEEP READING: read 774, running 71, pain yes 21, U_R×N 23417.8, U_P×N 20868.8.**
+**CONTINUE: 109 running, 29 with time pain.**
 
 covered: GitHub Actions, tools stryker (JS/.NET/Scala), mutmut, cosmic-ray, PIT (Maven, Gradle), cargo-mutants, Infection, mutant, go-mutesting, gremlins, Mull, Muter, mutatest; not covered: other CI systems, private repositories, tools not listed.
 
-read 774, running 71, not-running 492, uncertain 211; pain yes 21, unknown 17, no 33; N 58715; U_R 0.39884 (U_R×N 23417.8), U_P 0.35543 (U_P×N 20868.8); whole frame read: no; truncated leaves: 2; incomplete leaves: 0; hand check: not passed.
+read 1106, running 109, not-running 714, uncertain 283; pain yes 29, unknown 47, no 33; N 58715; U_R 0.38308 (U_R×N 22492.6), U_P 0.35275 (U_P×N 20712.0); whole frame read: no; truncated leaves: 2; incomplete leaves: 0; hand check: not passed.
 
 ## Discovery
 
 leaves 341, candidates 57499, unread hits on truncated leaves 1216, N 58715.
 DROP reachable via U_P at r >= 11275 (assumes no uncertain or unknown rows).
 
-Observed uncertain share 0.273; DROP still reachable within the frame: no.
+Observed uncertain share 0.256; DROP still reachable within the frame: no.
 
 | query | leaves | total_count | repos | only this query | unread hits | contribution to N | truncated |
 |---|---|---|---|---|---|---|---|
@@ -135,25 +135,25 @@ Truncated leaves: `B infection filename:infection.json` size:371..371 total 1608
 
 ## Funnel
 
-- candidates 57499 -> rows 1050 -> excluded 276 (maintainer 3, stale 274) -> read 774
-- has-mutation-job 95, unresolved 16, tool-present-unlinked 182, no-mutation 480, error 1
-- running 71, configured-not-running 12, uncertain with a mutation job 12 (runs cap 9, unsupported 0)
-- duration read 65, duration pain 17
-- pain yes 21, unknown 17, no 33
+- candidates 57499 -> rows 1500 -> excluded 394 (maintainer 4, stale 391) -> read 1106
+- has-mutation-job 147, unresolved 23, tool-present-unlinked 241, no-mutation 694, error 1
+- running 109, configured-not-running 20, uncertain with a mutation job 18 (runs cap 12, unsupported 0)
+- duration read 98, duration pain 25
+- pain yes 29, unknown 47, no 33
 
-Pain unknown reasons (a repository can have several): 300-request cap 5, another mutation job uncertain 3, history not run 5, history-error 6, issues search not run 5, runs cap with < 3 values 2, too_few_runs 6
+Pain unknown reasons (a repository can have several): 300-request cap 8, another mutation job uncertain 5, candidate not hand-read 2, history not run 8, history-error 8, issues search not run 35, runs cap with < 3 values 2, too_few_runs 11
 
 ## Per tool (running repositories)
 
 | tool | running | every-change | scheduled | manual | other | median duration min (quartiles) | machine min per run (median) | wrapped |
 |---|---|---|---|---|---|---|---|---|
-| stryker | 28 | 16 | 12 | 0 | 0 | 3.2 (Q1 1.2, Q3 9.4) | 3.2 | 0 |
-| mutmut | 7 | 4 | 3 | 0 | 0 | 10.1 (Q1 4.5, Q3 57.3) | 10.1 | 0 |
-| pitest | 8 | 7 | 0 | 1 | 0 | 2.7 (Q1 1.3, Q3 26.3) | 2.7 | 0 |
-| cargo-mutants | 23 | 11 | 9 | 3 | 0 | 25.5 (Q1 10.4, Q3 101.8) | 127.0 | 0 |
-| infection | 5 | 4 | 1 | 0 | 0 | 1.4 (Q1 0.6, Q3 5.9) | 3.1 | 0 |
-| gremlins | 3 | 2 | 1 | 0 | 0 | 3.4 (Q1 3.1, Q3 172.9) | 3.4 | 0 |
-| uses-action | 2 | 2 | 0 | 0 | 0 | 4.9 (Q1 2.6, Q3 7.2) | 4.9 | 0 |
+| stryker | 34 | 20 | 14 | 0 | 0 | 3.3 (Q1 2.2, Q3 11.2) | 3.6 | 0 |
+| mutmut | 10 | 5 | 5 | 0 | 0 | 5.7 (Q1 2.8, Q3 35.1) | 5.7 | 0 |
+| pitest | 18 | 12 | 3 | 3 | 0 | 3.0 (Q1 2.5, Q3 13.9) | 3.0 | 3 |
+| cargo-mutants | 34 | 17 | 12 | 5 | 0 | 25.8 (Q1 7.5, Q3 106.6) | 101.9 | 0 |
+| infection | 9 | 8 | 1 | 0 | 0 | 1.4 (Q1 0.6, Q3 2.4) | 1.9 | 0 |
+| gremlins | 6 | 4 | 2 | 0 | 0 | 3.4 (Q1 2.9, Q3 49.2) | 3.4 | 0 |
+| uses-action | 3 | 3 | 0 | 0 | 0 | 0.5 (Q1 0.4, Q3 5.0) | 0.5 | 0 |
 
 ## Pain list
 
@@ -166,24 +166,32 @@ Pain unknown reasons (a repository can have several): 300-request cap 5, another
 | https://github.com/boredompeaks/perfume-store-backend | mutmut | scheduled | 71.0 | duration | - | median of 3 runs, `.github/workflows/mutation-weekly.yml` job `mutate` |
 | https://github.com/breimanntools/aaanalysis | mutmut | scheduled | 347.0 | duration | - | median of 10 runs, `.github/workflows/mutation_nightly.yml` job `nightly` |
 | https://github.com/chussenot/judgment | cargo-mutants | every-change | 350.3 | duration | - | median of 6 runs, `.github/workflows/mutants.yml` job `weekly` |
+| https://github.com/clauseo-ai/clauseo-acp | cargo-mutants | manual | 44.0 | duration | - | median of 10 runs, `.github/workflows/mutants-platform.yml` job `mutants` |
 | https://github.com/co3moz/aperio | cargo-mutants | manual | 25.8 | moved-off-change | 2026-08-19 | "Mutation testing is hours across eight runners and is now workflow_dispatch" https://github.com/co3moz/aperio/commit/1b35fd738c175c1d82746eda35e3cb6a8fd56ef1 |
+| https://github.com/d2a8k3u/typoseek | stryker | scheduled | 31.0 | duration | - | median of 3 runs, `.github/workflows/mutation.yml` job `mutation` |
 | https://github.com/DataDog/dd-license-attribution | mutmut | every-change | 43.5 | duration | - | median of 10 runs, `.github/workflows/mutation-base-cache.yml` job `mutation-base` |
 | https://github.com/drmrd/vernacular | stryker | scheduled | 0.3 | issue | 2026-11-22 | "On PR #1085 the mutation check for the schema commit ran about 18,000 mutants for 25 minutes on a fast local machine, and the CI proof job stopped at its 60-minute limit." https://github.com/drmrd/vernacular/pull/1086 |
+| https://github.com/Elvin-Arrow/privacy-gate | cargo-mutants | every-change | 360.6 | duration | - | median of 10 runs, `.github/workflows/nightly.yml` job `mutants-core` |
 | https://github.com/erenmeren/alice | gremlins | scheduled | 342.4 | duration | - | median of 10 runs, `.github/workflows/nightly.yml` job `fuzz` |
 | https://github.com/ext-sakamoro/ALICE-Zip | cargo-mutants | every-change | 38.3 | duration | - | median of 10 runs, `.github/workflows/quality-deep.yml` job `mutants` |
 | https://github.com/JamilleJung/wireguard-gui | cargo-mutants | scheduled | 79.0 | duration | - | median of 3 runs, `.github/workflows/mutants.yml` job `mutants` |
 | https://github.com/JoaoPucci/ani-gui | cargo-mutants, stryker | scheduled | 360.3 | duration | - | median of 10 runs, `.github/workflows/mutation.yml` job `cargo-mutants` |
 | https://github.com/justin13888/cameo | cargo-mutants | every-change | 0.4 | moved-off-change | 2026-11-22 | "**Sharding:** mutants are dealt round-robin (`--shard K/8 --sharding round-robin`) across **8 parallel shard jobs**, each limited to **60 minutes**." https://github.com/justin13888/cameo/commit/78e05f08875a1c27a1d6df388d4df685ea3b98d9 |
 | https://github.com/justin13888/cameo | cargo-mutants | every-change | 0.4 | issue | 2026-11-21 | "**Sharding:** mutants are dealt round-robin (`--shard K/8 --sharding round-robin`) across **8 parallel shard jobs**, each limited to **60 minutes**." https://github.com/justin13888/cameo/pull/191 |
+| https://github.com/lagz0ne/tinkered | stryker | every-change | 102.5 | duration | - | median of 10 runs, `.github/workflows/mutation.yml` job `lane` |
 | https://github.com/lucasreali/hive | cargo-mutants | every-change | 101.6 | duration | - | median of 10 runs, `.github/workflows/mutants-full.yml` job `windows` |
 | https://github.com/NotPellew/Thalvi | cargo-mutants | every-change | 24.0 | issue | 2026-11-20 | "On 2026-11-20, the developer chose to **replace** the advisory workspace-wide sweep with the failing high-risk `examine_globs` subset (faster runs, clear signal)." https://github.com/NotPellew/Thalvi/issues/601 |
 | https://github.com/NotPellew/Thalvi | cargo-mutants | every-change | 24.0 | issue | 2026-11-13 | "PRs get a fast answer. Mutation testing runs on `main`, and a real failure there files one issue for the dispatcher." https://github.com/NotPellew/Thalvi/issues/406 |
 | https://github.com/NotPellew/Thalvi | cargo-mutants | every-change | 24.0 | issue | 2026-11-13 | "Every Rust PR runs every CI job, Windows included, plus eight advisory mutants shards. PRs wait for all of that, and survivors appear only as capped annotations." https://github.com/NotPellew/Thalvi/pull/416 |
 | https://github.com/NotPellew/Thalvi | cargo-mutants | every-change | 24.0 | issue | 2026-11-20 | "Its Heavy run hit the existing timeout in mutation shard 5, so the five qualification runs temporarily omitted the mutation matrix on the qualification branch." https://github.com/NotPellew/Thalvi/pull/607 |
+| https://github.com/purlis/purlis | cargo-mutants | manual | 301.0 | duration | - | median of 10 runs, `.github/workflows/mutants.yml` job `core` |
 | https://github.com/sandreialexandru/Smart-Heating-Control | stryker | every-change | 120.4 | duration | - | median of 10 runs, `.github/workflows/mutation.yml` job `card` |
+| https://github.com/tensorov/polyforge | cargo-mutants | every-change | 111.3 | duration | - | median of 10 runs, `.github/workflows/ci.yml` job `mutations-weekly` |
 | https://github.com/ttu/emergency-supply-tracker | stryker | scheduled | 107.0 | duration | - | median of 6 runs, `.github/workflows/mutation-testing.yml` job `mutation-test` |
 | https://github.com/warpllm/warpllm | cargo-mutants | scheduled | 172.5 | duration | - | median of 10 runs, `.github/workflows/cron-weekly-cargo-mutants.yml` job `cargo-mutants` |
 | https://github.com/xhinoJ/testag | pitest | every-change | 155.3 | duration | - | median of 8 runs, `.github/workflows/qa-after-merge.yml` job `qa` |
+| https://github.com/yuchen0x1/Xray-server-management-panel | gremlins | scheduled | 49.2 | duration | - | median of 10 runs, `.github/workflows/mutation.yml` job `gremlins` |
+| https://github.com/ZelAnton/ProcessKit-rs | cargo-mutants | scheduled | 46.0 | duration | - | median of 10 runs, `.github/workflows/mutants.yml` job `mutants` |
 
 ## Information (not pain, not counted)
 
@@ -228,38 +236,48 @@ Pain unknown reasons (a repository can have several): 300-request cap 5, another
   - seazn-club/seazn.club.engine issue:5: "`stryker-timeouts.json`: regenerated from the sizing test's own hint (1.5 × measured wall). **core-3 goes 18 → 93 minutes**" https://github.com/seazn-club/seazn.club.engine/pull/5
   - seazn-club/seazn.club.engine issue:9: "**`stryker-timeouts.json`, core-2**: 183 → **282**, computed as ceil(1.5 × 11,270 / 60), within the 10 to 300 bounds." https://github.com/seazn-club/seazn.club.engine/pull/9
   - teran/mcp-forgejo commit:155be6da719ced8cfc7470d968c54ff8dcc35baf: "baseline suite time, capping reported mutant coverage near 30-35% on this" https://github.com/teran/mcp-forgejo/commit/155be6da719ced8cfc7470d968c54ff8dcc35baf
-- narrowing changes whose text mentions a timeout: 3
+- narrowing changes whose text mentions a timeout: 4
   - Halildeu/platform-web 940c4c4
+  - InnerWarden/inner-warden 60de018
   - justin13888/cameo 78e05f0
   - teran/mcp-forgejo 155be6d
-- configured-not-running: 12
+- configured-not-running: 20
   - 3rikF/ConsoleProgress
   - Bebin29/shpysync
+  - BradA1878/model-exchange-framework
   - CPS-IT/bravo-handlebars-content
   - LeoVie/clover-crap-check
+  - LucasKonrath/java-pocs
   - Syavne/d-OAuth-Server
   - andriy-git/stocksTUI
   - clementefalcone/goya-ledger
+  - dev-com2020/beanshop
   - impalah/celery-cloud
+  - jorgec/mac_cleaner
   - kotteletfisk/mtogo
+  - landrevillejf/Mandela
+  - luis-knd/mlb_forecast
+  - php-etl/csv-plugin
+  - php-etl/workflow-console-runtime
   - pvandervelde/release_regent
   - tongxin779977/VectaHub
   - virtengine/bosun
-- uses-action matches: 2
+- uses-action matches: 3
   - bymaxone/.github: `bymaxone/.github/.github/actions/mutation-inventory@v1`
   - itdojp/ae-framework: `./.github/actions/mutation-auto-diff`
+  - orisai/exceptions: `orisai/github-workflows/.github/actions/infection-php@v1`
 - excluded maintainer repositories that run mutation testing in CI: 0
 
 ## Hand check (AC4)
 
-samples: pain-yes 21, running 20, not-running 10, tool-present-unlinked 10, rejected 10, uses-action 2; missing verdicts 73; failures none; rule fix required: no.
+samples: pain-yes 29, running 20, not-running 10, tool-present-unlinked 10, rejected 10, uses-action 3; missing verdicts 82; failures none; rule fix required: no.
 
-- pain-yes: 46b-ETYKiAL/SCR1B3, Arsarneq/docent, DataDog/dd-license-attribution, JamilleJung/wireguard-gui, JoaoPucci/ani-gui, NotPellew/Thalvi, adfree-app/adfree, anesis-dev/anesis-cli, boredompeaks/perfume-store-backend, breimanntools/aaanalysis, chussenot/judgment, co3moz/aperio, drmrd/vernacular, erenmeren/alice, ext-sakamoro/ALICE-Zip, justin13888/cameo, lucasreali/hive, sandreialexandru/Smart-Heating-Control, ttu/emergency-supply-tracker, warpllm/warpllm, xhinoJ/testag
-- running: Amirault/fix-mutants, Elite-Work/EliteWork, Halildeu/platform-web, Hareshganesan/Medi_Chain, SuarezPM/kitty-code, Vadymk95/template-spa-pwa, adfree-app/adfree, anesis-dev/anesis-cli, cardano-foundation/cf-reeve-platform, drmrd/vernacular, eclipxe13/enum, engel7w7/descuentos-app, erenmeren/alice, ext-sakamoro/ALICE-Zip, heronlabs/action-tag-release, justin13888/cameo, sanamhub/nepdate-kotlin, sandreialexandru/Smart-Heating-Control, teran/mcp-forgejo, ttu/emergency-supply-tracker
-- not-running: AmbiDextp/Android_5th-6th_Semesters, AppSecureAI/blockchain0x-node, RobLe3/iicp-directory-rust, alwansan/TranslatorPlusPlus, clientexec/enhance-server, eliasnogueira/rest-assured-open-api-generator-talk, fptu-se-su26/swp391-su26-ai-audit-project-swp391_se20a04_group-03-1, sohophp/sofinder, tonyjoy0303/incial-web, xuezhiorange-png/cold-storage-planning-agent
-- tool-present-unlinked: TrickySturluson/spotify-helper-information-tracker, ValeSolArroyo/TP2-Catan, assertpy/assertpy, aws-samples/amazon-chime-live-events, endavis/pydatatracker, hyperpolymath/natsci-studio, kartikey321/fletch, lucianox777/Jornada, nikhil-yn-aix/fetchloom, raschmitt/zapinit
-- rejected: aloews/sherlock-scholes-|issue:30, eventjet/eventjet-json|issue:59, evilfps/bigbrightpaints-erp|issue:59, evilfps/bigbrightpaints-erp|issue:88, gabrielrufino/samplesize|issue:50, lex-studios/stellar-spend|issue:1075, lex-studios/stellar-spend|issue:568, roroche/kstreamsmatchers|issue:155, roroche/kstreamsmatchers|issue:213, sateno/rl_studio|issue:4
-- uses-action: bymaxone/.github, itdojp/ae-framework
+- pain-yes: 46b-ETYKiAL/SCR1B3, Arsarneq/docent, DataDog/dd-license-attribution, Elvin-Arrow/privacy-gate, JamilleJung/wireguard-gui, JoaoPucci/ani-gui, NotPellew/Thalvi, ZelAnton/ProcessKit-rs, adfree-app/adfree, anesis-dev/anesis-cli, boredompeaks/perfume-store-backend, breimanntools/aaanalysis, chussenot/judgment, clauseo-ai/clauseo-acp, co3moz/aperio, d2a8k3u/typoseek, drmrd/vernacular, erenmeren/alice, ext-sakamoro/ALICE-Zip, justin13888/cameo, lagz0ne/tinkered, lucasreali/hive, purlis/purlis, sandreialexandru/Smart-Heating-Control, tensorov/polyforge, ttu/emergency-supply-tracker, warpllm/warpllm, xhinoJ/testag, yuchen0x1/Xray-server-management-panel
+- running: ArloL/drifty, DataDog/dd-license-attribution, Elite-Work/EliteWork, Elvin-Arrow/privacy-gate, JiRaska/open-bank-oss, JoaoPucci/ani-gui, RoRoche/kstreamsmatchers, SuarezPM/kitty-code, anadon/JLS, boredompeaks/perfume-store-backend, d2a8k3u/typoseek, justin13888/cameo, lucasreali/hive, nao1215/career, ogiwbuz188/adaptive-fuzzer, osolmaz/harbor-hf-customization, sanamhub/nepdate-kotlin, undercurrentai/AIPEA, yearofthedan/weaver, yuchen0x1/Xray-server-management-panel
+- not-running: AruNi-01/atmos, BestDevOfc/CTFs_and_hacking_solutions, athiefaine/beyond-gilded-rose, erikdarlingdata/PerformanceMonitor, ferdodo/autochess, godot-gdunit-labs/gdUnit4Net, jorgecasar/legacys-end, migper-gei/gei, misterkante/alerteagri, padamson/rust-project-template
+- tool-present-unlinked: MyButtermilk/Scriber, arnoldwender/junzi-harness, cdklabs/github-merit-badger, dailydevops/healthchecks, evelagin/evetis-wb-analytics, imogenlabs/homelabarr-ce, ucsb-cs156-s26/STARTER-team02, unicity-sphere/sphere-sdk, variamosple/VariaMosAdmin, zalkilabs/zalki
+- rejected: aloews/sherlock-scholes-|issue:30, eventjet/eventjet-json|issue:59, evilfps/bigbrightpaints-erp|issue:59, evilfps/bigbrightpaints-erp|issue:88, evilfps/bigbrightpaints-erp|issue:89, gusto/baerly-storage|issue:96, halildeu/platform-web|issue:1029, lex-studios/stellar-spend|issue:1075, roroche/kstreamsmatchers|issue:155, sateno/rl_studio|issue:4
+- uses-action: bymaxone/.github, itdojp/ae-framework, orisai/exceptions
 
 ## Budget
 
@@ -270,6 +288,9 @@ samples: pain-yes 21, running 20, not-running 10, tool-present-unlinked 10, reje
 - chunk 5: 150 candidates, 2969 requests, 19.79 per candidate, 125.5 per running repository, X-RateLimit-Remaining {'core': 1557}, 38.1 min, methods ['GET'], stopped None
 - chunk 6: 150 candidates, 3049 requests, 20.33 per candidate, 119.15 per running repository, X-RateLimit-Remaining {'core': 2633}, 52.0 min, methods ['GET'], stopped None
 - chunk 7: 150 candidates, 2321 requests, 15.47 per candidate, 67.8 per running repository, X-RateLimit-Remaining {'core': 4729}, 47.9 min, methods ['GET'], stopped None
+- chunk 8: 150 candidates, 4006 requests, 26.71 per candidate, 161.0 per running repository, X-RateLimit-Remaining {'core': 180}, 31.3 min, methods ['GET'], stopped None
+- chunk 9: 150 candidates, 3633 requests, 24.22 per candidate, 77.5 per running repository, X-RateLimit-Remaining {'core': 402}, 47.2 min, methods ['GET'], stopped None
+- chunk 10: 150 candidates, 3178 requests, 21.19 per candidate, 93.87 per running repository, X-RateLimit-Remaining {'core': 1203}, 54.5 min, methods ['GET'], stopped None
 - pool: 58715, requests per candidate observed 17.15, requests per running repository observed 129.0, X-RateLimit-Remaining observed {'core': 3646}, fits 24 h: no
 
 ## Limits
