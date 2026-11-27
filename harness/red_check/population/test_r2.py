@@ -259,3 +259,38 @@ def test_pull_listing_cut_short_is_recorded():
     assert pages == 2 and prs == [] and r2.agent_prs.last_note == "page_error"
     r2.agent_prs(FakePulls([[_pr(1, "Copilot", "2026-11-20T00:00:00Z")]]), "o/r")
     assert r2.agent_prs.last_note is None
+
+
+def test_all_eligible_rule_reads_past_30_and_stops_at_6_selected(monkeypatch):
+    """protects=PREREG_R2 R2.6: with rule all_eligible there is no 30-repository stop, the reading stops before the
+    next PR once 6 repositories have >= 3 qualifying PRs (counting rows already recorded), and a repository started
+    under the old rule is resumed, not restarted; fails_when=the old stop still applies, already-recorded
+    qualifying PRs are ignored, or the stop is late; no_claim=the live budget."""
+    repos = [f"r{i:02d}/x" for i in range(40)]
+    listing = {n: ([{"url": f"{n}#{k}", "repo": n, "number": k, "family": "devin", "families": ["devin"],
+                     "created_at": "2026-11-10T00:00:00Z"} for k in range(1, 5)], 1) for n in repos}
+    monkeypatch.setattr(r2, "agent_prs", lambda src, name: listing[name])
+    qualifying = {f"r{i:02d}/x" for i in range(31, 40)}  # beyond the old 30-repository stop
+    monkeypatch.setattr(r2.C, "read_pr", lambda src, pr, store_log=None, version=1: {
+        "url": pr["url"], "repo": pr["repo"],
+        "verdict": "qualifying" if pr["repo"] in qualifying else "no_candidate_job"})
+
+    class Src:
+        n_requests, remaining, limit = 0, 5000, 5000
+
+        def low(self):
+            return False
+    state = {"next": 0, "repos": {}, "repos_read": 0, "requests": 0, "stopped": None}
+    rows = []
+    assert r2.collect(Src(), state, [(n, 1) for n in repos], rows.append) == "30 repositories read"
+    assert state["repos"]["r29/x"]["read"] == 1
+    # The rule change: one repository already counts (3 qualifying rows recorded earlier).
+    state.update(rule="all_eligible", stopped=None)
+    qual = {"old/repo": {"a", "b", "c"}}
+    rows2 = []
+    why = r2.collect(Src(), state, [(n, 1) for n in repos], rows2.append, qual=qual)
+    assert why == "6 repositories selected"
+    assert [r["url"] for r in rows2][:3] == ["r29/x#2", "r29/x#3", "r29/x#4"]
+    assert r2.selected_count(qual) == 6
+    # It stopped right after the 3rd qualifying PR of the 5th new repository (r35): nothing of r36 was read.
+    assert rows2[-1]["url"] == "r35/x#3" and not any(r["repo"] == "r36/x" for r in rows2)

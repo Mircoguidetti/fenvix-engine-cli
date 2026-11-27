@@ -184,16 +184,30 @@ def agent_prs(src, repo: str) -> tuple[list[dict] | None, int]:
     return out, pages
 
 
+SELECT_TARGET = 6
+
+
+def selected_count(qual: dict) -> int:
+    return sum(1 for urls in qual.values() if len(urls) >= 3)
+
+
 def collect(src, state: dict, eligible: list[tuple[str, int]], emit, store_log=None,
-            deadline: float | None = None, seen: set | None = None) -> str:
-    """Like rev 1's collect, over the eligible repositories, with runner rules v2."""
+            deadline: float | None = None, seen: set | None = None, qual: dict | None = None) -> str:
+    """Like rev 1's collect, over the eligible repositories, with runner rules v2.
+    ``state["rule"] == "all_eligible"`` (PREREG_R2 R2.6): no 30-repository stop; stop before a PR once
+    ``SELECT_TARGET`` repositories have >= 3 qualifying PRs (``qual``: repo -> set of qualifying URLs)."""
     seen = seen or set()
+    qual = qual if qual is not None else {}
+    all_eligible = state.get("rule") == "all_eligible"
     base = src.n_requests
     used = lambda: state["requests"] + src.n_requests - base  # noqa: E731
     try:
         while True:
-            if state["repos_read"] >= C.MAX_REPOS:
+            if not all_eligible and state["repos_read"] >= C.MAX_REPOS:
                 state["stopped"] = f"{C.MAX_REPOS} repositories read"
+                return state["stopped"]
+            if all_eligible and selected_count(qual) >= SELECT_TARGET:
+                state["stopped"] = f"{SELECT_TARGET} repositories selected"
                 return state["stopped"]
             if state["next"] >= len(eligible):
                 state["stopped"] = "eligible repositories exhausted"
@@ -222,7 +236,10 @@ def collect(src, state: dict, eligible: list[tuple[str, int]], emit, store_log=N
             for url in rs["prs"]:
                 if url in rs["done_urls"] or url in seen:
                     continue
-                for check in ("repos", "cap", "low", "time"):
+                if all_eligible and selected_count(qual) >= SELECT_TARGET:
+                    state["stopped"] = f"{SELECT_TARGET} repositories selected"
+                    return state["stopped"]
+                for check in (("cap", "low", "time") if all_eligible else ("repos", "cap", "low", "time")):
                     why = C._chunk_stop(check, used(), src, deadline, state)
                     if why:
                         if check in ("repos", "cap"):
@@ -232,6 +249,8 @@ def collect(src, state: dict, eligible: list[tuple[str, int]], emit, store_log=N
                 row = C.read_pr(src, rs["pr_rows"][url], store_log, version=2)
                 row["requests"] = src.n_requests - before
                 emit(row)
+                if row.get("verdict") == "qualifying":
+                    qual.setdefault(row["repo"].lower(), set()).add(row["url"])
                 rs["done_urls"].append(url)
                 if rs["read"] == 0:
                     state["repos_read"] += 1
@@ -267,19 +286,29 @@ def main(argv: list[str]) -> int:
         if req["kind"] == "screen_r2":
             why = screen(gql, pool, state, rows.append, deadline)
         elif req["kind"] == "collect_r2":
+            if (req.get("rule") == "all_eligible" and state.get("rule") != "all_eligible"
+                    and state.get("stopped") == f"{C.MAX_REPOS} repositories read"):
+                # PREREG_R2 R2.6: the 30-repository stop is replaced; reading resumes where it stopped.
+                state.update(rule="all_eligible", stopped=None, rule_changed_at_next=state["next"],
+                             rule_changed_at_requests=state["requests"])
             if not state["screen_done"]:
                 why = "screening not done"
             elif state.get("stopped"):
                 why = f"already stopped: {state['stopped']}"
             else:
                 screened = C.read_jsonl(RES / "screen.jsonl")
-                seen = {r["url"] for r in C.read_jsonl(RES / "prs.jsonl.gz")}
+                done_rows = C.read_jsonl(RES / "prs.jsonl.gz")
+                seen = {r["url"] for r in done_rows}
+                qual: dict = {}
+                for r in done_rows:
+                    if r.get("verdict") == "qualifying":
+                        qual.setdefault(r["repo"].lower(), set()).add(r["url"])
 
                 def emit(row):
                     row["chunk"] = req["chunk"]
                     rows.append(row)
                 why = collect(src, state, eligible_order(screened, pool), emit,
-                              C.Store(RES, HERE / "logs"), deadline, seen)
+                              C.Store(RES, HERE / "logs"), deadline, seen, qual)
         elif req["kind"] == "oracle_r2":
             sel = json.loads((HERE / "selected_r2.json").read_text())
             out = [C.oracle(src, p) for r in sel["repositories"] for p in r["prs"]]

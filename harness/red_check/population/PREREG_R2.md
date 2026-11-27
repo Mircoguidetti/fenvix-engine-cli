@@ -68,3 +68,14 @@ negatives: `pytest-q-pass.log`, `turbo-pass.log`.
 Selection 2.7 (count >= 3 qualifying PRs, top 6, ties by name, at most 12 PRs by `Random(3)`), oracle 2.8, hand check
 2.11 (`Random(4)`, then `Random(5)` after a rule fix), storage rules (full logs only as the workflow artifact), on the
 rev-2 rows `results_r2/prs.jsonl.gz`. Fewer than 6: report; the coordinator decides.
+
+## R2.6 Revision 2.1: all eligible repositories (2026-11-27, before any request under it)
+
+Founder decision R1 = A (`/plan-eng-review`, brain `gstack/projects/Mircoguidetti-new-brain/main-eng-review-c53-rev2-20261127.md`),
+relayed by the coordinator. **Reason:** under R2.3 the 30-repository stop ended the reading with 1 repository selected
+(REPORT_R2.md); the 30th repository read (qontinui/qontinui-runner) had 1 of its PRs read. **Change:** the
+30-repository stop is replaced by reading all 172 eligible repositories in R2.3's order, resuming where the reading
+stopped (the 30th repository's remaining PRs first); the reading stops before the next PR once 6 repositories have
+>= 3 qualifying PRs (unique URLs, counting the rows already recorded), or at the end of the list. Every other rule is
+unchanged: the 10,000-request REST cap still applies (3,365 used before this change) and can end the reading first;
+kyegomez/swarms stays selected; selection, hand check and oracle as before, on all rev-2 rows.
