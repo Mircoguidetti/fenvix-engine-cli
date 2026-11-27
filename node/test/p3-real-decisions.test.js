@@ -4,13 +4,15 @@
 //
 // protects: (1) P1 and (1b) P2: a timer fired at real pace because a runner poll (P1, safePending) or a child-starting test (P2,
 //   childPaced) keeps the driver slow is a decision real time made: the test's result is not reused by --det-cache;
-//   (2) a node-sqlite3 call still in flight keeps counting when another test (a concurrent sibling) ends: the 3 s
-//   real-time grace starts only when the test that started the call ends.
+//   (2) a node-sqlite3 call still in flight keeps counting for as long as it runs, whatever ends meanwhile (no
+//   real-time grace: (2), (5), (6)); one that never calls back counts until the next file (3).
 // fails_when: fire(false) runs for safePending / childPaced without recording the choice (run 2 reuses the file);
-//   or a sibling's end starts the grace of a still-running query (virtual time jumps to the 60 s guard timer and the
-//   waiting test times out).
+//   or a still-running query stops counting before it ends (virtual time jumps to the 60 s guard timer and the
+//   waiting test times out: a wrong red the plain run does not have).
 // no_claim: other real-time sources (they have their own tests); a plain test file is reused (the control shows the
-//   cache works). Needs node-sqlite3 5.1.7 (installed once into test/.tmp/pkgs-sqlite3, as test/native-work.test.js).
+//   cache works). (1b) and (2b) cannot fail first: a child process or worker start already keeps a test out of the
+//   cache ("subprocess" / "worker thread"), and a call that never calls back already makes its file's timers fire with
+//   work pending (recorded); they guard that this stays so. Needs node-sqlite3 5.1.7 (installed once into test/.tmp/pkgs-sqlite3, as test/native-work.test.js).
 // Run: cd node && node --test --test-concurrency=1 test/p3-real-decisions.test.js
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
@@ -100,7 +102,7 @@ test.concurrent('a sibling that ends at once', () => { expect(1).toBe(1); });
   assert.equal(r.status, 0, `the --det run passes (the query kept counting)\n${text}`);
 });
 
-test('(2b) a node-sqlite3 call whose grace ends while still in flight: the file is not reused', T, () => {
+test('(2b) a node-sqlite3 call that never calls back: the rest of its file runs at real pace and is not reused', T, () => {
   const dir = fixture('p3-real', 'grace-expiry', {
     ...CONFIG, ...CONTROL,
     'tests/expire.test.mjs': `import { test } from 'vitest';
@@ -114,7 +116,7 @@ test('starts a call that never calls back', () => {
   bad.on('error', () => {});
   bad.get(() => {});
 });
-test('runs while that call is still counted, until its grace ends', async () => { await sleep(5000); }, 30000);
+test('runs while that call is still counted (its timers fire at real pace)', async () => { await sleep(1000); }, 30000);
 `,
   });
   const e = { FIXTURE_SQLITE3: sqlite3Pkg() };
@@ -122,12 +124,13 @@ test('runs while that call is still counted, until its grace ends', async () => 
   assert.equal(r1.status, 0, show(r1));
   const r2 = crun('vitest', dir, ['run'], { env: e });
   assert.ok(reused(r2).includes('tests/control.test.mjs'), `the control file is reused\n${show(r2)}`);
-  assert.ok(!reused(r2).includes('tests/expire.test.mjs'), `WRONG REUSE: real time decided when the call stopped counting\n${show(r2)}`);
+  assert.ok(!reused(r2).includes('tests/expire.test.mjs'), `WRONG REUSE: the file ran its timers at real pace while the call counted\n${show(r2)}`);
 });
 
-// Unit level (a fake node-sqlite3 binding): a call whose owning test already ended (adversarial F1: issued from held
-// I/O delivered during that test's end) and a call whose owner never ends both still stop counting in bounded time.
-test('(3) a native call whose owner already ended, or never ends, still stops counting', { timeout: 60000 }, async () => {
+// Unit level (a fake node-sqlite3 binding): a call that never calls back keeps counting while any test may still wait on
+// it, whatever ends meanwhile (its own test, another test), and stops counting at the next test file, reported to the
+// cache as a choice real time made.
+test('(3) a native call that never calls back counts until the next file, then is released and reported', { timeout: 60000 }, async () => {
   const sched = require('../src/sched');
   const { STATE } = require('../src/state');
   const patcher = { set(o, k, v) { o[k] = v; } };
@@ -136,26 +139,25 @@ test('(3) a native call whose owner already ended, or never ends, still stops co
   function Statement() {}
   const b = { Database, Statement, OPEN_READWRITE: 2 };
   sched.nativeWork(patcher, b);
-  const saved = STATE.testId;
+  const saved = { testId: STATE.testId, onRealClock: STATE.onRealClock };
+  const reported = [];
   try {
+    STATE.onRealClock = (why) => { reported.push(why); };
     STATE.testId = 'unit-A';
-    sched.releaseTestWork('unit-A'); // A's end sweep ran ...
-    new b.Database().exec('x', () => {}); // ... then a call is issued while STATE.testId is still A
+    new b.Database().exec('x', () => {});
+    for (const f of STATE.onTestEnd) f('unit-A'); // its test ends
+    STATE.testId = 'unit-B';
+    for (const f of STATE.onTestEnd) f('unit-B'); // and another one
     STATE.testId = null;
-    assert.ok(sched.isPending(), 'the call counts');
-    sched.releaseTestWork('unit-B'); // the next test end
     await new Promise((r) => setTimeout(r, 3500));
-    assert.ok(!sched.isPending(), 'a call whose owner had already ended stops counting 3 s after the next test end');
-    STATE.testId = 'unit-C';
-    new b.Database().exec('y', () => {}); // owner C, whose end never comes
-    STATE.testId = null;
-    sched.releaseTestWork('unit-D');
-    await new Promise((r) => setTimeout(r, 3500));
-    assert.ok(sched.isPending(), 'another test end gives a still-owned call more time than its own end does');
-    await new Promise((r) => setTimeout(r, 9000));
-    assert.ok(!sched.isPending(), 'a call whose owner never ends stops counting 12 s after another test end');
+    assert.ok(sched.isPending(), 'the call still counts 3.5 s after two test ends (no real-time grace)');
+    assert.equal(reported.length, 0, 'nothing reported yet');
+    sched.takeBaseline(); // the next test file starts
+    assert.ok(!sched.isPending(), 'the call stops counting at the next file');
+    assert.ok(reported.some((w) => /never called back/.test(w)), `the release is reported as real time deciding: ${JSON.stringify(reported)}`);
   } finally {
-    STATE.testId = saved;
+    STATE.testId = saved.testId;
+    STATE.onRealClock = saved.onRealClock;
   }
 });
 

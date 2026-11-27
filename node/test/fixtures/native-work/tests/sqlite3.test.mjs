@@ -79,16 +79,6 @@ test('a query on a closed database (its statement fails in the constructor) rele
   await sleep(20000);
 }, 30000);
 
-test('a statement prepared without a callback that fails: its queued call never calls back', async () => {
-  const db = new sqlite3.Database(':memory:');
-  db.on('error', () => {});
-  const bad = db.prepare('SELECT * FROM missing_three');
-  bad.on('error', () => {});
-  bad.get(() => {});
-  await new Promise((r) => setImmediate(r));
-}, 30000);
-
-test('the test after it: that call stops counting a few real seconds after its test ended', async () => { await sleep(20000); }, 30000);
 
 test('the next test: a 20 s virtual sleep stays virtual', async () => {
   await sleep(20000);

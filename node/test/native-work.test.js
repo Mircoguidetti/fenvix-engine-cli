@@ -9,10 +9,11 @@
 //   virtual jump (the plain run passes); a failing query (error callback) also ends its pending work.
 // fails_when: node-sqlite3's Database / Statement callbacks are not counted as pending; or a count is not released:
 //   when the callback runs, for each() with only a row callback and no rows, for a statement that failed in its
-//   constructor (closed database), for each() on a finalized statement, or a few real seconds after a test ended for
-//   a call that never calls back, also one a hook started (a later virtual sleep then runs at real pace: 100 s of
-//   virtual sleep must take under 20 s; the hook file 40 s under 15 s); or a query still running when its test ends
-//   stops counting at once, also across a skipped test, while the next test waits on it (alakajam tournament.service).
+//   constructor (closed database), for each() on a finalized statement (a later virtual sleep then runs at real pace:
+//   100 s of virtual sleep must take under 20 s); or a query still running when its test ends stops counting, also
+//   across a skipped test, while the next test waits on it (alakajam tournament.service); or a call that never calls
+//   back (in a test or a hook) makes a later test of its file fail instead of running at real pace (leak.test.mjs,
+//   hooks.test.mjs: they must pass). Its release at the next file is test/p3-real-decisions.test.js (3).
 // F4 (founder, 2026-11-27): an idle pooled connection, and a call that never calls back, each fail at the runner
 //   deadline ("Test timed out in 5000ms") and the run ends (tests/deadline.test.mjs); fails_when the pending work
 //   keeps the scheduler waiting past the deadline (the run hangs: killed after 240 s) or a later sleep stays slow.
@@ -40,6 +41,8 @@ test('a node-sqlite3 query in flight is pending work: no virtual jump to the run
   const plain = spawnSync(process.execPath, [path.join(__dirname, '..', 'node_modules', 'vitest', 'vitest.mjs'), 'run', '-t', 'in flight|statement methods'], { cwd: dir, encoding: 'utf8', env });
   assert.equal(plain.status, 0, `the plain run passes\n${plain.stdout}\n${plain.stderr}`);
   const t0 = Date.now();
+  const leak = spawnSync(process.execPath, [BIN, 'vitest', 'run', 'tests/leak.test.mjs', '--det', '--det-workers=1'], { cwd: dir, encoding: 'utf8', env, timeout: 240000 });
+  assert.equal(leak.status, 0, `a call that never calls back: the rest of its file passes\n${(leak.stdout || '').slice(-2000)}`);
   const r = spawnSync(process.execPath, [BIN, 'vitest', 'run', 'tests/sqlite3.test.mjs', '--det', '--det-workers=1'], { cwd: dir, encoding: 'utf8', env, timeout: 240000 });
   const wall = (Date.now() - t0) / 1000;
   const text = `${(r.stdout || '').slice(-3000)}\n${(r.stderr || '').slice(-2000)}`;
@@ -69,7 +72,7 @@ test('F4: an idle pooled connection and a never-settling call end at the runner 
   assert.ok(wall < 25, `the run took ${wall} s: a deadline waited past its time, or the 20 s sleep ran at real pace\n${text}`);
 });
 
-test('a call a hook started that never calls back stops counting soon after (hooks.test.mjs)', { timeout: 900000 }, () => {
+test('a call a hook started that never calls back: the tests of its file still pass (hooks.test.mjs)', { timeout: 900000 }, () => {
   const src = path.join(__dirname, 'fixtures', 'native-work');
   const dir = path.join(TMP, 'native-work-hooks');
   fs.rmSync(dir, { recursive: true, force: true });
@@ -81,5 +84,5 @@ test('a call a hook started that never calls back stops counting soon after (hoo
   const wall = (Date.now() - t0) / 1000;
   const text = `${(r.stdout || '').slice(-3000)}\n${(r.stderr || '').slice(-2000)}`;
   assert.equal(r.status, 0, `the --det run passes\n${text}`);
-  assert.ok(wall < 15, `40 s of virtual sleep took ${wall} s of real time (the hook's call kept counting)\n${text}`);
+  assert.ok(wall < 60, `the hook file took ${wall} s (2 s of sleep at real pace expected)\n${text}`);
 });
