@@ -39,3 +39,32 @@ test('after the queries a 20 s virtual sleep stays virtual (the pending work is 
   await new Promise((r) => db.close(r));
   await sleep(20000);
 }, 30000);
+
+test('each with only a row callback and zero rows releases its pending work (20 s sleep after it stays virtual)', async () => {
+  const db = new sqlite3.Database(':memory:');
+  await new Promise((r) => db.exec('CREATE TABLE e(x)', r));
+  db.each('SELECT * FROM e', () => {});
+  await new Promise((r) => db.wait(r));
+  await new Promise((r) => db.close(r));
+  await sleep(20000);
+}, 30000);
+
+test('a query on a closed database (its statement fails in the constructor) releases its pending work', async () => {
+  const db = new sqlite3.Database(':memory:');
+  await new Promise((r) => db.close(r));
+  await expect(new Promise((res, rej) => db.get('SELECT 1', (e) => (e ? rej(e) : res())))).rejects.toThrow(/closed/i);
+  await sleep(20000);
+}, 30000);
+
+test('a statement prepared without a callback that fails: its queued call is released when the test ends', async () => {
+  const db = new sqlite3.Database(':memory:');
+  db.on('error', () => {});
+  const bad = db.prepare('SELECT * FROM missing_three');
+  bad.on('error', () => {});
+  bad.get(() => {});
+  await new Promise((r) => setImmediate(r));
+}, 30000);
+
+test('the next test: a 20 s virtual sleep stays virtual', async () => {
+  await sleep(20000);
+}, 30000);
