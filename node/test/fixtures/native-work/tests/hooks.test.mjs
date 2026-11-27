@@ -1,5 +1,5 @@
-// A node-sqlite3 call started outside a test (a beforeAll hook) that never calls back must not keep the driver at
-// real pace for the rest of the worker: it stops counting a few real seconds after the next test ends.
+// A node-sqlite3 call started outside a test (a beforeAll hook) that never calls back counts as pending work until the
+// next test file starts: the tests of this file still pass, at real pace (no real-time grace, no wrong red).
 import { test, expect, beforeAll } from 'vitest';
 import { createRequire } from 'node:module';
 
@@ -16,7 +16,7 @@ beforeAll(() => {
 
 test('a first test', () => { expect(1).toBe(1); });
 
-test('then 2 x 20 s of virtual sleep stays virtual', async () => {
-  await sleep(20000);
-  await sleep(20000);
+test('then 2 x 1 s of sleep (at real pace) passes', async () => {
+  await sleep(1000);
+  await sleep(1000);
 }, 60000);

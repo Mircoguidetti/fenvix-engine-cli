@@ -127,35 +127,20 @@ function releaseAll(o) {
   for (const r of [...s]) r();
 }
 
-// A native call still in flight when the test that started it ends keeps counting for at most NATIVE_GRACE_MS of
-// real time after that end, then stops counting. Another test's end (a concurrent or skipped sibling) does not start
-// it; a call started outside a test (a hook, module scope) starts it at the next test end. A query the next test
-// waits on (alakajam: the pool's connection still busy with the previous test's query while the next test waits in
-// tarn's queue) is done long before; a call that never calls back (a path not caught by the callback wrap, eachDone
-// or releaseOnError: a database whose open failed, a statement that failed without a callback) costs at most that
-// much real time. When the grace ends a call that never returned, real time decided it: the running test is reported
-// to the cache as reading the real clock (not reusable).
-const NATIVE_GRACE_MS = 3000;
-// A call owned by another test gets the longer grace from this end: a backstop for an owner whose end never comes
-// (the runner did not end it), so every call stops counting in bounded real time.
-const NATIVE_GRACE_OTHER_MS = 4 * NATIVE_GRACE_MS;
-const ENDED = new Set(); // test ids whose end ran: a call issued under one of them afterwards has no owner left
-function releaseTestWork(testId) {
-  if (testId !== null && testId !== undefined) ENDED.add(testId);
-  const { REAL } = require('./clock');
-  for (const r of IN_FLIGHT) {
-    const mine = r.owner === testId || r.owner === null;
-    if (r.expiry && (r.short || !mine)) continue;
-    if (r.expiry) REAL.clearTimeout(r.expiry); // was armed by another test's end: the owner's end shortens it
-    r.short = mine;
-    r.expiry = REAL.setTimeout(r.expire, mine ? NATIVE_GRACE_MS : NATIVE_GRACE_OTHER_MS);
-    if (r.expiry && r.expiry.unref) r.expiry.unref();
-  }
+// A native call in flight counts as pending for as long as it runs: no real-time grace stops it while its test, or
+// the next one, may still be waiting on it (a 3 s or 12 s grace made the alakajam pattern a wrong red as soon as a
+// query outlived it: coordinator /review, 2026-11-27). Only its callback, the error paths above (eachDone,
+// releaseOnError) or the start of the next test file end it: no test of an earlier file can still wait on a call
+// that never called back. That release is reported as a choice real time made. Cost of a call that never calls back:
+// the rest of its file runs its timers at real pace (a test still ends at its runner deadline, on the real watchdog),
+// never a different outcome.
+function releaseFileWork() {
+  for (const r of [...IN_FLIGHT]) r.expire();
 }
 
 /**
  * trackWork for the methods of a native class: each call in flight is also remembered on its object (releaseAll)
- * and in IN_FLIGHT (releaseTestWork). `each` is released by its completion callback (with only a row callback, one
+ * and in IN_FLIGHT (releaseFileWork). `each` is released by its completion callback (with only a row callback, one
  * that only releases is added) or by its row callback called with an error (a finalized statement calls only that).
  */
 function trackOwned(patcher, P, names) {
@@ -175,7 +160,6 @@ function trackOwned(patcher, P, names) {
         const s = OPEN.get(self);
         if (s) s.delete(release);
         IN_FLIGHT.delete(release);
-        if (release.expiry) require('./clock').REAL.clearTimeout(release.expiry);
       };
       if (n === 'each') {
         const two = i >= 1 && typeof a[i - 1] === 'function';
@@ -185,11 +169,10 @@ function trackOwned(patcher, P, names) {
         if (two) { const cb = a[i]; a[i] = function (...r) { release(); return cb.apply(this, r); }; } else a.push(function eachDone() { release(); });
       } else { const cb = a[i]; a[i] = function (...r) { release(); return cb.apply(this, r); }; }
       work += 1;
-      release.owner = STATE.testId !== null && !ENDED.has(STATE.testId) ? STATE.testId : null;
       release.expire = () => {
         if (done) return;
         release();
-        if (STATE.onRealClock) STATE.onRealClock('a node-sqlite3 call still in flight when its real-time grace after a test end ran out stopped counting as pending work (real time decided)');
+        if (STATE.onRealClock) STATE.onRealClock('a node-sqlite3 call that never called back stopped counting as pending work at the next file (real time decided)');
       };
       if (self && typeof self === 'object') { let s = OPEN.get(self); if (!s) OPEN.set(self, (s = new Set())); s.add(release); }
       IN_FLIGHT.add(release);
@@ -209,7 +192,8 @@ function trackOwned(patcher, P, names) {
 /**
  * The failing class: its constructor's callback with an error (also when it runs inside the constructor, as on a
  * closed database) ends its calls in flight, and later calls on it are not counted. A failure without a callback
- * (an 'error' event on it or on its database) is left to releaseTestWork.
+ * (an 'error' event on it or on its database) never calls back its queued calls: they count until the next file
+ * (releaseFileWork).
  */
 function releaseOnError(patcher, b, c) {
   const Real = b[c];
@@ -261,7 +245,6 @@ function installNativeWork(patcher) {
   }
   Object.defineProperty(w, '__detjsNativeWork', { value: true });
   patcher.set(Module, '_load', w);
-  if (Array.isArray(STATE.onTestEnd)) STATE.onTestEnd.push((id) => releaseTestWork(id));
   // already loaded (an earlier file of this process)
   for (const [file, mod] of Object.entries(require.cache)) {
     if (file.endsWith('.node') && mod && mod.exports && typeof mod.exports === 'object') { try { nativeWork(patcher, mod.exports); } catch { /* ignore */ } }
@@ -366,6 +349,7 @@ function trackWork(patcher, m, names) {
 
 /** Handles and requests present now are the runner's own: never counted (taken when a test file starts). */
 function takeBaseline() {
+  releaseFileWork(); // a new test file: no test of it waits on a native call an earlier file left in flight
   if (HAS_HANDLES) {
     baseline = new WeakSet();
     for (const h of process._getActiveHandles()) if (h && typeof h === 'object') baseline.add(h);
@@ -415,5 +399,5 @@ function ioChosen(site, kind, n) {
 
 module.exports = {
   installProcess, takeBaseline, pending, isPending, graceFor, timerChosen, ioChosen, startTest, setHeld,
-  kindOf, HAS_HANDLES, nativeWork, releaseTestWork,
+  kindOf, HAS_HANDLES, nativeWork, releaseFileWork,
 };

@@ -582,16 +582,19 @@ class Driver {
     const paced = !fastMode && this.mode === 'virtual' && (ownPoll || this.childPaced());
     const t = this.queue.shift();
     this.progress += 1;
+    let pacedWhy = null;
     if (!fastMode && this.mode === 'virtual' && t._test === STATE.testId && STATE.testId !== null) {
-      // a decision real time made (Level 1, recorded): before I/O still pending, or at the real pace a runner poll
-      // of this test (P1) or this test's child (P2) set
+      // chosen before I/O that is still pending: a decision real time made (Level 1, recorded)
       const p = sched.pending();
       if (p.length) sched.timerChosen(t._site, p.length);
-      else if (paced) {
-        sched.timerChosen(t._site, 0, ownPoll
-          ? 'a virtual timer fired at real pace while a runner poll (vi.waitFor / expect.poll) was pending (real time decided the order)'
-          : 'a virtual timer fired at real pace after the test started a child process (real time decided the order)');
-      }
+      else if (paced) pacedWhy = true;
+    } else if (paced && t._test !== null && t._test !== undefined) pacedWhy = true; // a concurrent test's timer
+    if (pacedWhy) {
+      // at the real pace a runner poll of the timer's test (P1) or its child (P2) set: also a decision real time made,
+      // recorded in the timer's own context (a concurrent test's flag goes to that test), with its callback below
+      pacedWhy = ownPoll
+        ? 'a virtual timer fired at real pace while a runner poll (vi.waitFor / expect.poll) was pending (real time decided the order)'
+        : 'a virtual timer fired at real pace after the test started a child process (real time decided the order)';
     }
     if (fastMode) {
       this.fastFired += 1;
@@ -603,8 +606,9 @@ class Driver {
     t._active = false;
     try {
       // a concurrent test's timer runs in its own context: its clock jumps, its events, its callback
-      if (concur.active()) concur.within(t._ctx && !t._ctx.done ? t._ctx : undefined, () => this.runTimer(t));
-      else this.runTimer(t);
+      const run = () => { if (pacedWhy) sched.timerChosen(t._site, 0, pacedWhy); this.runTimer(t); };
+      if (concur.active()) concur.within(t._ctx && !t._ctx.done ? t._ctx : undefined, run);
+      else run();
     } finally {
       if (t._repeat && !t._destroyed && !t._active) {
         const due = t._due + t._delayMs * NS_PER_MS;
