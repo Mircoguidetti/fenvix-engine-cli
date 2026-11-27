@@ -1,0 +1,24 @@
+== yalc w4: hazards 5198 {'recursive-write': 4278, 'write-write': 871, 'list-write': 43, 'read-write': 6}; files re-run 165
+    4278 wr .: calls {('mkdirSync', 'dir'): 49}
+== drydock w4: hazards 37 {'recursive-write': 36, 'list-write': 1}; files re-run 38
+      36 wr /tmp/pm-drydock: calls {('mkdirSync', 'dir'): 1}
+== alakajam w4: hazards 183 {'recursive-write': 145, 'read-write': 29, 'write-write': 9}; files re-run 27
+     145 wr data/tmp: calls {('readFileSync', 'missing'): 1, ('readFileSync', 'dir'): 10}
+== ironcurtain w4: hazards 279 {'recursive-write': 245, 'list-write': 11, 'read-write': 22, 'port': 1}; files re-run 184
+     135 wr /tmp: calls {('mkdir', 'dir'): 1, ('mkdirSync', 'dir'): 1}
+       6 wr /tmp/ironcurtain-sandbox: calls {('writeFileSync', 'dir'): 1, ('mkdirSync', 'dir'): 2}
+       2 wr /root/.ironcurtain/run/testsessioni: calls {('rmSync', 'missing'): 2}
+       1 wr /tmp/pm-ironcurtain/ironcurtain-config-dispatch-158Ucp: calls {('rmSync', 'dir'): 1}
+       1 wr /tmp/pm-ironcurtain/audit-err-4pCAzX: calls {('rmSync', 'dir'): 1}
+       1 wr /tmp/pm-ironcurtain/audit-tailer-test-2o9t0r: calls {('rmSync', 'dir'): 1}
+       1 wr /tmp/pm-ironcurtain/ironcurtain-test-auth-935631300-1795642800000: calls {('rmSync', 'dir'): 1}
+       1 wr /tmp/pm-ironcurtain/ironcurtain-token-provider-test-1363860436-1795642800000: calls {('rmSync', 'dir'): 1}
+== codex-multi-auth w4: hazards 120 {'recursive-write': 119, 'port': 1}; files re-run 122
+     107 wr /tmp: calls {('mkdir', 'dir'): 1, ('mkdirSync', 'dir'): 1}
+       1 wr /tmp/pm-codex-multi-auth/codex-multi-auth-account-clear-tests: calls {('mkdir', 'missing'): 1}
+       1 wr /tmp/pm-codex-multi-auth/codex-account-policy-6wrqft: calls {('mkdir', 'dir'): 1}
+       1 wr /tmp/pm-codex-multi-auth/codex-multi-auth-mirror-B1VG7Z: calls {('mkdir', 'dir'): 1}
+       1 wr /tmp/pm-codex-multi-auth/codex-multi-auth-writer-1vhCcs: calls {('rm', 'dir'): 1}
+       1 wr /tmp/pm-codex-multi-auth/codex-live-sync-1772107200000-b5upgdeqh4: calls {('mkdir', 'missing'): 1}
+       1 wr /tmp/pm-codex-multi-auth/cma-test-home-p3mjfT/.codex/multi-auth/usage: calls {('mkdir', 'missing'): 1}
+       1 wr /tmp/pm-codex-multi-auth/automatic-program-backoff-z6VZU3: calls {('mkdir', 'dir'): 1}

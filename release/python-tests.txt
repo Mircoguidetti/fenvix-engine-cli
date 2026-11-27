@@ -57,6 +57,7 @@ shared tests/test_review_r054_verifier.py
 shared tests/test_review_r055_verifier.py
 shared tests/test_runner_node.py
 shared tests/test_runner_node_p0.py
+shared tests/test_runner_proof.py
 shared tests/test_verify_write.py
 shared tests/test_runtime_id.py
 shared tests/test_rust_hotpaths.py
@@ -91,6 +92,7 @@ python-product tests/test_r015_fixes.py
 python-product tests/test_r015b_fixes.py
 python-product tests/test_r023c_fixes.py
 python-product tests/test_r032b_engine.py
+python-product tests/test_release1_false_greens_cache_units.py
 python-product tests/test_repro.py
 python-product tests/test_review_b1_randomly_options.py
 python-product tests/test_review_b4_p005_rule.py

@@ -1,0 +1,26 @@
+== lanes-timing
+not ok 1 - protects=lanes_wall_seconds is a finite number when one lane marker has no end (its file's leave() did not run); fails_when=the marker without end makes it NaN, written null, which the runner reads as "proof incomplete" (release-1 24962a94); no_claim=the placement checks on such a marker (deviations: their own fields)
+  name: 'AssertionError'
+  expected: 0.4
+  actual: ~
+# pass 0
+# fail 1
+== isolate-meta
+not ok 1 - protects=a session whose meta.parallel lists (hazards, carried, placement.deviations) are not arrays fails closed; fails_when=a truthy non-array (`{}`: no .length) passes as an empty list (this branch at f3ecbe73, /review adversarial); no_claim=what a session writes there (one-file sessions: empty lists)
+  name: 'AssertionError'
+  expected: true
+  actual: false
+# pass 0
+# fail 1
+== provable-threads
+not ok 1 - protects=a part whose .ran marker cannot be written declares absent at once, without waiting for a later declare() (which an earlier control's throw, or a sensor never installed, skips); fails_when=the part is invisible to the prov reader and the other parts' ok is taken as the run's (this branch at f3ecbe73, /review adversarial); no_claim=a part whose declaration write fails too (the same I/O failure: its outcome records fail with it and its tests are missing)
+  name: 'AssertionError'
+  expected:
+  actual: '1 process(es)/thread(s) installed the test hooks and declared no sensor (16723-0)'
+# pass 0
+# fail 1
+not ok 1 - protects=a part whose .ran marker cannot be written declares absent at once, without waiting for a later declare() (which an earlier control's throw, or a sensor never installed, skips); fails_when=the part is invisible to the prov reader and the other parts' ok is taken as the run's (this branch at f3ecbe73, /review adversarial); no_claim=a part whose declaration write fails too (the same I/O failure: its outcome records fail with it and its tests are missing)
+    + actual - expected
+  actual:
+# pass 0
+# fail 1

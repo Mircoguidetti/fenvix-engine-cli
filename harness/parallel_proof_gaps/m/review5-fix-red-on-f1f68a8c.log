@@ -1,0 +1,35 @@
+# red of the 'recursive cp that creates a link' test on f1f68a8c (engine as committed; test as in the next commit)
+▶ /review fixes (2026-11-26): symlinks, the root directory
+  ✖ a recursive cp that creates a link: a read through it afterwards records the real target (/review delta, finding 1) (613.944903ms)
+✖ /review fixes (2026-11-26): symlinks, the root directory (614.684373ms)
+ℹ tests 1
+ℹ suites 1
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 692.286812
+
+✖ failing tests:
+
+test at test/parallel-proof-gaps.test.js:285:3
+✖ a recursive cp that creates a link: a read through it afterwards records the real target (/review delta, finding 1) (613.944903ms)
+  AssertionError [ERR_ASSERTION]: the read through the copied link lands in shared/f: out,out/lnk/f,src
+      at TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/parallel-proof-gaps.test.js:302:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at node:internal/test_runner/test:1440:71
+      at node:internal/per_context/primordials:466:82
+      at new Promise (<anonymous>)
+      at new SafePromise (node:internal/per_context/primordials:435:3)
+      at node:internal/per_context/primordials:466:9
+      at Array.map (<anonymous>) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

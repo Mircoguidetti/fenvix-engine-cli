@@ -1,0 +1,87 @@
+TAP version 13
+# Subtest: /review fixes (2026-11-26): symlinks, the root directory
+    # Subtest: a link repointed inside one file: the write after it records the new target (second /review pass, finding 2)
+    not ok 1 - a link repointed inside one file: the write after it records the new target (second /review pass, finding 2)
+      ---
+      duration_ms: 41.727121
+      type: 'test'
+      location: '/home/user/fenvix-engine-cli/node/test/parallel-proof-gaps.test.js:281:3'
+      failureType: 'testCodeFailure'
+      error: 'the write lands in T2/x: L,L/x,T1/x'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/parallel-proof-gaps.test.js:298:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    1..1
+not ok 1 - /review fixes (2026-11-26): symlinks, the root directory
+  ---
+  duration_ms: 42.591381
+  type: 'suite'
+  location: '/home/user/fenvix-engine-cli/node/test/parallel-proof-gaps.test.js:253:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 1
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 112.842194
+TAP version 13
+# Subtest: mergeOutcomes: without --det-order a test only the re-run reported is added to outcomes and order
+not ok 1 - mergeOutcomes: without --det-order a test only the re-run reported is added to outcomes and order
+  ---
+  duration_ms: 2.584059
+  type: 'test'
+  location: '/home/user/fenvix-engine-cli/node/test/parallel-rerun-account.test.js:172:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      {
+    -   'a.js::1': 'failed',
+        'b.js::1': 'passed'
+      }
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    b.js::1: 'passed'
+    a.js::1: 'failed'
+  actual:
+    b.js::1: 'passed'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/parallel-rerun-account.test.js:181:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 56.834297

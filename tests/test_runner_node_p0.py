@@ -28,7 +28,11 @@ if a[:1] == ["verify"]:
     print(json.dumps({"status": "identical", "summary": {"tests": 1, "identical": 1}, "tests": []})); sys.exit(0)
 opt = {x.split("=", 1)[0]: x.split("=", 1)[1] for x in a if x.startswith("--det-") and "=" in x}
 json.dump({"order": ["a.test.js::t"], "outcomes": {"a.test.js::t": "passed"}}, open(opt["--det-outcomes"], "w"))
-meta = {"epoch_ns": "1795392000000000000"}
+# a sensor and the controls it rests on, as every real header declares them (node/src/session.js provableField;
+# fenvix-run engine_signals and sensor_refusal: a sensor without contract, audited runtime or its controls is refused)
+meta = {"epoch_ns": "1795392000000000000",
+        "provable": {"sensor": "node-surface/1", "contract": 1, "runtime": "node22", "surface": "stub"},
+        "controls": ["fs", "isolation", "net", "order", "seeds", "time", "timers"]}
 if mode != "no-status":
     meta["status"] = {"failed": 0, "not_proven": 0, "passed": 1, "skipped": 0}
 with open(opt["--det-trace"], "w") as fh:

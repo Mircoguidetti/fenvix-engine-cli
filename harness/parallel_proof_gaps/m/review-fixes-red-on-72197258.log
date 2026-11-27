@@ -1,0 +1,179 @@
+TAP version 13
+# Subtest: /review fixes (2026-11-26): symlinks, the root directory
+    # Subtest: a path through a symlink records its literal key too, and a repointed link is resolved again per file (F1)
+    not ok 1 - a path through a symlink records its literal key too, and a repointed link is resolved again per file (F1)
+      ---
+      duration_ms: 44.985294
+      type: 'test'
+      location: '/home/user/fenvix-engine-cli/node/test/parallel-proof-gaps.test.js:254:3'
+      failureType: 'testCodeFailure'
+      error: 'the write of f2 lands in v2/x: [["v1/x"],["v1/x"]]'
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/parallel-proof-gaps.test.js:276:12)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+        Array.map (<anonymous>)
+      ...
+    # Subtest: a listing or a recursive root at / pairs with keys directly under it (F6)
+    not ok 2 - a listing or a recursive root at / pairs with keys directly under it (F6)
+      ---
+      duration_ms: 0.282258
+      type: 'test'
+      location: '/home/user/fenvix-engine-cli/node/test/parallel-proof-gaps.test.js:281:3'
+      failureType: 'testCodeFailure'
+      error: 'hazards is not defined'
+      code: 'ERR_TEST_FAILURE'
+      name: 'ReferenceError'
+      stack: |-
+        run (/home/user/fenvix-engine-cli/node/test/parallel-proof-gaps.test.js:284:27)
+        TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/parallel-proof-gaps.test.js:285:22)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+      ...
+    1..2
+not ok 1 - /review fixes (2026-11-26): symlinks, the root directory
+  ---
+  duration_ms: 46.228699
+  type: 'suite'
+  location: '/home/user/fenvix-engine-cli/node/test/parallel-proof-gaps.test.js:253:1'
+  failureType: 'subtestsFailed'
+  error: '2 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 2
+# suites 1
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 123.327816
+TAP version 13
+# Subtest: accountRerun: a never-started duplicate does not let a test the first pass ran go unproven
+not ok 1 - accountRerun: a never-started duplicate does not let a test the first pass ran go unproven
+  ---
+  duration_ms: 2.336991
+  type: 'test'
+  location: '/home/user/fenvix-engine-cli/node/test/parallel-rerun-account.test.js:138:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/parallel-rerun-account.test.js:141:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: mergeOutcomes: the order gains the re-run-only tests; a file pass 1 did not write is not touched
+not ok 2 - mergeOutcomes: the order gains the re-run-only tests; a file pass 1 did not write is not touched
+  ---
+  duration_ms: 2.261901
+  type: 'test'
+  location: '/home/user/fenvix-engine-cli/node/test/parallel-rerun-account.test.js:149:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        'a.js::1',
+        'b.js::1',
+    -   'a.js::new'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'a.js::1'
+    1: 'b.js::1'
+    2: 'a.js::new'
+  actual:
+    0: 'a.js::1'
+    1: 'b.js::1'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/parallel-rerun-account.test.js:159:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 87.941784
+TAP version 13
+# Subtest: criterion 4 (parallel wrapper, outcomes): protects=an unreadable part makes finishRerun return complete: false, so the --det-outcomes file keeps pass 1 and does not say the one-lane re-run was reported; fails_when=complete stays true on the exit-2 path; no_claim=main()
+not ok 1 - criterion 4 (parallel wrapper, outcomes): protects=an unreadable part makes finishRerun return complete: false, so the --det-outcomes file keeps pass 1 and does not say the one-lane re-run was reported; fails_when=complete stays true on the exit-2 path; no_claim=main()
+  ---
+  duration_ms: 43.201869
+  type: 'test'
+  location: '/home/user/fenvix-engine-cli/node/test/big-trace.test.js:258:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    status=2
+    stdout={"status":2,"complete":true}
+    stderr=detjs: status: unknown (unreadable trace parts, their tests are not counted: /tmp/big-trace-k0BYbG/.detjs-merge-4hs6Xj/parts/000001.jsonl: parse error at line 2: missing field `fingerprint`): exit 2, NOT PROVEN
+    
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/big-trace.test.js:273:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 106.287568
+
+# F6 on cb42cccf (unfixed engine, same hazards() code as 72197258), the cases of the F6 test:
+# l / vs w /x, wr / vs r /x/y, lr / vs w /x/y -> [[],[],[]] (expected one hazard each). The F6 test above failed
+# with a ReferenceError (a test bug, fixed); this is its red on the defect itself.

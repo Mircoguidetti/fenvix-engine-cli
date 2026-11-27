@@ -29,6 +29,59 @@ failure or a NOT PROVEN test; 2 usage or internal error), never lowered by the r
 with ``detjs verify``'s code: 0 identical, 1 a wrong reuse, a divergence or NOT PROVEN, 3 only the inputs differ.
 The summary has the Python path's field names plus ``language``, ``test_runner``, ``engine``; ``runner_args``
 replaces ``pytest_args``.
+
+**What the engine proves for Node.** In a parallel run, a test is *proven* when the footprints the engine recorded
+show no unresolved conflict between lanes in what the test touched (paths, ports, network), or when its file ran
+again alone in one lane after a conflict. The engine does not compare each test with a real serial run. The sentence
+the customer reads: "Proven: no conflict between parallel lanes in what the engine recorded for each test; files in
+conflict ran again in one lane." The App shows the known limits next to it (not recorded, so not ruled out): shared
+local services (a database or cache the tests connect to), recursive directory operations, a cache directory at the
+project root, module reads through Vitest's main process, writes by child processes, native addons or worker threads
+(founder decision 2026-11-25). NOT PROVEN comes from a hazard re-run that did not account for every test
+(node/src/parallel-rerun.js ``accountRerun``) and from the two run-level signals below.
+
+**``proof``** (vitest, jest, node:test; mocha always runs in one lane under ``--det``): written when the final trace
+header has ``meta.parallel`` with ``workers`` other than 1 and at least one test ran in lanes
+(``ran_executed``: outcomes not reused and not ``skipped``/``todo``). From the final trace (the wrapper's, after a
+hazard re-run):
+
+    workers                  meta.parallel.workers
+    not_proven               meta.status.not_proven
+    proven                   meta.status.passed + meta.status.failed - the reused tests not skipped/todo (a missing
+                             or null reused outcome counts as passed, as node/src/cache/trace-reused.js withReused
+                             writes it): the engine's own counts, never derived from ran_executed, so a mismatch
+                             fails closed in the App
+    rerun_one_lane           meta.hazard_rerun.tests when there was a hazard re-run, else 0
+    parallel_seconds         meta.parallel.timing.lanes_wall_seconds: the lanes' wall time; the one-lane re-run's own
+                             wall time is not included
+    serial_seconds_estimate  meta.parallel.timing.test_file_seconds, else null
+    order_digest             the trace footer's order_digest (its last line, read from at most the last 64 KiB),
+                             else null
+    not_proven_causes        meta.hazard_rerun.not_proven grouped by cause, tests summed, sorted by tests descending
+                             then cause; a cause is cut to 500 UTF-16 code units; past 50 groups, the first 49 and one
+                             "other causes"
+
+Fail closed: with tests run in lanes, a ``meta.parallel`` that is not an object, a missing or malformed ``workers``
+(or below 1), ``parallel.hazards`` not a list, hazards recorded but no ``hazard_rerun`` (the re-run was skipped) or
+a re-run that accounted for 0 tests, a
+missing or malformed ``status.not_proven``, ``status.passed``,
+``status.failed``, ``timing.lanes_wall_seconds``, ``hazard_rerun.tests`` (when there was a re-run), any
+``hazard_rerun.not_proven[].tests`` or ``.cause``, a ``hazard_rerun`` that is not an object or a ``not_proven``
+that is not a list, a ``parallel.placement`` that is not an object, ``placement.deviations`` not a list or not empty
+(a file not placed as planned), ``parallel.carried`` not a list or not empty, a job environment that sets one of
+``PROOF_ENV`` (``environment <name>``), or a ``proven`` below 0: no ``proof``, top-level ``not_proven`` at least 1,
+``proof incomplete: <field>`` in the log, and exit 1 when it was 0. On exit 2 (the run's outcome could not be
+established) no ``proof`` is written.
+
+**Two run-level signals**, on every Node summary (parallel or not): ``provable_absent`` (the header's, or null: the
+run could not watch what tests touched; also set when the header declares no sensor, ``meta.provable``, and gives no
+reason, or declares one the core's rule refuses: an unknown sensor, another contract, an unaudited runtime, a control
+the sensor's accounting rests on switched off: ``sensor_refusal``) and ``not_proven_outside`` (the number of ``meta.not_proven_outside_tests``:
+uncontrolled reads outside the tests, such as ``env:<name>``; not a count of tests). Either one firing makes the
+top-level ``not_proven`` at least 1 and the exit 1 when it was 0. Known limit: after a hazard re-run the merged header
+keeps the first pass's meta, so a signal raised only in the re-run is not seen.
+
+Every rule that turns the exit to 1 runs before the summary is built: ``summary["exit"]`` is always the exit status.
 """
 from __future__ import annotations
 
@@ -36,6 +89,7 @@ import argparse
 import datetime as dt
 import hashlib
 import json
+import math
 import os
 import re
 import shlex
@@ -566,13 +620,247 @@ def run_detjs(detjs: list[str], runner: str, args: list[str], project: Path, env
     return code, time.monotonic() - t0
 
 
+# Outcomes the engine does not prove (the framework skipped the test itself); the App uses the same set.
+NOT_EXECUTED = ("skipped", "todo")
+CAUSE_MAX_UNITS = 500
+CAUSES_MAX = 50
+FOOTER_MAX_BYTES = 65536
+
+
+def _whole(v) -> bool:
+    return isinstance(v, int) and not isinstance(v, bool) and v >= 0
+
+
+def _seconds(v) -> bool:
+    return isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v) and v >= 0
+
+
+def cut_utf16(text: str, units: int = CAUSE_MAX_UNITS) -> str:
+    """``text`` cut to at most ``units`` UTF-16 code units (what the App's 500-character limit counts), never between
+    the two halves of a surrogate pair."""
+    if len(text.encode("utf-16-le")) // 2 <= units:
+        return text
+    out, n = [], 0
+    for ch in text:
+        w = 2 if ord(ch) > 0xFFFF else 1
+        if n + w > units:
+            break
+        out.append(ch)
+        n += w
+    return "".join(out)
+
+
+def group_causes(entries: list) -> list:
+    """``[{cause, tests}]`` grouped by cause (cut to 500 UTF-16 units), tests summed, sorted by tests descending then
+    cause; more than 50 groups: the first 49 and one ``other causes`` with the rest."""
+    by: dict[str, int] = {}
+    for e in entries:
+        c = cut_utf16(e["cause"])
+        by[c] = by.get(c, 0) + e["tests"]
+    groups = sorted(({"cause": c, "tests": t} for c, t in by.items()), key=lambda g: (-g["tests"], g["cause"]))
+    if len(groups) > CAUSES_MAX:
+        rest = sum(g["tests"] for g in groups[CAUSES_MAX - 1:])
+        groups = groups[: CAUSES_MAX - 1] + [{"cause": "other causes", "tests": rest}]
+    return groups
+
+
+def read_footer(path: Path, limit: int = FOOTER_MAX_BYTES) -> dict | None:
+    """The trace's footer (its last non-empty line), reading at most the last ``limit`` bytes; None when that line is
+    not a JSON object with ``type == "footer"``, or is longer than ``limit`` (only part of it was read)."""
+    try:
+        with open(path, "rb") as fh:
+            fh.seek(0, os.SEEK_END)
+            start = max(0, fh.tell() - limit)
+            fh.seek(start)
+            tail = fh.read(limit)
+    except OSError:
+        return None
+    lines = tail.split(b"\n")
+    idx = [i for i, ln in enumerate(lines) if ln.strip()]
+    if not idx:
+        return None
+    if start > 0 and idx[-1] == 0:
+        return None  # the line began before the bytes read: longer than the limit
+    try:
+        foot = json.loads(lines[idx[-1]].decode("utf-8"))
+    except (UnicodeDecodeError, ValueError):
+        return None
+    return foot if isinstance(foot, dict) and foot.get("type") == "footer" else None
+
+
+def ran_executed_of(outcomes: dict, reused_outcomes: dict) -> int:
+    """The tests that ran in this job (not reused) and that the framework did not skip itself."""
+    return sum(1 for n, o in outcomes.items() if n not in reused_outcomes and o not in NOT_EXECUTED)
+
+
+def node_proof(meta: dict, footer: dict | None, outcomes: dict, reused_outcomes: dict) -> tuple[dict | None, str | None]:
+    """The summary's ``proof`` from the final trace (module docstring): (proof, None); (None, None) when no proof is
+    due (no lanes, one worker, nothing ran in lanes); (None, field) when it is due but ``field`` is missing or
+    malformed (fail closed)."""
+    par = meta.get("parallel")
+    if par is None:
+        return None, None
+    if ran_executed_of(outcomes, reused_outcomes) == 0:
+        return None, None
+    if not isinstance(par, dict):
+        return None, "parallel"
+    workers = par.get("workers")
+    if isinstance(workers, int) and not isinstance(workers, bool) and workers == 1:
+        return None, None
+    if not _whole(workers) or workers < 1:
+        return None, "workers"
+    status = meta.get("status") if isinstance(meta.get("status"), dict) else {}
+    for k in ("not_proven", "passed", "failed"):
+        if not _whole(status.get(k)):
+            return None, f"status.{k}"
+    timing = par.get("timing") if isinstance(par.get("timing"), dict) else {}
+    if not _seconds(timing.get("lanes_wall_seconds")):
+        return None, "timing.lanes_wall_seconds"
+    hazards = par.get("hazards", [])
+    if not isinstance(hazards, list):
+        return None, "parallel.hazards"
+    # a file not placed as planned (no marker, so no footprint and no hazard can involve it; another worker or other
+    # in-process predecessors than the plan's): the hazards, computed over the planned lanes, do not cover it
+    placement = par.get("placement")
+    if not isinstance(placement, dict):
+        return None, "parallel.placement"
+    deviations = placement.get("deviations")
+    if not isinstance(deviations, list) or deviations:
+        return None, "parallel.placement.deviations"
+    # a file that ran with process-wide state an earlier file of its lane changed: its outcome depends on placement
+    carried = par.get("carried", [])
+    if not isinstance(carried, list) or carried:
+        return None, "parallel.carried"
+    hr = meta.get("hazard_rerun")
+    # lanes in conflict and no one-lane re-run (detjs skips it when DETJS_HAZARD_RERUN=1 is already set): unresolved
+    if hazards and hr is None:
+        return None, "hazard_rerun"
+    rerun, causes = 0, []
+    if hr is not None:
+        if not isinstance(hr, dict) or not _whole(hr.get("tests")):
+            return None, "hazard_rerun.tests"
+        # hazards, and a re-run that accounted for no test: the engine matched no test to the hazard files, so the
+        # first pass's records of those files (run in conflicting lanes) stand unproven
+        if hazards and hr["tests"] == 0:
+            return None, "hazard_rerun.tests"
+        rerun = hr["tests"]
+        np_ = hr.get("not_proven")
+        np_ = [] if np_ is None else np_
+        if not isinstance(np_, list):
+            return None, "hazard_rerun.not_proven"
+        for e in np_:
+            if not isinstance(e, dict) or not _whole(e.get("tests")):
+                return None, "hazard_rerun.not_proven[].tests"
+            if not isinstance(e.get("cause"), str) or not e["cause"]:
+                return None, "hazard_rerun.not_proven[].cause"
+            causes.append({"cause": e["cause"], "tests": e["tests"]})
+    reused_counted = sum(1 for o in reused_outcomes.values() if o not in NOT_EXECUTED)
+    proven = status["passed"] + status["failed"] - reused_counted
+    if proven < 0:
+        return None, "proven"
+    est = timing.get("test_file_seconds")
+    digest = footer.get("order_digest") if footer else None
+    return {
+        "workers": workers,
+        "proven": proven,
+        "not_proven": status["not_proven"],
+        "rerun_one_lane": rerun,
+        "parallel_seconds": timing["lanes_wall_seconds"],
+        "serial_seconds_estimate": est if _seconds(est) else None,
+        "order_digest": digest if isinstance(digest, str) and digest else None,
+        "not_proven_causes": group_causes(causes),
+    }, None
+
+
+# Job variables that steer what detjs records: a hidden footprint (skip dirs), the engine acting as one of its own child
+# passes (it then skips the one-lane re-run and the hazard accounting), another marker directory, controls turned off.
+# The trace does not show them, so a proof under any of them is not given. DETJS_HAZARD_RECURSIVE and
+# DETJS_HAZARD_SHARED_SERVICE switch hazard kinds off for measurement only (spec parallel-proof-gaps, gate note 9): any
+# value, 1 included, gives no proof (fail closed: the switch has no job outside a measurement).
+PROOF_ENV = ("DETJS_FOOTPRINT_SKIP_DIRS", "DETJS_CACHE_SKIP_DIRS", "DETJS_HAZARD_RERUN", "DETJS_HAZARD_PASS",
+             "DETJS_EPOCH_RUN", "DETJS_ISOLATE_CHILD", "DETJS_DIR", "DETJS_DISABLE",
+             "DETJS_HAZARD_RECURSIVE", "DETJS_HAZARD_SHARED_SERVICE")
+
+
+def proof_env(env: dict) -> str | None:
+    """The first PROOF_ENV variable the job sets (non-empty), else None."""
+    return next((k for k in PROOF_ENV if env.get(k)), None)
+
+
+# The core's rule for a run's sensor declaration (crates/detpy-core/src/provable.rs `judge`, clauses 1-3: a known
+# sensor, this contract, an audited runtime, every control the sensor's accounting rests on). The engine exposes the
+# judgement only through `verify`, so it is ported here (spec "false greens on release-1", C4); the parity test feeds
+# the core's own judge cases to both (tests/test_runner_proof.py, through `detjs verify`). The accounting table's
+# digest (`surface`) is build data, checked by the verifier, not here.
+_SENSOR_CONTRACT = 1  # provable.rs SENSOR_CONTRACT
+_AUDITED_RUNTIMES = ("cpython3.12", "cpython3.13", "cpython3.14", "node22", "node24", "node26")  # AUDITED_RUNTIMES
+_SENSOR_CACHE_REUSE = "cache-reuse/1"
+_PY_CONTROLS = ("time", "seeds", "fs", "net", "env", "os", "tz", "locale", "hashseed")
+_NODE_CONTROLS = ("time", "seeds", "fs", "net", "timers")
+
+
+def _required_controls(sensor: str) -> tuple[str, ...]:
+    """provable.rs required_controls: an unknown sensor requires every control both shells rest on."""
+    if sensor.startswith("py-"):
+        return _PY_CONTROLS
+    if sensor.startswith("node-") or sensor == _SENSOR_CACHE_REUSE:
+        return _NODE_CONTROLS
+    return tuple(dict.fromkeys(_PY_CONTROLS + _NODE_CONTROLS))
+
+
+def sensor_refusal(meta: dict) -> str | None:
+    """Why the header's ``meta.provable`` does not stand as "watched" (None when it does): judge's clauses 1-3."""
+    p = meta.get("provable")
+    if not isinstance(p, dict):
+        return "the run declared no sensor"
+    sensor = p.get("sensor")
+    if not isinstance(sensor, str) or not sensor:
+        return "the run declared no sensor"
+    if not (sensor.startswith("py-") or sensor.startswith("node-") or sensor == _SENSOR_CACHE_REUSE):
+        return f"sensor {sensor} is not one the engine has a rule for"
+    contract = p.get("contract")
+    if isinstance(contract, bool) or contract != _SENSOR_CONTRACT:
+        return f"sensor {sensor} speaks contract {contract!r}, the engine speaks {_SENSOR_CONTRACT}"
+    runtime = p.get("runtime")
+    if runtime not in _AUDITED_RUNTIMES:
+        return f"the accounting table was not audited against {runtime!r}"
+    controls = meta.get("controls")
+    on = [c for c in controls if isinstance(c, str)] if isinstance(controls, list) else []
+    for need in _required_controls(sensor):
+        if need not in on:
+            return f"the run had the control `{need}` off, and the engine's accounting rests on it"
+    return None
+
+
+def engine_signals(meta: dict) -> tuple[str | None, int]:
+    """(provable_absent, not_proven_outside) of the trace header (module docstring)."""
+    pa = meta.get("provable_absent")
+    if pa is not None and not isinstance(pa, str):
+        pa = json.dumps(pa)  # an unexpected shape still fires: never green on it
+    elif pa == "":
+        pa = "the run gave no reason"
+    elif pa is None:
+        # neither a sensor nor a reason (node/src/session.js provableField returns {} when no process declared one),
+        # or a declaration the core would refuse (an unknown sensor, a required control off: C4): the run cannot
+        # show what tests touched
+        pa = sensor_refusal(meta)
+    npo = meta.get("not_proven_outside_tests")
+    n = len(npo) if isinstance(npo, list) else (1 if npo else 0)
+    return pa, n
+
+
 def trace_header(path: Path) -> dict:
+    """The trace header's ``meta``, or {} when the first line is not a header object with an object ``meta`` (the
+    caller then fails closed: no status, exit 1)."""
     try:
         with open(path) as fh:
             first = json.loads(fh.readline())
-        return first.get("meta", {}) if first.get("type") == "header" else {}
     except (OSError, ValueError):
         return {}
+    if not isinstance(first, dict) or first.get("type") != "header":
+        return {}
+    meta = first.get("meta", {})
+    return meta if isinstance(meta, dict) else {}
 
 
 def epoch_iso(epoch_ns: int | None) -> str | None:
@@ -743,6 +1031,17 @@ def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
             or not isinstance(cs, dict):
         log(f"error: unreadable detjs output ({outcomes_p}, {trace_p} or {csum_p}): exit 2")
         return 2
+    # C5 (spec "false greens on release-1"): counts that are not whole numbers ("status": {"failed": "x"}) made
+    # int(...) below raise, a traceback and no summary.json. The run's outcome is then unknown: exit 2, written in the
+    # summary (status_error), the malformed counts never read
+    bad = {k: status[k] for k in ("failed", "not_proven", "passed", "skipped") if k in status and not _whole(status[k])}
+    status_error = None
+    if bad:
+        status_error = (f"the trace header's status counts are not whole numbers "
+                        f"({', '.join(f'{k}={v!r}' for k, v in bad.items())}): the run's outcome is unknown")
+        log(f"error: {status_error}: exit 2")
+        code = 2
+        status = {}
     outcomes: dict[str, str] = res.get("outcomes", {})
     rec = read_receipts(receipts)
     # per-test rows (`file::test`) count the tests; file rows (and a shared-process unit) carry the recorded time
@@ -814,6 +1113,27 @@ def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
         if nid:
             reused_outcomes[nid] = r.get("outcome")
     share = round(saved / (saved + ran_time), 4) if ran_time is not None and (saved + ran_time) else 0.0
+
+    # The proof and the two engine signals (module docstring). Every exit change happens here, before the summary is
+    # built, so summary["exit"] is the exit status.
+    not_proven = int(status.get("not_proven") or 0) if status else None
+    proof, incomplete = node_proof(meta, read_footer(trace_p), outcomes, reused_outcomes)
+    steered = proof_env(os.environ)
+    if proof is not None and steered:
+        proof, incomplete = None, f"environment {steered}"
+    if code == 2:
+        proof = None  # the engine could not establish the run's outcome: its counts prove nothing
+    if incomplete:
+        log(f"proof incomplete: {incomplete}: the run is NOT PROVEN")
+        not_proven = max(not_proven or 0, 1)
+        code = 1 if code == 0 else code
+    provable_absent, np_outside = engine_signals(meta)
+    if provable_absent or np_outside:
+        log(f"NOT PROVEN: {'the run could not watch what tests touched (' + provable_absent + ')' if provable_absent else ''}"
+            f"{'; ' if provable_absent and np_outside else ''}"
+            f"{f'{np_outside} uncontrolled read(s) outside the tests' if np_outside else ''}")
+        not_proven = max(not_proven or 0, 1)
+        code = 1 if code == 0 else code
     summary = {
         "language": "node", "test_runner": TEST_RUNNER_NAME[runner], "engine": "detjs", "engine_version": version,
         "project": str(project), "commit": git_head(project), "cache_dir": str(cache), "cache_was_warm": had_cache,
@@ -825,8 +1145,11 @@ def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
         "test_seconds_run": ran_time,
         "share_of_test_time_saved": share,
         "failed": real,
-        "not_proven": int(status.get("not_proven") or 0) if status else None,
+        "not_proven": not_proven,
         "status": status or None,
+        "status_error": status_error,
+        "provable_absent": provable_absent,
+        "not_proven_outside": np_outside,
         "flaky": [{"nodeid": n, "replay": f"{c}  # alone, without the cache: passes",
                    "minimise": f"detjs repro {shlex.quote(n)}"} for n, c in flaky],
         "reruns": reruns,
@@ -845,6 +1168,8 @@ def cmd_node(a: argparse.Namespace, extra: list[str]) -> int:
         "runtime": rt, "runtime_changed_since_previous_job": rt_changed,
         "machine": machine_identity(), "shared_cache": None, "reused_from_shared_cache": 0,
     }
+    if proof is not None:
+        summary["proof"] = proof
     (out / "summary.json").write_text(json.dumps(summary, indent=1))
     write_node_step_summary(summary, a.title)
     log(f"tests {tests}, reused with proof {summary['reused_with_proof']}, ran {summary['ran']}, saved {fmt_s(saved)} "

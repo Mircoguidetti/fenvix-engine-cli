@@ -740,7 +740,15 @@ def install(patcher, cfg) -> None:
         patcher.set(os, "getloadavg", _observed(os.getloadavg, "os.getloadavg"))
     for name in ("statvfs", "fstatvfs"):
         if hasattr(os, name):
-            patcher.set(os, name, _observed(getattr(os, name), f"os.{name}"))
+            observed = _observed(getattr(os, name), f"os.{name}")
+            patcher.set(os, name, observed)
+            # the same builtin reached through ``posix`` directly (/review red team, W3 family): recorded too
+            try:
+                import posix
+            except ImportError:  # pragma: no cover - not POSIX
+                continue
+            if getattr(posix, name, None) is not None:
+                patcher.set(posix, name, observed)
     if not _HOOKED[0]:
         sys.addaudithook(_audit)  # cannot be removed: inert while the control is off (_ACTIVE)
         _HOOKED[0] = True

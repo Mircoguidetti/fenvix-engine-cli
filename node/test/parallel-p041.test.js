@@ -681,6 +681,8 @@ test('${n} writes a contiguous block', () => {
     const hr = on.trace.header.meta.hazard_rerun;
     assert.deepEqual(hr.files, files, show(on));
     assert.equal(hr.complete, true, show(on));
+    // B1 (proof to the customer): the trace says how many first-pass tests the re-run had to account for
+    assert.equal(hr.tests, Number(m[2]), show(on));
     // the first pass was red (the placement failure): the exit code is never lowered (default-deny, see the P1 tests)
     assert.equal(on.status, 1, show(on));
   });

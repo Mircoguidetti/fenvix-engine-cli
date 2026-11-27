@@ -1,0 +1,33 @@
+# red of the 'complete re-run whose outcomes file lacks a pass-1 test' test on f1f68a8c (engine as committed)
+✖ mergeOutcomes: a complete re-run whose outcomes file lacks a pass-1 test of a hazard file drops that test's pass-1 entry (/review delta, finding 3) (2.803526ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 58.485753
+
+✖ failing tests:
+
+test at test/parallel-rerun-account.test.js:212:1
+✖ mergeOutcomes: a complete re-run whose outcomes file lacks a pass-1 test of a hazard file drops that test's pass-1 entry (/review delta, finding 3) (2.803526ms)
+  AssertionError [ERR_ASSERTION]: {"a.js::1":"failed","a.js::2":"passed","b.js::1":"passed"}
+  + actual - expected
+  
+  + 'passed'
+  - undefined
+  
+      at TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/parallel-rerun-account.test.js:226:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'passed',
+    expected: undefined,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

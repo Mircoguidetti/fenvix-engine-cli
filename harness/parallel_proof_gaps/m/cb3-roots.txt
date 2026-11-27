@@ -1,0 +1,34 @@
+== agentlang w2: hazards 0, files re-run 0, re-run complete None
+== agentlang w4: hazards 0, files re-run 0, re-run complete None
+== agentsys w2: hazards 6, files re-run 7, re-run complete True
+== agentsys w4: hazards 8, files re-run 9, re-run complete True
+== alakajam w2: hazards 32, files re-run 21, re-run complete False
+   recursive-write 10 root data
+== alakajam w4: hazards 46, files re-run 22, re-run complete False
+   recursive-write 11 root data
+== codex-multi-auth w2: hazards 0, files re-run 0, re-run complete None
+== codex-multi-auth w4: hazards 1, files re-run 2, re-run complete True
+== drydock w2: hazards 1, files re-run 2, re-run complete True
+== drydock w4: hazards 1, files re-run 2, re-run complete True
+== ironcurtain w2: hazards 15, files re-run 17, re-run complete False
+   recursive-write 1 root /tmp/ic-relay-IyqVJo
+   recursive-write 1 root /tmp/ic-na-akH2EE
+   recursive-write 1 root /tmp/interaction-log-test-423338368
+   recursive-write 1 root /tmp/ironcurtain-broad-test-166769837
+   recursive-write 1 root /tmp/ironcurtain-crud-dispatch-test-1875148229
+   recursive-write 1 root /tmp/ironcurtain-audit-test-1858284147
+== ironcurtain w4: hazards 22, files re-run 24, re-run complete False
+   recursive-write 1 root /tmp/ic-relay-IyqVJo
+   recursive-write 1 root /tmp/ic-na-akH2EE
+   recursive-write 1 root /tmp/interaction-log-test-423338368
+   recursive-write 1 root /tmp/ironcurtain-broad-test-166769837
+   recursive-write 1 root /tmp/ironcurtain-crud-dispatch-test-1875148229
+   recursive-write 1 root /tmp/ironcurtain-audit-test-1858284147
+== lerna-lite w2: hazards 11, files re-run 12, re-run complete True
+   recursive-write 4 root /tmp/pm-lerna-lite/lerna-lite-e2e
+== lerna-lite w4: hazards 9, files re-run 10, re-run complete True
+   recursive-write 8 root /tmp/pm-lerna-lite/lerna-lite-e2e
+== nestjs-pino w2: hazards 0, files re-run 0, re-run complete None
+== nestjs-pino w4: hazards 0, files re-run 0, re-run complete None
+== yalc w2: hazards 78, files re-run 28, re-run complete True
+== yalc w4: hazards 121, files re-run 29, re-run complete True

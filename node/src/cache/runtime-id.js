@@ -65,7 +65,10 @@ function mappedLibraries() {
     if (!/\.so(\.|$)|\.dylib$/.test(b) || out.has(b)) continue;
     out.set(b, native.fileDigest(p) || (process.platform === 'darwin' ? 'shared-cache' : 'unreadable'));
   }
-  if (process.platform !== 'linux') out.set('os', `${process.platform}:${os.release()}:${os.version ? os.version() : ''}`);
+  // the kernel, on every platform (founder decision 2026-11-25, the Node half of review R-056 W5): a test can read it
+  // through channels the per-test machine facts do not see (process.report's header.osRelease, /proc reads by a
+  // native module), so it is part of every key. Cost: one cold cache per kernel change
+  out.set('os', `${process.platform}:${os.release()}:${os.version ? os.version() : ''}:${os.machine ? os.machine() : process.arch}`);
   const pre = [];
   for (const x of String(process.env.LD_PRELOAD || '').split(/[\s:]+/).filter(Boolean)) pre.push(x);
   try { for (const x of fs.readFileSync('/etc/ld.so.preload', 'utf8').split(/\s+/).filter(Boolean)) pre.push(x); } catch { /* none */ }

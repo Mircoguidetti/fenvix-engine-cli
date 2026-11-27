@@ -1,0 +1,44 @@
+TAP version 13
+# Subtest: protects=a worker thread whose test-hook marker (.ran) cannot be written declares absent, so the run declares no sensor (founder decision 2026-11-25: fail closed); fails_when=the part is invisible and the other parts' ok is taken as the run's (this branch at ca0bbb9c); no_claim=why the write failed in the field (forced: ENOSPC on .ran only)
+not ok 1 - protects=a worker thread whose test-hook marker (.ran) cannot be written declares absent, so the run declares no sensor (founder decision 2026-11-25: fail closed); fails_when=the part is invisible and the other parts' ok is taken as the run's (this branch at ca0bbb9c); no_claim=why the write failed in the field (forced: ENOSPC on .ran only)
+  ---
+  duration_ms: 919.261304
+  type: 'test'
+  location: '/tmp/claude-0/-home-user-fenvix-engine-cli/9263695f-2638-5db3-9e41-f4a6f5e42481/scratchpad/red-noran/provable-threads.test.js:86:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"contract":1,"runtime":"node22","sensor":"node-surface/1","surface":"1c76bbb0040d64255f76cbe7426cf7d4"}
+    + actual - expected
+    
+    + {
+    +   contract: 1,
+    +   runtime: 'node22',
+    +   sensor: 'node-surface/1',
+    +   surface: '1c76bbb0040d64255f76cbe7426cf7d4'
+    + }
+    - undefined
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+    contract: 1
+    runtime: 'node22'
+    sensor: 'node-surface/1'
+    surface: '1c76bbb0040d64255f76cbe7426cf7d4'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/tmp/claude-0/-home-user-fenvix-engine-cli/9263695f-2638-5db3-9e41-f4a6f5e42481/scratchpad/red-noran/provable-threads.test.js:91:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 970.044057
