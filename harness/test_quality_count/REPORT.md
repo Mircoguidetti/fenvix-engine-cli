@@ -83,11 +83,11 @@ search request, probe or candidate read (no data existed); none changes the deci
 
 ## Decision
 
-**KEEP READING: read 115, running 10, pain yes 4, U_R×N 24699.2, U_P×N 23643.4.**
+**KEEP READING: read 115, running 10, pain yes 4, U_R×N 24699.2, U_P×N 22580.0.**
 
 covered: GitHub Actions, tools stryker (JS/.NET/Scala), mutmut, cosmic-ray, PIT (Maven, Gradle), cargo-mutants, Infection, mutant, go-mutesting, gremlins, Mull, Muter, mutatest; not covered: other CI systems, private repositories, tools not listed.
 
-read 115, running 10, not-running 77, uncertain 28; pain yes 4, unknown 4, no 2; N 58715; U_R 0.42066 (U_R×N 24699.2), U_P 0.40268 (U_P×N 23643.4); whole frame read: no; truncated leaves: 2; incomplete leaves: 0; hand check: not passed.
+read 115, running 10, not-running 77, uncertain 28; pain yes 4, unknown 2, no 4; N 58715; U_R 0.42066 (U_R×N 24699.2), U_P 0.38457 (U_P×N 22580.0); whole frame read: no; truncated leaves: 2; incomplete leaves: 0; hand check: not passed.
 
 ## Discovery
 
@@ -139,9 +139,9 @@ Truncated leaves: `B infection filename:infection.json` size:371..371 total 1608
 - has-mutation-job 12, unresolved 2, tool-present-unlinked 26, no-mutation 75, error 0
 - running 10, configured-not-running 2, uncertain with a mutation job 0 (runs cap 0, unsupported 0)
 - duration read 10, duration pain 4
-- pain yes 4, unknown 4, no 2
+- pain yes 4, unknown 2, no 4
 
-Pain unknown reasons (a repository can have several): candidate not hand-read 4, history-error 2
+Pain unknown reasons (a repository can have several): history-error 2
 
 ## Per tool (running repositories)
 
@@ -163,7 +163,10 @@ Pain unknown reasons (a repository can have several): candidate not hand-read 4,
 
 ## Information (not pain, not counted)
 
-- complaint-only or timeout texts (hand-read `information`): 0
+- complaint-only or timeout texts (hand-read `information`): 3
+  - halildeu/platform-web commit:940c4c4b83d5d0b5149052834ff213c4e034b430: "**Chart wrappers excluded** — tests render ECharts canvases that timeout under mutation analysis. Wrappers covered via option-shape + visual regression." https://github.com/Halildeu/platform-web/commit/940c4c4b83d5d0b5149052834ff213c4e034b430
+  - halildeu/platform-web issue:200: "**Chart wrappers excluded** — tests render ECharts canvases that timeout under mutation analysis. Wrappers covered via option-shape + visual regression." https://github.com/Halildeu/platform-web/pull/200
+  - manji-0/rdra-ish-dsl issue:204: "CPU cost is high. Each mutant rebuilds and reruns the corpus, which takes minutes." https://github.com/manji-0/rdra-ish-dsl/issues/204
 - narrowing changes whose text mentions a timeout: 1
   - Halildeu/platform-web 940c4c4
 - configured-not-running: 2
@@ -174,12 +177,13 @@ Pain unknown reasons (a repository can have several): candidate not hand-read 4,
 
 ## Hand check (AC4)
 
-samples: pain-yes 4, running 10, not-running 10, tool-present-unlinked 10, rejected 0, uses-action 0; missing verdicts 34; failures none; rule fix required: no.
+samples: pain-yes 4, running 10, not-running 10, tool-present-unlinked 10, rejected 10, uses-action 0; missing verdicts 44; failures none; rule fix required: no.
 
 - pain-yes: anesis-dev/anesis-cli, breimanntools/aaanalysis, ext-sakamoro/ALICE-Zip, ttu/emergency-supply-tracker
 - running: DhirendraHudda98/ParkIndia, Gusto/baerly-storage, Halildeu/platform-web, Lex-Studios/Stellar-Spend, anesis-dev/anesis-cli, breimanntools/aaanalysis, eclipxe13/enum, ext-sakamoro/ALICE-Zip, manji-0/rdra-ish-dsl, ttu/emergency-supply-tracker
 - not-running: RedGarland/the-blue-fern-co-dispatches, danthespal/Backport, indonetsoft-acc/api, joshvern/citylens-web, loophp/phptree, lyse-labs/lyse, povio/ai-reviewer, priyamsinghjhs/kareshafaa, rowan-vr/memuki, triciaaleee/SPM-G6T5
 - tool-present-unlinked: AtyaLibraries/Atya.Templates.UiAutomation, Azure/aks-durable-agents, TOOleksandr-0101/TeleBlast, callstack/agent-device, civictechdc/dc-reentry-unlocked, coreyleavitt/sello, deniskorbakov/skeleton-php-docker, evelagin/evetis-wb-analytics, lml-layer-system/agent-buccet, luis-mc/dev-standards
+- rejected: gusto/baerly-storage|issue:142, gusto/baerly-storage|issue:84, halildeu/platform-web|issue:1086, halildeu/platform-web|issue:1096, halildeu/platform-web|issue:1178, halildeu/platform-web|issue:1179, halildeu/platform-web|issue:839, halildeu/platform-web|issue:937, lex-studios/stellar-spend|issue:1572, lex-studios/stellar-spend|issue:1576
 
 ## Budget
 
