@@ -1,7 +1,6 @@
 # test-quality-count status
 
-PAUSED 2026-11-27 05:40Z until Monday 2026-12-01 09:00 UTC (coordinator instruction, credit pause; decision line 8 Dec
-unchanged).
+RESUMED 2026-11-27 10:05Z (coordinator instruction, early resume). Paused 05:40Z-10:05Z.
 
 - Discovery: done (N 58,715; 341 leaves, 0 incomplete, 0 pages lost).
 - Chunk 1 (candidates 0-149): read, issues searched, 160 hand reads, report rendered, verify.py 0 mismatches.
