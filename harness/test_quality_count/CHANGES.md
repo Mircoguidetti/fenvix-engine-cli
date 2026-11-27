@@ -68,3 +68,7 @@ search request, probe or candidate read (no data existed); none changes the deci
 18. Pacing change (2026-11-27 00:25Z, during discovery, coordinator's rule "still above 10 per slice, double the
     spacing"): code search spaced at least 14.0 s (was 7.0 s). Secondary 429s per 30-min slice at 7 s: 27 and 25
     (slice 1 of that task, partly at 6.77 s: 46). No rule, regex, query or budget changes.
+19. Retry change (2026-11-27 02:05Z, during discovery, at the coordinator's request): a rate-limited answer (429, or
+    403 rate limit) is retried until it returns and no longer uses up one of the 6 attempts, so no page is skipped for
+    a 429; 6 attempts remain for transport errors and 5xx. Any page that still fails stays recorded (`page_errors`,
+    leaf `incomplete`) and counted in REPORT. Check at the change: 311 leaves, 0 error leaves, 0 page errors.

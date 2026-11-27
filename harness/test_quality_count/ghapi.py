@@ -56,6 +56,7 @@ class Client:
         self.token, self.use_gh, self.pace = token, use_gh, pace
         self.remaining, self.limit, self.reset = {}, {}, {}
         self.n_requests = 0
+        self.n_rate_limited = 0
         self.n_search = {"code": 0, "issues": 0}
         self.log = log  # optional list: every request (method, path, status, time) for AC5
         self._last = 0.0
@@ -127,11 +128,12 @@ class Client:
     def get(self, path: str, search: str | None = None) -> tuple[int, object, dict]:
         """GET ``path`` (relative to the API root); ``search`` is None, "code" or "issues". Returns (status, data,
         headers). Rate-limit answers wait (``retry_seconds``) and retry; transport errors and 5xx back off; up to 6
-        attempts."""
+        other attempts (a rate-limited answer never uses one up, so no page is skipped for a 429)."""
         if search not in (None, "code", "issues"):
             raise ValueError(search)
         last = (0, None, {})
-        for attempt in range(6):
+        attempt = 0
+        while attempt < 6:  # CHANGES.md 19: a rate-limited answer is retried without using up an attempt
             self._wait(search)
             self.n_requests += 1
             if search:
@@ -150,9 +152,11 @@ class Client:
                     sl = max(sl, SECONDARY_WAIT)  # CHANGES.md 17
                 sys.stderr.write(f"rate limited ({st}) on {path[:90]}: sleeping {sl:.0f}s {limit_info(msg, h)}\n")
                 time.sleep(min(sl, 3700))
+                self.n_rate_limited += 1
                 continue
+            attempt += 1
             if st == 0 or st >= 500:
-                time.sleep(5 * (attempt + 1))
+                time.sleep(5 * attempt)
                 continue
             return last
         return last

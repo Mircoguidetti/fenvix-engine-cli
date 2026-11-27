@@ -1002,3 +1002,15 @@ def test_chunk_with_workflow_issues_route_needs_budget_free(tmp_path, monkeypatc
     monkeypatch.setattr(discover, "BUDGET_FREE", tmp_path / "missing.json")
     with pytest.raises(SystemExit):
         CH.run_chunk({"chunk": 1, "candidates": [], "issues_route": "workflow"})
+
+
+def test_client_retries_rate_limited_pages_until_they_return(monkeypatch):
+    """protects=CHANGES.md 19 (no page skipped for a 429); fails_when=seven secondary 429s in a row end the request
+    as a failed page; no_claim=the length of each wait."""
+    monkeypatch.setattr(ghapi.time, "sleep", lambda s: None)
+    c = ghapi.Client(use_gh=True)
+    answers = [(429, {"x-ratelimit-remaining": "10"}, {"message": "secondary rate limit"})] * 7 + \
+        [(200, {}, {"total_count": 1, "items": []})]
+    monkeypatch.setattr(c, "_once", lambda path: answers.pop(0))
+    st, data, _ = c.get("search/code?q=x", search="code")
+    assert st == 200 and data["total_count"] == 1 and c.n_rate_limited == 7 and not answers
