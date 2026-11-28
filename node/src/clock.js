@@ -320,6 +320,9 @@ function normDelay(ms) {
   return ms;
 }
 
+const POLL_WHY = 'a virtual timer fired at real pace while a runner poll (vi.waitFor / expect.poll) was pending (real time decided the order)';
+const CHILD_WHY = 'a virtual timer fired at real pace after the test started a child process (real time decided the order)';
+
 class Driver {
   constructor() {
     this.queue = [];
@@ -333,6 +336,8 @@ class Driver {
     this.deferrals = 0;
     this.released = new Set(); // timers a finished test left pending, now real timers (releaseTest)
     this.deadlines = new Set(); // the runners' test and hook timeouts of the running test (runner deadlines)
+    this.safePending = new Map(); // P3 timers P1: real safe-timer handle -> test id (safeAdd)
+    this.childTests = new Set(); // P3 timers P2: the running tests that started a child process or worker
     this.progress = 0; // virtual timers fired so far (a runner deadline's real watchdog waits while it grows)
   }
 
@@ -352,7 +357,19 @@ class Driver {
   }
 
   ioPending() {
-    return sched.isPending();
+    return sched.isPending() || this.safePending.size > 0;
+  }
+
+  // P3 timers P1: a runner safe timer that a test started and that is not a runner deadline (Vitest's
+  // vi.waitFor / expect.poll intervals and timeouts) is real-time work the test waits for: while one is pending the
+  // virtual timers run at real pace (as with pending I/O), so a long virtual timer does not jump past the poll.
+  safeAdd(h, testId) {
+    this.safePending.set(h, testId);
+    this.rearm();
+  }
+
+  safeDone(h) {
+    if (this.safePending.delete(h)) this.rearm();
   }
 
   // Runner deadlines -----------------------------------------------------------------------------------------
@@ -474,7 +491,23 @@ class Driver {
   }
 
   fast() {
-    return this.mode === 'virtual' && !this.budgetHit && !this.ioPending();
+    return this.mode === 'virtual' && !this.budgetHit && !this.ioPending() && !this.childPaced();
+  }
+
+  // P3 timers P2: a test that started a child process (or a worker) may wait on what the child, or a process it left
+  // behind, does in real time: a short timer of that test (a polling interval, <= CHILD_PACE_MS) runs at real pace,
+  // so a Date.now() poll loop does not use up its virtual deadline before the real work is done. Long timers stay
+  // virtual; other tests are not paced (the timer must belong to a test that started a child; concurrent tests each
+  // count on their own). A child started outside a test (a hook of the file, module scope) paces nothing.
+  childStarted(testId) {
+    if (testId === null || this.childTests.has(testId)) return;
+    this.childTests.add(testId);
+    this.rearm();
+  }
+
+  childPaced() {
+    const h = this.queue[0];
+    return !!h && h._delayMs <= CHILD_PACE_MS && this.childTests.has(h._test);
   }
 
   rearm() {
@@ -546,13 +579,12 @@ class Driver {
         return;
       }
     }
+    // slow because of a runner poll (P1) or a child-starting test's pacing (P2), not of pending I/O: still a choice
+    // real time makes (the poll or the child's work races this timer): recorded like one made before pending I/O
+    const ownPoll = !!head && this.safePending.size > 0 && [...this.safePending.values()].includes(head._test);
+    const paced = !fastMode && this.mode === 'virtual' && (ownPoll || this.childPaced());
     const t = this.queue.shift();
     this.progress += 1;
-    if (!fastMode && this.mode === 'virtual' && t._test === STATE.testId && STATE.testId !== null) {
-      // chosen before I/O that is still pending: a decision real time made (Level 1, recorded)
-      const p = sched.pending();
-      if (p.length) sched.timerChosen(t._site, p.length);
-    }
     if (fastMode) {
       this.fastFired += 1;
       if (this.fastFired > this.budget && !this.budgetHit) {
@@ -562,9 +594,28 @@ class Driver {
     }
     t._active = false;
     try {
-      // a concurrent test's timer runs in its own context: its clock jumps, its events, its callback
-      if (concur.active()) concur.within(t._ctx && !t._ctx.done ? t._ctx : undefined, () => this.runTimer(t));
-      else this.runTimer(t);
+      // a concurrent test's timer runs in its own context: its clock jumps, its events, its callback, and the record of
+      // a choice real time made (decided there: STATE.testId is the timer's test; a timer of a test that ended, or of
+      // none, records nothing)
+      const run = () => {
+        let err = null;
+        try {
+          if (!fastMode && this.mode === 'virtual' && t._test === STATE.testId && STATE.testId !== null) {
+            // chosen before I/O that is still pending: a decision real time made (Level 1, recorded). Only for a serial
+            // test: pending I/O is the process's, so next to concurrent siblings it would be theirs too (their child, their
+            // query) and the record would depend on the interleaving (parallel-p041 placement effects)
+            const p = concur.active() ? [] : sched.pending();
+            if (p.length) sched.timerChosen(t._site, p.length);
+            // at the real pace a runner poll of the timer's test (P1) or its child (P2) set: also a decision real
+            // time made
+            else if (paced) sched.timerChosen(t._site, 0, ownPoll ? POLL_WHY : CHILD_WHY);
+          }
+        } catch (e) { err = e; } // the record failed: the user's callback still runs, then the error surfaces
+        this.runTimer(t);
+        if (err) throw err;
+      };
+      if (concur.active()) concur.within(t._ctx && !t._ctx.done ? t._ctx : undefined, run);
+      else run();
     } finally {
       if (t._repeat && !t._destroyed && !t._active) {
         const due = t._due + t._delayMs * NS_PER_MS;
@@ -600,6 +651,10 @@ class Driver {
    */
   releaseTest(testId) {
     for (const d of [...this.deadlines]) if (d._test === testId) this.clear(d); // a runner leaves none behind
+    let dropped = false; // P3 timers P1: a test's safe timers do not outlive it
+    for (const [h, id] of [...this.safePending]) if (id === testId) dropped = this.safePending.delete(h);
+    if (this.childTests.delete(testId)) dropped = true; // P3 timers P2
+    if (dropped) this.rearm(); // back to fast virtual time now, not at the next timer event
     const leaked = this.queue.filter((t) => t._test === testId);
     if (!leaked.length) return 0;
     this.queue = this.queue.filter((t) => t._test !== testId);
@@ -649,6 +704,13 @@ class Driver {
 
 const MAX_DEFERRALS = 1000;
 const SLOW_POLL_MS = 25;
+// P3 timers P2: timers up to this delay (a polling interval) of a test that started a child run at real pace
+// (founder decision D1 = A: 1000 ms); DETJS_CHILD_PACE_MS overrides it, 0 turns the pacing off.
+const CHILD_PACE_MS = (() => {
+  const raw = process.env.DETJS_CHILD_PACE_MS; // unset or empty: 1000; a number >= 0: that bound (0: no timer is paced)
+  const v = raw === undefined || raw.trim() === '' ? NaN : Number(raw);
+  return Number.isFinite(v) && v >= 0 ? v : 1000;
+})();
 // set by src/ioorder.js: whether an operation of the running test that just started (a file operation, a connection
 // waiting for its first data) is still pending (the grace of the slow mode)
 let freshIO = null;

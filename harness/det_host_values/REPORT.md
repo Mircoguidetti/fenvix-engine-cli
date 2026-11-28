@@ -401,3 +401,21 @@ a separate work item, "remaining --det timer flips", not started here.
 failing, with no skip, todo or quarantine; it belongs to the work item above (CHANGELOG "Known defects").
 
 **Open network default**: approved with the spec (line 56), no change (coordinator, 2026-11-24).
+
+## 8. Addendum 2026-11-27: test (b) passes (P3, branch claude/p3-flips)
+
+The known defect of section 7 (D4 = A) is closed by the P3 work item "classify and remove the outcome flips under
+`--det` alone" (harness/p3_flips/). Test (b), `node/test/host-values-timers.test.js`, passes on the branch from
+b6ec7638 on: 3/3 fixture tests (on cae15081: 2 failed; after P1 alone: 1 failed). Its two shapes were fixed
+separately, each test-first and by founder decision:
+
+- `waitfor.test.mjs` (`vi.waitFor` next to a long test timer): P1, 4130fae6 (tests) and e93dbc84 (fix), with
+  7e0bd791 / 27260389 from its /review: Vitest's safe timers a test starts count as pending work.
+- `detached.test.mjs` (a `Date.now()` poll loop for a file a detached helper writes): P2 (D1 = A, 2026-11-27),
+  595ef344 (guard tests) and b6ec7638 (fix): after a test started a child process or a worker, its timers of up to
+  1000 ms run at real pace.
+
+Proof/wall on the six repositories of section 4 (same `measure.py` call as `proof_run.sh`), the committed P2 engine
+b6ec7638 against bb41d043 (P1 + release-1 519bf1a0), and the engine after the /review fixes (881e56b6): identical
+counts within 0.5% and exits unchanged on all six; wall time and the reps behind it in harness/p3_flips/REPORT.md.
+The codex-multi-auth flip count of section 7 (69) is not re-measured yet: that is P3 step D.

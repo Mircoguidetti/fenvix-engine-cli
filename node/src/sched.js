@@ -97,6 +97,155 @@ function installProcess(patcher) {
     'generateKey', 'generatePrime', 'checkPrime', 'hkdf', 'sign', 'verify']);
   trackWork(patcher, require('node:zlib'), ['deflate', 'deflateRaw', 'inflate', 'inflateRaw', 'gzip', 'gunzip', 'unzip',
     'brotliCompress', 'brotliDecompress', 'zstdCompress', 'zstdDecompress']);
+  installNativeWork(patcher);
+}
+
+// Native addons whose callback-style calls run on the libuv thread pool and leave no active resource (so pending()
+// cannot see them): each listed method of the addon's classes counts as pending work until its callback runs, as for
+// crypto and zlib above. Found on alakajam (P3, founder decision D2 = A, 2026-11-27): a node-sqlite3 query in flight
+// looked idle, so virtual time jumped to tarn's 60 s acquire timeout and the 5 s runner deadline fired first.
+// harness/p3_flips/NATIVE.md lists the other addons of the measured repositories and why they are not here.
+const NATIVE_WORK = [
+  {
+    name: 'node-sqlite3', // npm `sqlite3` (better-sqlite3 is synchronous; its addon has no OPEN_READWRITE)
+    match: (b) => typeof b.Database === 'function' && typeof b.Statement === 'function' && typeof b.OPEN_READWRITE === 'number',
+    classes: [['Database', ['close', 'exec', 'wait', 'loadExtension']],
+      ['Statement', ['bind', 'get', 'run', 'all', 'each', 'reset', 'finalize']], ['Backup', ['step', 'finish']]],
+    // a statement that failed to prepare (its own callback gets the error, or an 'error' event) never calls back the
+    // calls queued on it
+    failing: 'Statement',
+  },
+];
+
+const OPEN = new WeakMap(); // native object -> Set of release functions of its calls in flight
+const IN_FLIGHT = new Set(); // release functions of every node-sqlite3 call in flight (in a test, a hook, anywhere)
+const POISONED = new WeakSet(); // statements that failed to prepare: their calls never call back, so are not counted
+function releaseAll(o) {
+  const s = o && OPEN.get(o);
+  if (!s) return;
+  OPEN.delete(o);
+  for (const r of [...s]) r();
+}
+
+// A native call in flight counts as pending for as long as it runs: no real-time grace stops it while its test, or
+// the next one, may still be waiting on it (a 3 s or 12 s grace made the alakajam pattern a wrong red as soon as a
+// query outlived it: coordinator /review, 2026-11-27). Only its callback, the error paths above (eachDone,
+// releaseOnError) or the opening of the next test file end it: no test of an earlier file can still wait on a call
+// that never called back. The release itself is not a choice of any test (none of the new file waits on the call);
+// a timer of the earlier file that fired while the call counted was recorded then (timerChosen, with the call among
+// the pending work). Cost of a call that never calls back:
+// the rest of its file runs its timers at real pace (a test still ends at its runner deadline, on the real watchdog),
+// never a different outcome.
+function releaseFileWork() {
+  for (const r of [...IN_FLIGHT]) r();
+}
+
+/**
+ * trackWork for the methods of a native class: each call in flight is also remembered on its object (releaseAll)
+ * and in IN_FLIGHT (releaseFileWork). `each` is released by its completion callback (with only a row callback, one
+ * that only releases is added) or by its row callback called with an error (a finalized statement calls only that).
+ */
+function trackOwned(patcher, P, names) {
+  for (const n of names) {
+    const real = P[n];
+    if (typeof real !== 'function' || real.__detjsWork) continue;
+    const w = function (...a) {
+      const self = this;
+      if (self && typeof self === 'object' && POISONED.has(self)) return real.apply(this, a);
+      const i = a.length - 1;
+      if (i < 0 || typeof a[i] !== 'function') return real.apply(this, a);
+      let done = false;
+      const release = () => {
+        if (done) return;
+        done = true;
+        work -= 1;
+        const s = OPEN.get(self);
+        if (s) s.delete(release);
+        IN_FLIGHT.delete(release);
+      };
+      if (n === 'each') {
+        const two = i >= 1 && typeof a[i - 1] === 'function';
+        const row = two ? i - 1 : i;
+        const rowCb = a[row];
+        a[row] = function (err, ...r) { if (err) release(); return rowCb.call(this, err, ...r); };
+        if (two) { const cb = a[i]; a[i] = function (...r) { release(); return cb.apply(this, r); }; } else a.push(function eachDone() { release(); });
+      } else { const cb = a[i]; a[i] = function (...r) { release(); return cb.apply(this, r); }; }
+      work += 1;
+      if (self && typeof self === 'object') { let s = OPEN.get(self); if (!s) OPEN.set(self, (s = new Set())); s.add(release); }
+      IN_FLIGHT.add(release);
+      try {
+        return real.apply(this, a);
+      } catch (e) {
+        release();
+        throw e;
+      }
+    };
+    Object.defineProperty(w, 'name', { value: real.name, configurable: true });
+    Object.defineProperty(w, '__detjsWork', { value: true });
+    patcher.set(P, n, w);
+  }
+}
+
+/**
+ * The failing class: its constructor's callback with an error (also when it runs inside the constructor, as on a
+ * closed database) ends its calls in flight, and later calls on it are not counted. A failure without a callback
+ * (an 'error' event on it or on its database) never calls back its queued calls: they count until the next file
+ * (releaseFileWork).
+ */
+function releaseOnError(patcher, b, c) {
+  const Real = b[c];
+  if (!Real || Real.__detjsWorkCtor) return;
+  const P = new Proxy(Real, {
+    construct(target, args, nt) {
+      let o = null;
+      let failedEarly = false;
+      const i = args.length - 1;
+      if (i >= 0 && typeof args[i] === 'function') {
+        const cb = args[i];
+        args = [...args];
+        args[i] = function (err, ...r) {
+          if (err) { if (o === null) failedEarly = true; else { POISONED.add(o); releaseAll(o); } }
+          return cb.call(this, err, ...r);
+        };
+      }
+      o = Reflect.construct(target, args, nt === P ? target : nt);
+      if (failedEarly && o && typeof o === 'object') POISONED.add(o);
+      return o;
+    },
+    get(t, k, r) { return k === '__detjsWorkCtor' ? true : Reflect.get(t, k, r); },
+  });
+  patcher.set(b, c, P);
+}
+
+function nativeWork(patcher, b) {
+  for (const n of NATIVE_WORK) {
+    if (!n.match(b)) continue;
+    for (const [c, names] of n.classes) if (b[c] && b[c].prototype) trackOwned(patcher, b[c].prototype, names);
+    if (n.failing) releaseOnError(patcher, b, n.failing);
+  }
+}
+
+function installNativeWork(patcher) {
+  const Module = require('node:module');
+  const realLoad = Module._load;
+  if (realLoad.__detjsNativeWork) return;
+  const w = function _load(request, ...rest) {
+    const r = realLoad.call(this, request, ...rest);
+    if (typeof request === 'string' && request.endsWith('.node') && r && typeof r === 'object') {
+      try { nativeWork(patcher, r); } catch { /* never break the load */ }
+    }
+    return r;
+  };
+  for (const k of Reflect.ownKeys(realLoad)) {
+    if (['length', 'name', 'prototype', 'arguments', 'caller'].includes(k)) continue;
+    try { Object.defineProperty(w, k, Object.getOwnPropertyDescriptor(realLoad, k)); } catch { /* ignore */ }
+  }
+  Object.defineProperty(w, '__detjsNativeWork', { value: true });
+  patcher.set(Module, '_load', w);
+  // already loaded (an earlier file of this process)
+  for (const [file, mod] of Object.entries(require.cache)) {
+    if (file.endsWith('.node') && mod && mod.exports && typeof mod.exports === 'object') { try { nativeWork(patcher, mod.exports); } catch { /* ignore */ } }
+  }
 }
 
 /** A worker is busy from its start until it is first heard from, and from a message posted to it until its next message. */
@@ -153,10 +302,12 @@ function pendingByNames() {
   }
   const out = [];
   for (const [k, n] of m) for (let i = baselineNames.get(k) || 0; i < n; i++) out.push(k);
+  for (let i = 0; i < held; i++) out.push('held'); // as pending(): what isPending() counts
+  for (let i = 0; i < work; i++) out.push('work');
   return out;
 }
 
-let work = 0; // thread-pool jobs in flight (crypto, zlib callback forms)
+let work = 0; // thread-pool jobs in flight (crypto, zlib callback forms, NATIVE_WORK addons)
 let held = 0; // completions src/ioorder.js holds for ordering: delivered later, so still pending
 function setHeld(n) { held = n; }
 
@@ -193,7 +344,11 @@ function trackWork(patcher, m, names) {
   }
 }
 
-/** Handles and requests present now are the runner's own: never counted (taken when a test file starts). */
+/**
+ * Handles and requests present now are the runner's own: never counted (taken when a test file opens and again at its
+ * first test). It does not release native calls in flight: a call the file's module scope or hooks started may be one
+ * its first test waits on (releaseFileWork runs only when a file opens, src/controls.js openFile).
+ */
 function takeBaseline() {
   if (HAS_HANDLES) {
     baseline = new WeakSet();
@@ -219,16 +374,22 @@ function stableId(site) {
   siteCounters.set(s, n);
   return `${s}#${n}`;
 }
-function startTest() { siteCounters = new Map(); }
+function startTest() { siteCounters = new Map(); CHOSEN_WHY = new Set(); }
 
 // per-test state of a concurrent test (src/concur.js)
-require('./concur').register({ name: 'sched', save: () => siteCounters, restore: (x) => { siteCounters = x; } });
+require('./concur').register({ name: 'sched', save: () => [siteCounters, CHOSEN_WHY], restore: (x) => { [siteCounters, CHOSEN_WHY] = x; } });
 
-/** A virtual timer was chosen while `n` operations of the test were still pending. */
-function timerChosen(site, n) {
+/**
+ * A virtual timer was chosen by real time: while `n` operations of the test were still pending, or (n = 0) while the
+ * driver ran at real pace for a runner poll or a child-starting test; `why` is the reason given to the cache (once
+ * per test and reason: the capture keeps one flag per reason).
+ */
+let CHOSEN_WHY = new Set(); // per test (also per concurrent test: saved with its context above)
+function timerChosen(site, n, why) {
   STATE.recordAt('sched', 'sched.timer', site || '', `0/${1 + n}:${stableId(site)}`);
   // real time decided the order: the test's result is not reusable (src/cache/capture.js)
-  if (STATE.onRealClock) STATE.onRealClock('a virtual timer fired while I/O of the test was pending (real time decided the order)');
+  const reason = why || 'a virtual timer fired while I/O of the test was pending (real time decided the order)';
+  if (STATE.onRealClock && !CHOSEN_WHY.has(reason)) { CHOSEN_WHY.add(reason); STATE.onRealClock(reason); }
 }
 
 /** An operation of the test completed while `n` virtual timers of the test were waiting. */
@@ -238,5 +399,5 @@ function ioChosen(site, kind, n) {
 
 module.exports = {
   installProcess, takeBaseline, pending, isPending, graceFor, timerChosen, ioChosen, startTest, setHeld,
-  kindOf, HAS_HANDLES,
+  kindOf, HAS_HANDLES, nativeWork, releaseFileWork,
 };

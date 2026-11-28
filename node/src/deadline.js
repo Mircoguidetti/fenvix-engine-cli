@@ -57,7 +57,11 @@ function installClockHook() {
   };
 }
 
-/** Vitest: the runner's safe timers (captured before the controls) create runner deadlines for its timeouts. */
+/**
+ * Vitest: the runner's safe timers (captured before the controls) create runner deadlines for its timeouts. The other
+ * safe timers a test starts (vi.waitFor / expect.poll polling and timeouts) count as pending work of the virtual
+ * driver until they run or are cleared, so virtual time runs at real pace while a poll waits (dropped at test end).
+ */
 function installVitest(g) {
   const sym = Object.getOwnPropertySymbols(g).find((s) => s.description === 'vitest:SAFE_TIMERS');
   if (!sym) return;
@@ -66,19 +70,37 @@ function installVitest(g) {
   const clock = require('./clock');
   const realSet = safe.setTimeout;
   const realClear = safe.clearTimeout;
+  const realSetI = safe.setInterval;
+  const realClearI = safe.clearInterval;
+  const inTest = () => STATE.testId !== null && clock.CLOCK && clock.DRIVER.mode === 'virtual';
   const set = function setTimeout(fn, ms, ...args) {
-    if (STATE.testId !== null && typeof fn === 'function' && clock.CLOCK && clock.DRIVER.mode === 'virtual' && isDeadlineCaller()) {
-      return clock.DRIVER.deadline(() => fn(...args), clock.normDelay(ms));
+    if (inTest() && typeof fn === 'function') {
+      if (isDeadlineCaller()) return clock.DRIVER.deadline(() => fn(...args), clock.normDelay(ms));
+      // P3 timers P1: a safe timer of the test (vi.waitFor, expect.poll) counts as pending work until it runs
+      let h = null;
+      h = realSet(() => { clock.DRIVER.safeDone(h); fn(...args); }, ms);
+      clock.DRIVER.safeAdd(h, STATE.testId);
+      return h;
     }
     return realSet(fn, ms, ...args);
   };
   const clear = function clearTimeout(t) {
     if (t instanceof clock.Timeout) return clock.DRIVER.clear(t);
+    clock.DRIVER.safeDone(t);
     return realClear(t);
   };
+  const setI = typeof realSetI === 'function' ? function setInterval(fn, ms, ...args) {
+    const h = realSetI(fn, ms, ...args);
+    if (inTest() && typeof fn === 'function') clock.DRIVER.safeAdd(h, STATE.testId);
+    return h;
+  } : realSetI;
+  const clearI = typeof realClearI === 'function' ? function clearInterval(t) {
+    clock.DRIVER.safeDone(t);
+    return realClearI(t);
+  } : realClearI;
   Object.defineProperty(set, '__detjsDeadline', { value: true });
   try {
-    g[sym] = { ...safe, setTimeout: set, clearTimeout: clear };
+    g[sym] = { ...safe, setTimeout: set, clearTimeout: clear, setInterval: setI, clearInterval: clearI };
   } catch { /* frozen: the runner keeps real timeouts */ }
 }
 
