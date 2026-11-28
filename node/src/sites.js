@@ -115,25 +115,11 @@ function rawFile(cs) {
  * event comes from runner infrastructure. One structured stack capture per
  * call; the source-mapped formatting runs once per distinct raw position.
  */
-// P2 C6: the first capture's depth. Any depth up to 30 gives the same site (the first deciding frame within 30
-// frames); 10 instead of 8 decides at once the calls whose deciding frame is the 9th or 10th, which on agentsys (Jest)
-// were most of those needing the second capture (node/test/p2-c6-depth.test.js, harness/p2/C6.md).
-const FIRST_DEPTH = 10;
 function resolve() {
   // undefined = no decision within the captured frames; null = infrastructure.
-  // (the body, not a call to resolveWith: one frame fewer above the caller's, as before)
   PHASES.resolve_calls++;
-  let site = resolveDepth(FIRST_DEPTH);
+  let site = resolveDepth(8);
   if (site === undefined) { PHASES.stack_deep++; site = resolveDepth(30); }
-  return site === undefined ? '<node>' : site;
-}
-
-/** resolve() with a given first depth, for the test that the depth does not change the site (same frame count). */
-function resolveWith(first) {
-  // undefined = no decision within the captured frames; null = infrastructure.
-  PHASES.resolve_calls++;
-  let site = resolveDepth(first);
-  if (site === undefined && first < 30) { PHASES.stack_deep++; site = resolveDepth(30); }
   return site === undefined ? '<node>' : site;
 }
 
@@ -221,4 +207,4 @@ function runnerInitiatedAt(limit) {
   return files.length >= limit ? null : false;
 }
 
-module.exports = { resolve, resolveWith, normPath, setRoot, setRealmError, SHELL_DIR, INFRA, runnerInitiated };
+module.exports = { resolve, normPath, setRoot, setRealmError, SHELL_DIR, INFRA, runnerInitiated };
