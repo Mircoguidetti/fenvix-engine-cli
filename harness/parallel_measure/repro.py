@@ -70,7 +70,7 @@ def main():
                 rep = ["--json", f"--outputFile={f}"]
                 extra = ["--maxWorkers=4"] if mode == "par" else ["--runInBand", "--randomize", f"--seed={seed}"]
             cmd = direct + extra + rep
-        M.reset_tree(cwd)
+        M.reset_tree(cwd, spec)
         built = M.build_after_reset(cwd, spec.get("build"), env, log)
         rep_path = M.place_reporter(cwd) if runner == "vitest" else None
         f_ids = f.replace(".raw.json", ".ids.json")

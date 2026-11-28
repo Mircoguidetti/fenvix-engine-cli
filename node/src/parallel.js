@@ -916,6 +916,51 @@ function hazards(markers, laneOf) {
   return [...out.values()].sort((x, y) => (x.a < y.a ? -1 : x.a > y.a ? 1 : x.b < y.b ? -1 : x.b > y.b ? 1 : 0));
 }
 
+/**
+ * P2 D10 = A (founder decision 2026-11-28): the in-repo directories a project declares that its test files do not share,
+ * from its own package.json (`"detjs": { "notShared": ["logs"] }`), apart from the tool skip dirs (DETJS_FOOTPRINT_SKIP_DIRS,
+ * DETJS_CACHE_SKIP_DIRS, the shells' skipDirs(): rule (c) unchanged). An entry is refused when it is the project root, a
+ * parent of it or outside it, or when it holds a test file of the run (`keys`: the run's file labels, `project|file` or
+ * `file`). Returns { source, dirs: [root-relative, '/' separators], refused: [{ dir, reason }] }; dirs and refused empty
+ * when the project declares nothing.
+ */
+const DECLARED_SOURCE = 'package.json "detjs": { "notShared": [...] } (the project)';
+function declaredNotShared(root, keys) {
+  const out = { source: DECLARED_SOURCE, dirs: [], refused: [] };
+  const rootR = realDir(path.resolve(root));
+  let list = null;
+  try { list = JSON.parse(fs.readFileSync(path.join(rootR, 'package.json'), 'utf8')); } catch { return out; }
+  list = list && list.detjs && list.detjs.notShared;
+  if (!Array.isArray(list)) return out;
+  const files = (keys || []).map((k) => String(k).slice(String(k).lastIndexOf('|') + 1));
+  for (const d0 of list) {
+    if (typeof d0 !== 'string' || !d0.trim()) { out.refused.push({ dir: String(d0), reason: 'not a directory name' }); continue; }
+    const abs = realDir(path.resolve(rootR, d0));
+    const rel = path.relative(rootR, abs);
+    if (rel === '') { out.refused.push({ dir: d0, reason: 'the project root' }); continue; }
+    if (rel.startsWith('..') || path.isAbsolute(rel)) { out.refused.push({ dir: d0, reason: 'a parent of the project root or outside the project' }); continue; }
+    const key = rel.split(path.sep).join('/');
+    const held = files.find((f) => f.startsWith(`${key}/`));
+    if (held) { out.refused.push({ dir: d0, reason: `holds the test file ${held}` }); continue; }
+    if (!out.dirs.includes(key)) out.dirs.push(key);
+  }
+  return out;
+}
+
+/** The markers with the footprint keys under the declared directories left out (for hazards() only; the markers stay). */
+function withoutDeclared(markers, dirs) {
+  const under = (k) => typeof k === 'string' && dirs.some((d) => k === d || k.startsWith(`${d}/`));
+  const out = new Map();
+  for (const [label, m] of markers) {
+    const f = m && m.footprint;
+    if (!f) { out.set(label, m); continue; }
+    const g = { ...f };
+    for (const n of ['r', 'w', 'l', 'wr', 'lr']) if (Array.isArray(f[n])) g[n] = f[n].filter((k) => !under(k));
+    out.set(label, { ...m, footprint: g });
+  }
+  return out;
+}
+
 /** The footprint's skip dirs as the lanes applied them: effective (root-relative under the root) and ignored, with why. */
 function skipMeta(root) {
   const rootR = realDir(path.resolve(root));
@@ -979,7 +1024,9 @@ function collect(root, dir, keysIn, plan, { shared, planned, write = true } = {}
       if (m.pool_id && plan.mode === 'vitest' && String(lane + 1) !== m.pool_id) deviations.push({ file: k, what: `VITEST_POOL_ID ${m.pool_id}, planned lane ${lane + 1}` });
       if (m.jest_worker_id && plan.mode === 'jest-workers' && String(lane + 1) !== m.jest_worker_id) deviations.push({ file: k, what: `JEST_WORKER_ID ${m.jest_worker_id}, planned lane ${lane + 1}` });
     }
-    const hz = hazards(markers, laneOf);
+    // P2 D10: the project's declared not-shared directories leave the hazards (the lanes still record every path)
+    const declared = declaredNotShared(root, keys);
+    const hz = hazards(declared.dirs.length ? withoutDeclared(markers, declared.dirs) : markers, laneOf);
     for (const h of hz) {
       const d = `${h.kind} ${h.what}: ${h.a} (lane ${laneOf.get(h.a) + 1}) and ${h.b} (lane ${laneOf.get(h.b) + 1})`;
       for (const f of [h.a, h.b]) if (!flags.has(f) || flags.get(f)[0] !== 'cross-worker') flags.set(f, ['cross-worker', d]);
@@ -996,6 +1043,7 @@ function collect(root, dir, keysIn, plan, { shared, planned, write = true } = {}
       placement: { processes: [...procs.values()], deviations, waited_seconds: Math.round(waited * 1000) / 1000, spans: spansOf(markers, keys) },
       hazards: hz,
       ...skipMeta(root),
+      ...(declared.dirs.length || declared.refused.length ? { declared_not_shared: declared } : {}),
     });
     lines.push(`detjs: parallel: ${plan.workers} lanes, plan ${plan.digest}${plan.replayed ? ' (replayed)' : plan.sticky ? ' (sticky)' : ''}; `
       + `${keys.length} files; ${deviations.length} placement deviations; ${hz.length} cross-worker hazards; ${carried.length} files with carried state`);
@@ -1043,5 +1091,5 @@ function collect(root, dir, keysIn, plan, { shared, planned, write = true } = {}
 
 module.exports = {
   PLACEMENT_VARS, workerCount, defaultWorkers, resolveWorkers, makePlan, readReplay, writeRunPlan, enter, leave, markDone, isFinished, installFootprint, skipDirs, footprintSkip,
-  carriedBefore, carriedAfter, collect, loadState, statePath, hazards,
+  carriedBefore, carriedAfter, collect, loadState, statePath, hazards, declaredNotShared,
 };

@@ -213,13 +213,33 @@ def plain_invalid(runner, r, text, n_tests):
     return None
 
 
-def reset_tree(cwd):
-    """The working tree back to the pinned commit (coordinator fix 2), installed node_modules kept."""
+def reset_tree(cwd, spec=None):
+    """The working tree back to the pinned commit (coordinator fix 2), installed node_modules kept; then the
+    repository's declared change, if its spec has one (apply_declared_change)."""
     for d in (".detpy", ".detjs"):
         shutil.rmtree(os.path.join(cwd, d), ignore_errors=True)
     for c in (["git", "checkout", "-q", "--", "."], ["git", "clean", "-fdxq", "-e", "node_modules"],
               ["git", "submodule", "foreach", "--recursive", "-q", "git checkout -q -- . && git clean -fdxq -e node_modules"]):
         subprocess.run(c, cwd=cwd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    apply_declared_change(cwd, spec)
+
+
+def apply_declared_change(cwd, spec):
+    """P2 D10 = A (founder decision 2026-11-28): a repository may carry one declared change to its pinned tree, stated in
+    its spec as `declared_change` = {"file": "package.json", "merge": {...}} (a JSON object merged into that file's top
+    level), applied after every tree reset so that every run, plain and engine, sees it. The verdict table counts such
+    a repository "with one declared change". Returns the change applied (or None)."""
+    ch = (spec or {}).get("declared_change")
+    if not ch:
+        return None
+    p = os.path.join(cwd, ch["file"])
+    with open(p) as f:
+        data = json.load(f)
+    data.update(ch["merge"])
+    with open(p, "w") as f:
+        json.dump(data, f, indent=2)
+        f.write("\n")
+    return ch
 
 
 def ids_outcomes(path, cwd):
@@ -352,6 +372,7 @@ def main():
         line = {"repo": o.name, "commit": spec.get("commit"), "runner": runner, "kind": kind, "rep": i,
                 "workers": workers, "engine_commit": commit, "cpus": os.cpu_count(), "nproc": NPROC,
                 "cpu_model": CPU_MODEL, "host": HOST, "container_boot": CONTAINER_BOOT, "ci_parallel": ci_parallel, "tree_reset": TREE_RESET, **last_build,
+                **({"declared_change": spec["declared_change"]} if spec.get("declared_change") else {}),
                 "cmd": " ".join(cmd), "cwd": cwd, "ts": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), **r, **extra}
         with open(results, "a") as f:
             f.write(json.dumps(line) + "\n")
@@ -389,7 +410,7 @@ def main():
     def clean():
         """coordinator fix 2: before every plain, serial and parallel run the working tree is the pinned commit again
         (files earlier runs left: tmp, data, caches, .detpy/.detjs). node_modules are kept (installed dependencies)."""
-        reset_tree(cwd)
+        reset_tree(cwd, spec)
         last_build.clear()
         last_build.update(build_after_reset(cwd, spec.get("build"), env, log))
         if runner == "vitest":

@@ -332,7 +332,18 @@
    "NODE_ENV": "test"
   },
   "ci": "DECLARED vitest.config.ts:27-35 pool forks singleFork + fileParallelism: false ('Run tests sequentially to prevent SQLite database lock issues'); .github/workflows/ci.yml:62 NODE_ENV=test npm test (= vitest run)",
-  "install": "npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts && npx -y pnpm@10.28.2 rebuild better-sqlite3 (MEASURED 2026-11-23: without the rebuild 195 of 439 tests fail, 'Could not locate the bindings file' for better-sqlite3); packageManager pnpm@10.28.2; CI uses npm ci on package-lock.json; Langium generated files are committed"
+  "install": "npx -y pnpm@10.28.2 install --frozen-lockfile --ignore-scripts && npx -y pnpm@10.28.2 rebuild better-sqlite3 (MEASURED 2026-11-23: without the rebuild 195 of 439 tests fail, 'Could not locate the bindings file' for better-sqlite3); packageManager pnpm@10.28.2; CI uses npm ci on package-lock.json; Langium generated files are committed",
+  "declared_change": {
+   "file": "package.json",
+   "merge": {
+    "detjs": {
+     "notShared": [
+      "logs"
+     ]
+    }
+   },
+   "why": "P2 D10 = A (founder decision 2026-11-28): logs/ is the application logger's output (src/runtime/logger.ts); no test outcome depends on it (harness/p2/HAZARDS.md)"
+  }
  },
  "alakajam": {
   "fenvix_python": "$PM_WORK/venv/engine/bin/python",

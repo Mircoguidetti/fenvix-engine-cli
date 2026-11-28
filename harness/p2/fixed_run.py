@@ -116,7 +116,7 @@ def main(argv=None):
     log = os.path.join(out_repo, "runs.log")
 
     # measure.py clean(): tree reset, optional build, Vitest reporter placed (same tree as a timed run)
-    measure.reset_tree(cwd)
+    measure.reset_tree(cwd, spec)
     build = measure.build_after_reset(cwd, spec.get("build"), env, log)
     if spec["runner"] == "vitest":
         measure.place_reporter(cwd)
@@ -126,6 +126,7 @@ def main(argv=None):
     ext = os.path.join(out_repo, f"tests-{os.path.splitext(os.path.basename(trace))[0]}.jsonl.gz")
     n = extract.write(trace, ext, events=not o.no_events) if os.path.exists(trace) else 0
     row = {"repo": o.name, "commit": spec.get("commit"), "runner": spec["runner"], "kind": "fixed", "label": o.label,
+           **({"declared_change": spec["declared_change"]} if spec.get("declared_change") else {}),
            "workers": o.workers, **engine_identity(o.engine), "cpus": os.cpu_count(), "cpu_model": measure.CPU_MODEL,
            "host": measure.HOST, "container_boot": measure.CONTAINER_BOOT, **build, "cmd": " ".join(cmd), "cwd": cwd,
            "env": redact(env), "env_added": added, "trace": os.path.relpath(trace, out), "extract": os.path.relpath(ext, out),
