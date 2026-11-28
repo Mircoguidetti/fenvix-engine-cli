@@ -44,6 +44,7 @@ const FRAME = /^\s*at (?:.*? \()?(.+?):(\d+):\d+\)?$/;
 
 /** Source-mapped site for a stack, from the realm's formatted stack (slow path). */
 function resolveFormatted() {
+  PHASES.site_formatted++;
   const E = realmError || Error;
   const prevLimit = E.stackTraceLimit;
   E.stackTraceLimit = 30;

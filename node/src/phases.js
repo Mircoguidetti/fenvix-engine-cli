@@ -27,8 +27,8 @@ const on = () => process.env.DETJS_PHASES === '1' && Boolean(process.env.DETJS_P
 
 // counters of this process, incremented unconditionally (integer adds); written only when on
 // (P2 C6: resolve_calls = sites.resolve() calls, stack_deep = those that needed the second, deeper capture,
-// stack_runner = runnerInitiated() captures)
-const C = { io_release: 0, held_ms: 0, stack_captures: 0, uncontrolled_io: 0, resolve_calls: 0, stack_deep: 0, stack_runner: 0 };
+// stack_runner = runnerInitiated() captures, site_formatted = source-mapped stack formats on a site cache miss)
+const C = { io_release: 0, held_ms: 0, stack_captures: 0, uncontrolled_io: 0, resolve_calls: 0, stack_deep: 0, stack_runner: 0, site_formatted: 0 };
 
 function write(obj) {
   if (!on()) return;
