@@ -28,3 +28,10 @@ ironcurtain: 36 stable differences, 19 of them variable with other engines' runs
 codex-multi-auth: 59 stable differences, 40 of them variable with other engines' runs too; left ['test/api-capability-custom-fetch.test.ts::uses the configured raw transport for ', 'test/api-model-runtime.test.ts::answers an API pool whose credentials all return', 'test/automatic-api-checks.test.ts::migrates legacy ownership before claiming the', 'test/automatic-subscription-checks.test.ts::does not prime a disabled saved work']
 drydock: 24 stable differences, 8 of them variable with other engines' runs too; left ['api/index.test.ts::API Index::real Express: a non-whitelisted /api/* request ret', 'api/index.test.ts::API Index::real Express: whitelisted wud-card endpoints still', 'api/index.test.ts::API Index::real Express: GET /api/auth/methods is no longer r', 'api/index.test.ts::API Index::real Express: /api/v1/* traffic is never reached b']
 lerna-lite: 2 stable differences, 2 of them variable with other engines' runs too; left []
+
+with a second release-1 fixed run (rel1r): stable differences left = the head's two runs agree, and neither release-1 run has that fingerprint, and the test did not vary elsewhere
+alakajam: release-1 repeat differs on 92; left 0
+yalc: release-1 repeat differs on 24; left 0
+ironcurtain: release-1 repeat differs on 497; left 0
+codex-multi-auth: release-1 repeat differs on 1239; left 2: test/runtime-policy-cache.test.ts::runtime policy cache::re-resolves the project key when a worktree [head failed, rel1 passed]; test/unified-settings.test.ts::unified settings::serializes concurrent plugin config writes to avoid [head passed, rel1 passed]
+drydock: release-1 repeat differs on 278; left 0
