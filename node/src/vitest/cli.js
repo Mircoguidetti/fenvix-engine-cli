@@ -76,7 +76,7 @@ async function main(argv) {
     serial: options.fileParallelism === false, serialSource: '--no-file-parallelism',
   });
   if (options.fileParallelism === true && options.maxWorkers === undefined && opts.workers == null) want.workers = -1; // Vitest's own default, below
-  const par = { workers: want.workers, source: want.source, refused: null, plan: null, keyOf: new Map(), result: null };
+  const par = { workers: want.workers, source: want.source, refused: null, override: null, plan: null, keyOf: new Map(), result: null };
 
   const executed = [];
   let projectsRef = [];
@@ -168,7 +168,7 @@ async function main(argv) {
     if (par.result) return par.result;
     if (par.poll) clearInterval(par.poll);
     par.result = parallel.collect(root, run.dir, executed.map((e) => e.key), par.plan, {
-      shared: false, planned: { workers: par.workers, source: par.source, refused: par.refused },
+      shared: false, planned: { workers: par.workers, source: par.source, refused: par.refused, ...(par.override ? { override: par.override } : {}) },
     });
     if (pc) pc.parallelFlags = par.result.flags;
     for (const l of par.result.lines) fs.writeSync(2, `${l}\n`);
@@ -180,7 +180,7 @@ async function main(argv) {
     collectParallel();
     if (pc) for (const l of pc.finishSync()) fs.writeSync(1, `${l}\n`);
     const lanes = par.plan ? `${par.plan.workers} lanes (fixed plan ${par.plan.digest}), fileParallelism=true` : 'maxWorkers=1, fileParallelism=false';
-    const isolation = `vitest pool=${info.pool || 'default'} isolate=${info.isolate}; projects=${(info.projects || []).join(',')}; ${lanes}, concurrent tests as configured (one Level 0 context each)${par.refused ? `; parallel refused: ${par.refused}` : ''}${info.userRunners && info.userRunners.length ? `; project runners composed with detjs: ${info.userRunners.join(',')}` : ''}`;
+    const isolation = `vitest pool=${info.pool || 'default'} isolate=${info.isolate}; projects=${(info.projects || []).join(',')}; ${lanes}, concurrent tests as configured (one Level 0 context each)${par.refused ? `; parallel refused: ${par.refused}` : ''}${par.override ? `; parallel override: ${par.override}` : ''}${info.userRunners && info.userRunners.length ? `; project runners composed with detjs: ${info.userRunners.join(',')}` : ''}`;
     const { lines } = session.finish(run, opts, executed, {
       runner: 'vitest', runner_version: pkg.version, isolation, serial: !par.plan,
       pool: info.pool, isolate: info.isolate, projects: info.projects, cli_args: args, parallel: par.result.meta,
@@ -242,6 +242,11 @@ async function main(argv) {
   // browser mode, the typecheck pool or network recording (one cassette file per process) keep the run serial
   if (par.workers !== 1) {
     const reasons = new Set();
+    // P2 C3 (coordinator decision D3 = A, 2026-11-26): a project that runs its files in one shared worker
+    // (singleThread / singleFork) is overridden by an explicit --det-workers=N: each file then runs in a fresh worker of
+    // its own, in N lanes; what the shared worker protected against (files touching the same database) is what the
+    // hazard check catches and re-runs in one lane. Any other refusal reason still keeps the run serial.
+    const single = [];
     for (const pr of projects) {
       const c = pr.config || pr.getConfig?.();
       if (!c) continue;
@@ -250,14 +255,23 @@ async function main(argv) {
       else if (c.pool === 'vmThreads' || c.pool === 'vmForks') reasons.add(`pool ${c.pool} (files share a worker)`);
       else if (c.pool === 'typescript') reasons.add('typecheck pool');
       else if (c.isolate === false || po.isolate === false) reasons.add('isolate=false (files share a worker: placement would decide what state a file inherits)');
-      if (po.singleThread || po.singleFork) reasons.add('singleThread/singleFork');
+      if (po.singleThread || po.singleFork) {
+        if (par.source === '--det-workers' && par.workers > 1) single.push(po);
+        else reasons.add('singleThread/singleFork');
+      }
     }
     if (run.netMode === 'record') reasons.add('--det-record (one cassette per process)');
     if (par.workers === -1) {
       par.workers = Math.max(1, Number((ctx.config && ctx.config.maxWorkers) || 1));
       if (par.workers === 1) reasons.add('Vitest resolved maxWorkers=1');
     }
+    if (reasons.size && single.length) reasons.add('singleThread/singleFork');
     if (reasons.size) { par.refused = [...reasons].join('; '); par.workers = 1; }
+    else if (single.length) {
+      for (const po of single) { po.singleFork = false; po.singleThread = false; }
+      par.override = `singleThread/singleFork (the project runs its files in one shared worker) overridden by --det-workers=${par.workers}: each file runs in a fresh worker of its own`;
+      process.stderr.write(`detjs: parallel: --det-workers=${par.workers} overrides the project's singleThread/singleFork: each file runs in a fresh worker of its own, in ${par.workers} lanes; files that share state are caught as hazards and re-run in one lane\n`);
+    }
     const n = par.workers;
     process.env.DETJS_WORKERS = String(n);
     if (n > 1) {
