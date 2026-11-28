@@ -63,3 +63,18 @@ in-repo `.cache` and `fixtures`). For agentlang:
 
 So declaring `logs/` today would be visible in the header only as ignored, and its paths would still pair files as
 hazards. Supporting such a declaration for a directory inside the project is a separate founder question.
+
+## agentlang with `logs/` declared (D10 built, 861a83bc): a shared database the footprint does not see
+
+One fixed-epoch run at 4 workers with the head (`--det-workers=4`: C3's override; `logs/` declared through the declared
+change): 54.6 s, 4 lanes, 0 hazards, no one-lane re-run, outcomes 308 passed / 78 failed / 53 skipped, against 437 of
+439 passed in every serial run. Cause:
+- agentlang names its SQLite database `db-${Date.now()}` in the project directory
+  (`src/runtime/resolvers/sqldb/database.ts` 250-251, `mkDbName()`, unless `AGENTLANG_DB_NAME` is set). In a plain run
+  `Date.now()` is real and each worker has its own file; under `--det` it is virtual and starts from the same fixed epoch
+  in every lane, so every lane opens the same file (`db-1735689600000`, 2025-01-01, was left in the checkout).
+- better-sqlite3 opens that file from native code, not through Node's `fs`: the footprint does not record it, and no
+  hazard pairs the files.
+- Before the declaration the `logs/` hazards paired every file, so the one-lane re-run covered this by accident; without
+  C3's override agentlang ran serially.
+Not changed: reported to the coordinator as question D11; nothing is measured with the declaration until it is answered.
