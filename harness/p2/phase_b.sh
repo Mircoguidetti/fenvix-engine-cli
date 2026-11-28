@@ -7,7 +7,7 @@ set -u
 ENG=$1; REPO=$2; W=$3
 P2=$(cd "$(dirname "$0")" && pwd); REPOROOT=$(cd "$P2/../.." && pwd)
 SPEC=$REPOROOT/harness/parallel_measure/specs.json
-OUT=$REPOROOT/harness/p2/data/phaseB; D=$OUT/$REPO
+OUT=${PHASEB_OUT:-$REPOROOT/harness/p2/data/phaseB}; D=$OUT/$REPO  # PHASEB_OUT: another out dir (P2 C6)
 export PM_WORK=${PM_WORK:-/root/pm}
 checkpoint() {
   ( cd "$REPOROOT" && git add -A "$OUT" 2>/dev/null
