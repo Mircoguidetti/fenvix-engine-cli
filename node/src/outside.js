@@ -60,15 +60,33 @@ function record(where, data, n) {
 const MODULE_LOADER = /\((?:node:)?internal\/modules\/|at (?:node:)?internal\/modules\//;
 const LOADING = /(?:node:)?internal\/modules\/(?:cjs\/loader|esm\/(?:module_job|loader|translators))/;
 const filesSeen = new Set();
+// P2 C6: the stack as V8's default text, from the raw call sites (`Error\n    at <call site>` per frame), not through
+// the installed Error.prepareStackTrace: a repository's source-map support (alakajam) maps every frame and reads map
+// files, on every fs call outside a test. The decisions below look only at Node's module loader frames and detjs' own,
+// which no source map rewrites, so they are the same (node/test/p2-c6-outside-stack.test.js).
+const rawText = (_e, cs) => `Error\n${cs.map((c) => `    at ${c}`).join('\n')}`;
+function stackText(limit, above = stackText) {
+  const E = Error;
+  const prevPrepare = E.prepareStackTrace;
+  const prevLimit = E.stackTraceLimit;
+  E.prepareStackTrace = rawText;
+  E.stackTraceLimit = limit;
+  const holder = {};
+  try {
+    E.captureStackTrace(holder, above);
+    // inside another Error.prepareStackTrace call V8 does not call the hook: the default text, also raw
+    return String(holder.stack || '');
+  } finally {
+    E.prepareStackTrace = prevPrepare;
+    E.stackTraceLimit = prevLimit;
+  }
+}
 function byProjectOutside(where, stat = false) {
   if (STATE.testId !== null || STATE.quietDepth > 0) return false;
   const c = STATE.config;
   if (!c || !c.dir) return false;
-  const E = Error;
-  const prev = E.stackTraceLimit;
-  E.stackTraceLimit = 40;
-  let stack;
-  try { stack = String(new E().stack || ''); } finally { E.stackTraceLimit = prev; }
+  // (from byProjectOutside's own frame, as `new Error()` here gave it)
+  const stack = stackText(40, stackText);
   // the caller of the fs function (the first frame outside detjs): the module loader reading a source file, or code
   if (MODULE_LOADER.test(stack.split('\n').slice(1).find((l) => !l.includes(sites.SHELL_DIR)) || '')) return false;
   if (!c.sites) return true;
@@ -319,4 +337,4 @@ function installProcess(patcher) {
   });
 }
 
-module.exports = { installProcess, outsidePath, ENV_LOADED, rmStep, noteChild };
+module.exports = { installProcess, outsidePath, ENV_LOADED, rmStep, noteChild, stackText, MODULE_LOADER, LOADING };
