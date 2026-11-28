@@ -1,0 +1,189 @@
+{
+ "source": "phases-agentsys.jsonl.phases.jsonl",
+ "main": {
+  "deps_hash_s": 0.243,
+  "plan_s": 0.0,
+  "trace_write_s": 0.191,
+  "start_at_s": [
+   0.0
+  ],
+  "workers_spawn_at_s": [
+   0.161
+  ],
+  "exit_at_s": [
+   18.553
+  ],
+  "start_uptime_s": [
+   0.164
+  ],
+  "exit_uptime_s": [
+   1.0
+  ]
+ },
+ "workers": [
+  {
+   "worker": "31872:0",
+   "pass": null,
+   "files": 51,
+   "ready_after_spawn_s": 0.305,
+   "wall_s": 17.438,
+   "file_s": 16.998,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 190886,
+   "uncontrolled_io": 4
+  }
+ ],
+ "rerun_one_lane": [],
+ "passes": [
+  "None"
+ ],
+ "files_top": [
+  {
+   "file": "__tests__/fetch-plugin-pins.test.js",
+   "s": 2.23,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 38738
+  },
+  {
+   "file": "__tests__/cli-enhancers.test.js",
+   "s": 1.651,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 21787
+  },
+  {
+   "file": "__tests__/preflight.test.js",
+   "s": 1.398,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 8901
+  },
+  {
+   "file": "__tests__/dev-cli.test.js",
+   "s": 1.315,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2232
+  },
+  {
+   "file": "__tests__/cli-subcommands.test.js",
+   "s": 0.764,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1233
+  },
+  {
+   "file": "__tests__/script-failure-hooks.test.js",
+   "s": 0.697,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 11736
+  },
+  {
+   "file": "__tests__/platform-adapter-install.test.js",
+   "s": 0.464,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 6490
+  },
+  {
+   "file": "__tests__/slop-patterns.test.js",
+   "s": 0.45,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4639
+  },
+  {
+   "file": "__tests__/validator.test.js",
+   "s": 0.446,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2963
+  },
+  {
+   "file": "__tests__/pipeline.test.js",
+   "s": 0.421,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 5972
+  },
+  {
+   "file": "__tests__/slop-analyzers.test.js",
+   "s": 0.419,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1584
+  },
+  {
+   "file": "__tests__/atomic-write.test.js",
+   "s": 0.417,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 21667
+  },
+  {
+   "file": "__tests__/adapter-namespace-strip.test.js",
+   "s": 0.406,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 192
+  },
+  {
+   "file": "__tests__/cross-platform.test.js",
+   "s": 0.39,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 19350
+  },
+  {
+   "file": "__tests__/ten-plugins-removed.test.js",
+   "s": 0.346,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1725
+  },
+  {
+   "file": "__tests__/scaffold.test.js",
+   "s": 0.344,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2973
+  },
+  {
+   "file": "__tests__/workflow-state-conflict.test.js",
+   "s": 0.338,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 447
+  },
+  {
+   "file": "__tests__/generate-plugin-list.test.js",
+   "s": 0.324,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 2590
+  },
+  {
+   "file": "__tests__/next-task-leftovers.test.js",
+   "s": 0.302,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1535
+  },
+  {
+   "file": "__tests__/workflow-state.test.js",
+   "s": 0.285,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 5302
+  }
+ ],
+ "totals": {
+  "io_release": 0,
+  "stack_captures": 190886,
+  "uncontrolled_io": 4,
+  "held_s": 0.0
+ }
+}
