@@ -1,0 +1,409 @@
+{
+ "profiles": 19,
+ "total_s": 22.705,
+ "top": [
+  {
+   "function": "spawnSync node:internal/child_process:1105",
+   "self_s": 4.516,
+   "share": 0.1989
+  },
+  {
+   "function": "resolveDepth file:///home/user/fx-fix2/node/src/sites.js:125",
+   "self_s": 1.715,
+   "share": 0.0756
+  },
+  {
+   "function": "(garbage collector) :0",
+   "self_s": 1.012,
+   "share": 0.0446
+  },
+  {
+   "function": "(idle) :0",
+   "self_s": 0.902,
+   "share": 0.0397
+  },
+  {
+   "function": "_propagate node:internal/async_local_storage/async_hooks:64",
+   "self_s": 0.633,
+   "share": 0.0279
+  },
+  {
+   "function": "cloneCallSite file:///root/pm/repos/agentsys/node_modules/@jest/source-map/build/index.js:441",
+   "self_s": 0.588,
+   "share": 0.0259
+  },
+  {
+   "function": "wrapSafe node:internal/modules/cjs/loader:1671",
+   "self_s": 0.425,
+   "share": 0.0187
+  },
+  {
+   "function": "Script node:vm:85",
+   "self_s": 0.415,
+   "share": 0.0183
+  },
+  {
+   "function": "spawn node:internal/child_process:354",
+   "self_s": 0.407,
+   "share": 0.0179
+  },
+  {
+   "function": "rmdir :0",
+   "self_s": 0.34,
+   "share": 0.015
+  },
+  {
+   "function": "(program) :0",
+   "self_s": 0.331,
+   "share": 0.0146
+  },
+  {
+   "function": "testReader file:///home/user/fx-fix2/node/src/envview.js:21",
+   "self_s": 0.297,
+   "share": 0.0131
+  },
+  {
+   "function": "wait file:///home/user/fx-fix2/node/src/clock.js:876",
+   "self_s": 0.27,
+   "share": 0.0119
+  },
+  {
+   "function": "wrapExports file:///home/user/fx-fix2/node/src/jest/environment.js:132",
+   "self_s": 0.265,
+   "share": 0.0117
+  },
+  {
+   "function": "unlink :0",
+   "self_s": 0.237,
+   "share": 0.0104
+  },
+  {
+   "function": "getOwnPropertyDescriptor file:///home/user/fx-fix2/node/src/cache/capture.js:1606",
+   "self_s": 0.213,
+   "share": 0.0094
+  },
+  {
+   "function": "wrapCallSite file:///root/pm/repos/agentsys/node_modules/@jest/source-map/build/index.js:473",
+   "self_s": 0.202,
+   "share": 0.0089
+  },
+  {
+   "function": "expect file:///root/pm/repos/agentsys/node_modules/expect/build/index.js:2102",
+   "self_s": 0.184,
+   "share": 0.0081
+  },
+  {
+   "function": "STATE.onEnvRead file:///home/user/fx-fix2/node/src/controls.js:225",
+   "self_s": 0.182,
+   "share": 0.008
+  },
+  {
+   "function": "normalizeSpawnArguments node:child_process:566",
+   "self_s": 0.161,
+   "share": 0.0071
+  },
+  {
+   "function": "dispatch file:///root/pm/repos/agentsys/node_modules/jest-circus/build/jestAdapterInit.js:1318",
+   "self_s": 0.151,
+   "share": 0.0067
+  },
+  {
+   "function": "readFileUtf8 :0",
+   "self_s": 0.145,
+   "share": 0.0064
+  },
+  {
+   "function": "copyFile :0",
+   "self_s": 0.142,
+   "share": 0.0063
+  },
+  {
+   "function": "get file:///home/user/fx-fix2/node/src/cache/capture.js:1596",
+   "self_s": 0.141,
+   "share": 0.0062
+  },
+  {
+   "function": "promiseInitHook node:internal/async_hooks:328",
+   "self_s": 0.134,
+   "share": 0.0059
+  },
+  {
+   "function": "readFileSync node:fs:433",
+   "self_s": 0.125,
+   "share": 0.0055
+  },
+  {
+   "function": "phases.span.part file:///home/user/fx-fix2/node/src/session.js:555",
+   "self_s": 0.124,
+   "share": 0.0055
+  },
+  {
+   "function": "flush file:///home/user/fx-fix2/node/src/state.js:82",
+   "self_s": 0.122,
+   "share": 0.0054
+  },
+  {
+   "function": "internalCompileFunction node:internal/vm:124",
+   "self_s": 0.121,
+   "share": 0.0053
+  },
+  {
+   "function": "__require file:///opt/node-tools/node_modules/pnpm/dist/pnpm.cjs:11",
+   "self_s": 0.116,
+   "share": 0.0051
+  },
+  {
+   "function": "clone.<computed> file:///root/pm/repos/agentsys/node_modules/@jest/source-map/build/index.js:447",
+   "self_s": 0.112,
+   "share": 0.0049
+  },
+  {
+   "function": "byProjectOutside file:///home/user/fx-fix2/node/src/outside.js:63",
+   "self_s": 0.111,
+   "share": 0.0049
+  },
+  {
+   "function": "Promise.finally.completed file:///root/pm/repos/agentsys/node_modules/jest-circus/build/jestAdapterInit.js:1774",
+   "self_s": 0.109,
+   "share": 0.0048
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/facts.js:220",
+   "self_s": 0.106,
+   "share": 0.0047
+  },
+  {
+   "function": "lstat :0",
+   "self_s": 0.102,
+   "share": 0.0045
+  },
+  {
+   "function": "deepCyclicCopyObject file:///root/pm/repos/agentsys/node_modules/jest-util/build/index.js:316",
+   "self_s": 0.093,
+   "share": 0.0041
+  },
+  {
+   "function": "frameToString file:///root/pm/repos/agentsys/node_modules/@jest/source-map/build/index.js:379",
+   "self_s": 0.09,
+   "share": 0.004
+  },
+  {
+   "function": "mkdir :0",
+   "self_s": 0.088,
+   "share": 0.0039
+  },
+  {
+   "function": "rawFile file:///home/user/fx-fix2/node/src/sites.js:102",
+   "self_s": 0.087,
+   "share": 0.0038
+  },
+  {
+   "function": "writeFileUtf8 :0",
+   "self_s": 0.082,
+   "share": 0.0036
+  }
+ ],
+ "top_engine": [
+  {
+   "function": "resolveDepth file:///home/user/fx-fix2/node/src/sites.js:125",
+   "self_s": 1.715,
+   "share": 0.0756
+  },
+  {
+   "function": "testReader file:///home/user/fx-fix2/node/src/envview.js:21",
+   "self_s": 0.297,
+   "share": 0.0131
+  },
+  {
+   "function": "wait file:///home/user/fx-fix2/node/src/clock.js:876",
+   "self_s": 0.27,
+   "share": 0.0119
+  },
+  {
+   "function": "wrapExports file:///home/user/fx-fix2/node/src/jest/environment.js:132",
+   "self_s": 0.265,
+   "share": 0.0117
+  },
+  {
+   "function": "getOwnPropertyDescriptor file:///home/user/fx-fix2/node/src/cache/capture.js:1606",
+   "self_s": 0.213,
+   "share": 0.0094
+  },
+  {
+   "function": "STATE.onEnvRead file:///home/user/fx-fix2/node/src/controls.js:225",
+   "self_s": 0.182,
+   "share": 0.008
+  },
+  {
+   "function": "get file:///home/user/fx-fix2/node/src/cache/capture.js:1596",
+   "self_s": 0.141,
+   "share": 0.0062
+  },
+  {
+   "function": "phases.span.part file:///home/user/fx-fix2/node/src/session.js:555",
+   "self_s": 0.124,
+   "share": 0.0055
+  },
+  {
+   "function": "flush file:///home/user/fx-fix2/node/src/state.js:82",
+   "self_s": 0.122,
+   "share": 0.0054
+  },
+  {
+   "function": "byProjectOutside file:///home/user/fx-fix2/node/src/outside.js:63",
+   "self_s": 0.111,
+   "share": 0.0049
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/facts.js:220",
+   "self_s": 0.106,
+   "share": 0.0047
+  },
+  {
+   "function": "rawFile file:///home/user/fx-fix2/node/src/sites.js:102",
+   "self_s": 0.087,
+   "share": 0.0038
+  },
+  {
+   "function": "endTest file:///home/user/fx-fix2/node/src/state.js:130",
+   "self_s": 0.07,
+   "share": 0.0031
+  },
+  {
+   "function": "ownKeys file:///home/user/fx-fix2/node/src/cache/capture.js:1611",
+   "self_s": 0.062,
+   "share": 0.0027
+  },
+  {
+   "function": "unproven file:///home/user/fx-fix2/node/src/controls.js:112",
+   "self_s": 0.058,
+   "share": 0.0025
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/jest/environment.js:139",
+   "self_s": 0.052,
+   "share": 0.0023
+  },
+  {
+   "function": "snapshotShared file:///home/user/fx-fix2/node/src/parallel.js:718",
+   "self_s": 0.051,
+   "share": 0.0022
+  },
+  {
+   "function": "hidden file:///home/user/fx-fix2/node/src/envview.js:54",
+   "self_s": 0.047,
+   "share": 0.0021
+  },
+  {
+   "function": "reseed file:///home/user/fx-fix2/node/src/seeds.js:92",
+   "self_s": 0.046,
+   "share": 0.002
+  },
+  {
+   "function": "_load file:///home/user/fx-fix2/node/src/jest/environment.js:166",
+   "self_s": 0.04,
+   "share": 0.0018
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/repro.js:156",
+   "self_s": 0.035,
+   "share": 0.0016
+  },
+  {
+   "function": "mapStats file:///home/user/fx-fix2/node/src/fstime.js:169",
+   "self_s": 0.031,
+   "share": 0.0014
+  },
+  {
+   "function": "mapEnv file:///home/user/fx-fix2/node/src/facts.js:232",
+   "self_s": 0.031,
+   "share": 0.0014
+  },
+  {
+   "function": "stackOf file:///home/user/fx-fix2/node/src/deadline.js:24",
+   "self_s": 0.028,
+   "share": 0.0012
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/session.js:622",
+   "self_s": 0.026,
+   "share": 0.0012
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/session.js:339",
+   "self_s": 0.024,
+   "share": 0.0011
+  },
+  {
+   "function": "looksLikeEnv file:///home/user/fx-fix2/node/src/jest/environment.js:29",
+   "self_s": 0.023,
+   "share": 0.001
+  },
+  {
+   "function": "dig file:///home/user/fx-fix2/node/src/facts.js:23",
+   "self_s": 0.021,
+   "share": 0.0009
+  },
+  {
+   "function": "normPath file:///home/user/fx-fix2/node/src/sites.js:21",
+   "self_s": 0.02,
+   "share": 0.0009
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/facts.js:222",
+   "self_s": 0.019,
+   "share": 0.0008
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/provable.js:256",
+   "self_s": 0.017,
+   "share": 0.0007
+  },
+  {
+   "function": "beginTest file:///home/user/fx-fix2/node/src/state.js:107",
+   "self_s": 0.016,
+   "share": 0.0007
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/session.js:549",
+   "self_s": 0.016,
+   "share": 0.0007
+  },
+  {
+   "function": "diffShared file:///home/user/fx-fix2/node/src/parallel.js:751",
+   "self_s": 0.016,
+   "share": 0.0007
+  },
+  {
+   "function": "resolve file:///home/user/fx-fix2/node/src/sites.js:117",
+   "self_s": 0.015,
+   "share": 0.0007
+  },
+  {
+   "function": "resolveFormatted file:///home/user/fx-fix2/node/src/sites.js:46",
+   "self_s": 0.014,
+   "share": 0.0006
+  },
+  {
+   "function": "isDevRandom file:///home/user/fx-fix2/node/src/seeds.js:317",
+   "self_s": 0.013,
+   "share": 0.0006
+  },
+  {
+   "function": "begin file:///home/user/fx-fix2/node/src/jest/runner.js:262",
+   "self_s": 0.013,
+   "share": 0.0006
+  },
+  {
+   "function": "projectFrame file:///home/user/fx-fix2/node/src/controls.js:206",
+   "self_s": 0.012,
+   "share": 0.0005
+  },
+  {
+   "function": "contentDigest file:///home/user/fx-fix2/node/src/outside.js:41",
+   "self_s": 0.012,
+   "share": 0.0005
+  }
+ ],
+ "engine_self_s": 4.871
+}
