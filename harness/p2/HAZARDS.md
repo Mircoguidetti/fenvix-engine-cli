@@ -48,3 +48,18 @@ against 217 passed in every plain serial run. The database is a real conflict fo
 
 So the hazard pairs (161 `read-write` on that file in round 1) come from the logger writing the log and the rotator
 checking it in each test file's process, and no test outcome depends on the log, as measured above.
+
+## agentlang: can the project declare `logs/` as not shared? (founder decision agentlang = A)
+
+Checked, no engine change. The engine has a declaration for directories the footprint leaves out
+(`DETJS_FOOTPRINT_SKIP_DIRS`, and the shells' `parallel.skipDirs()`), shown in the header as
+`meta.parallel.skip_dirs`, with refused ones in `meta.parallel.skip_dirs_ignored` and their reason. But it honours a
+directory only under `node_modules/` or strictly under `os.tmpdir()` outside the project (`src/parallel.js`
+`footprintSkip()`, parallel-proof-gaps (c), gate note 3; asserted by `node/test/parallel-proof-gaps.test.js` for an
+in-repo `.cache` and `fixtures`). For agentlang:
+
+    footprintSkip('/root/pm/repos/agentlang', ['logs'])
+    -> { skip: [], ignored: [{ dir: '/root/pm/repos/agentlang/logs', reason: 'outside node_modules and tmpdir' }] }
+
+So declaring `logs/` today would be visible in the header only as ignored, and its paths would still pair files as
+hazards. Supporting such a declaration for a directory inside the project is a separate founder question.
