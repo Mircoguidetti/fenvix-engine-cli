@@ -75,6 +75,53 @@ function resolveFormatted() {
 
 const structured = (_e, cs) => cs;
 
+// P2 D7 = B (founder decision 2026-11-28): the source line of a frame of a module that Vite's module runner evaluated
+// (Vitest), from that module's own source map in the runner's graph (Vitest's worker state `evaluatedModules`, the map
+// Vite's own stack interceptor uses), not through whatever Error.prepareStackTrace the project installed: a setup file
+// that loads ts-node replaces Vite's interceptor with @cspotcode/source-map-support, which has no map for such a module
+// unless an earlier formatting happened to warm its cache (alakajam; node/test/p2-c6-site-map.test.js).
+// Returns { file, line } (absolute file, 1-based line) or undefined when the frame is not such a module's.
+const VITE_MAPS = new WeakMap(); // Vite DecodedMap -> node:module SourceMap
+const PCT = /(?:%[0-9a-f]{2})+/gi;
+function viteSource(cs) {
+  const st = globalThis.__vitest_worker__;
+  const em = st && st.evaluatedModules;
+  if (!em || typeof em.getModuleSourceMapById !== 'function') return undefined;
+  const name = cs.getFileName && cs.getFileName();
+  if (!name) return undefined;
+  // Vite's decodeSourceURL: only percent-encoded whitespace is decoded
+  const id = name.replace(PCT, (m) => { try { const d = decodeURIComponent(m); return /^\s+$/.test(d) ? d : m; } catch { return m; } });
+  let dm = null;
+  try { dm = em.getModuleSourceMapById(id); } catch { dm = null; }
+  if (!dm || !dm.map) return undefined;
+  let sm = VITE_MAPS.get(dm);
+  if (!sm) {
+    try { sm = new (require('node:module').SourceMap)(dm.map); } catch { return undefined; }
+    VITE_MAPS.set(dm, sm);
+  }
+  const line = cs.getLineNumber(); const col = cs.getColumnNumber();
+  if (!line || !col) return undefined;
+  let e;
+  try { e = sm.findEntry(line - 1, col - 1); } catch { return undefined; }
+  if (!e || typeof e.originalLine !== 'number' || !e.originalSource) return undefined;
+  let src = e.originalSource;
+  if (src.startsWith('file://')) { try { src = require('node:url').fileURLToPath(src); } catch { return undefined; } }
+  if (!path.isAbsolute(src)) src = path.resolve(path.dirname(dm.url || id), src);
+  return { file: src, line: e.originalLine + 1 };
+}
+
+/** The site of a frame of a Vite-evaluated module (viteSource), with resolveFormatted's checks; undefined: not one. */
+function viteSite(cs) {
+  const m = viteSource(cs);
+  if (!m) return undefined;
+  const f = m.file;
+  if (RUNNER_INTERNAL.test(f)) return null;
+  // a mapped path that resolveFormatted would skip: leave the decision to it
+  if (f.startsWith('node:') || f.startsWith('internal/') || f.startsWith(SHELL_DIR) || !f.includes('/')) return undefined;
+  if (INFRA.test(f)) return null;
+  return `${normPath(f)}:${m.line}`;
+}
+
 // Jest words a "module not found" error by listing the siblings of the missing file with `glob` (jest-resolve's
 // findSiblingsWithFileExtension): a package's optional `require` (ws -> bufferutil) then makes glob stat files in the
 // test window. That is the runner's own work (the cache capture already says so), not the test's.
@@ -153,7 +200,8 @@ function resolveDepth(depth) {
     const key = `${f}:${cs.getLineNumber()}:${cs.getColumnNumber()}`;
     let site = CACHE.get(key);
     if (site === undefined) {
-      site = resolveFormatted();
+      site = viteSite(cs);
+      if (site === undefined) site = resolveFormatted();
       if (CACHE.size < CACHE_MAX) CACHE.set(key, site);
     }
     return site;
