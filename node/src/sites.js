@@ -116,8 +116,9 @@ function rawFile(cs) {
  */
 function resolve() {
   // undefined = no decision within the captured frames; null = infrastructure.
+  PHASES.resolve_calls++;
   let site = resolveDepth(8);
-  if (site === undefined) site = resolveDepth(30);
+  if (site === undefined) { PHASES.stack_deep++; site = resolveDepth(30); }
   return site === undefined ? '<node>' : site;
 }
 
@@ -179,6 +180,7 @@ function runnerInitiatedAt(limit) {
   E.prepareStackTrace = structured;
   E.stackTraceLimit = limit;
   const holder = {};
+  PHASES.stack_runner++;
   try {
     E.captureStackTrace(holder, runnerInitiated);
     // eslint-disable-next-line no-unused-expressions

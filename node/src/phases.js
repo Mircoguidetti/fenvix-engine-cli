@@ -26,7 +26,9 @@ const ms = (t0) => Number(REAL.hr.call(process) - t0) / 1e6;
 const on = () => process.env.DETJS_PHASES === '1' && Boolean(process.env.DETJS_PHASES_FILE);
 
 // counters of this process, incremented unconditionally (integer adds); written only when on
-const C = { io_release: 0, held_ms: 0, stack_captures: 0, uncontrolled_io: 0 };
+// (P2 C6: resolve_calls = sites.resolve() calls, stack_deep = those that needed the second, deeper capture,
+// stack_runner = runnerInitiated() captures)
+const C = { io_release: 0, held_ms: 0, stack_captures: 0, uncontrolled_io: 0, resolve_calls: 0, stack_deep: 0, stack_runner: 0 };
 
 function write(obj) {
   if (!on()) return;
