@@ -19,8 +19,10 @@ The paths and the code behind them:
   (`db.emptyDatabase()`), migrates it and seeds it; `closeTestDB()` empties it again. The repository's own config says
   so: `vitest.config.ts` `fileParallelism: false`, "Specs share a single sqlite database".
 - `data` (recursive-write) and `data/tmp`: `startTestDB()`'s `mkdirpSync(path.dirname(DB_SQLITE_FILENAME))`, and
-  `server/core/fs-utils.spec.ts`, which creates and removes directories under `data/tmp`.
-- `static/uploads`: the upload paths (`server/migrations/0030_uploads_in_data.ts`, the upload middleware's temp files).
+  `server/core/fs-utils.spec.ts`, which writes and removes a directory with a `unit-test.sqlite` in it (`fs.rmSync`
+  recursive, line 15).
+- `static/uploads`: not traced to a line; probably the upload paths (`server/migrations/0030_uploads_in_data.ts`, the
+  upload middleware's temp files).
 
 Does an outcome depend on the order between the files? Plain Vitest, one file at a time (`vitest run
 --no-file-parallelism`), in four file orders (the default and `--sequence.shuffle.files` with seeds 11, 22, 33): 217
@@ -28,15 +30,15 @@ passed, 4 skipped in every order, and the same outcome for every one of the 221 
 each database spec rebuilds the database before it runs.
 
 Does an outcome depend on files running at the same time? Yes. Plain Vitest with files in parallel (the protocol's
-`plain_par` rows, `data/baseline` and `data/fix-2`, 12 runs): 141-143 tests skipped in most runs and up to 26 failed,
+`plain_par` rows, `data/baseline` and `data/fix-2`, 12 runs): 117-143 tests skipped in every run and up to 26 failed,
 against 217 passed in every plain serial run. The database is a real conflict for concurrency, not for order.
 
 ## agentlang: who reads `logs/app-<date>.log`
 
 - Written by the application's logger, `src/runtime/logger.ts`: winston with `winston-daily-rotate-file`,
   `filename: 'logs/app-%DATE%.log'`, `maxSize: '20m'` (and `logs/errors-%DATE%.log`).
-- Read: no test file and no application code reads it (no match for `logs/app` or the log's name outside
-  `logger.ts`). The "read" side of the hazard is the rotation library, `file-stream-rotator` 0.6.1
+- Read: no test file and no application code reads it (no match for `logs/app` or the log's name in `src/` and `test/`
+  outside `logger.ts`). The "read" side of the hazard is the rotation library, `file-stream-rotator` 0.6.1
   (`FileStreamRotator.js` 510-516): at start-up it checks `existsSync(logfile)` and `statSync(logfile).size` (for the 20 MB
   rotation) and reads its own audit JSON files (`logs/.<hash>-audit.json`, line 221); it never reads the log's content.
 - Does an outcome depend on it? Plain Vitest (`vitest run`) with `logs/` removed, with today's
