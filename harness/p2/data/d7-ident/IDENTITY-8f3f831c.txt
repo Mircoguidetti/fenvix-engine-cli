@@ -1,0 +1,54 @@
+D7 identity, head 8f3f831c (new3, new4) against a148bca2 (old1-3), fixed-epoch runs at w1, same boot
+
+alakajam: wall old [52.84, 51.48, 52.33] new [36.52, 36.73]
+  stable outcome changes 0 []
+  header fields that differ (stable in both engines): ['.files_read_outside_tests']
+  files_read_outside_tests old [311, 311, 311] new [149, 149]
+  stable tests whose events differ: only the site ('at') 114; other 1 ['server/core/upload-middleware.spec.ts::upload middleware temp files (#602)::removes the temp file wh']
+  distinct site changes 16:
+    server/entity/timestamped.entity.ts:44 -> server/entity/timestamped.entity.ts:21 (406 events)
+    server/entity/timestamped.entity.ts:45 -> server/entity/timestamped.entity.ts:22 (406 events)
+    server/core/fs-utils.spec.ts:17 -> server/core/fs-utils.spec.ts:15 (18 events)
+    server/core/fs-utils.spec.ts:14 -> server/core/fs-utils.spec.ts:11 (6 events)
+    server/entity/timestamped.entity.ts:48 -> server/entity/timestamped.entity.ts:27 (5 events)
+    server/core/fs-utils.ts:17 -> server/core/fs-utils.ts:19 (4 events)
+    server/core/migration-0047-node-table.spec.ts:308 -> server/core/migration-0047-node-table.spec.ts:219 (3 events)
+    server/core/fs-utils.spec.ts:32 -> server/core/fs-utils.spec.ts:27 (2 events)
+    server/core/fs-utils.spec.ts:33 -> server/core/fs-utils.spec.ts:28 (2 events)
+    server/core/fs-utils.spec.ts:34 -> server/core/fs-utils.spec.ts:29 (2 events)
+    server/core/fs-utils.spec.ts:35 -> server/core/fs-utils.spec.ts:30 (2 events)
+    server/core/fs-utils.spec.ts:45 -> server/core/fs-utils.spec.ts:40 (2 events)
+
+agentsys: wall old [24.73, 16.1, 16.29] new [14.59, 14.86]
+  stable outcome changes 0 []
+  header fields that differ (stable in both engines): []
+  files_read_outside_tests old [121, 121, 121] new [121, 121]
+  stable tests whose events differ: only the site ('at') 0; other 0 []
+  distinct site changes 0:
+
+yalc: wall old [108.05, 79.03, 77.78] new [84.38, 80.53]
+  stable outcome changes 0 []
+  header fields that differ (stable in both engines): []
+  files_read_outside_tests old [36, 36, 36] new [36, 36]
+  stable tests whose events differ: only the site ('at') 0; other 0 []
+  distinct site changes 0:
+
+codex-multi-auth: wall old [413.0, 394.28, 405.61] new [391.76, 389.2]
+  stable outcome changes 0 []
+  header fields that differ (stable in both engines): []
+  files_read_outside_tests old [379, 379, 379] new [379, 379]
+  stable tests whose events differ: only the site ('at') 50; other 5 ['test/accounts.test.ts::AccountManager::removeAccount cursor adjustment::adjusts currentAccountIndexB', 'test/codex-bin-wrapper.test.ts::codex bin wrapper::can forward without capturing child stdio for ter', 'test/quota-cache.test.ts::quota cache::merges overlapping CLI and automatic cache changes from indep']
+  distinct site changes 2:
+    lib/storage.ts:1387 -> lib/storage.ts:2097 (123 events)
+    lib/storage.ts:1352 -> lib/storage.ts:1996 (12 events)
+
+stable tests whose events differ in more than the site (old1 vs new3): first differing event
+alakajam server/core/upload-middleware.spec.ts::upload middleware temp files (#602)::removes the te
+   #22 old {"t": 0, "s": "sched", "o": "sched.io", "at": "server/core/upload-middleware.ts:27", "v": "0/2:server/core/upload-middleware.ts:27#1|fs.unlink"}
+   #22 new {"t": 0, "s": "sched", "o": "sched.io", "at": "server/core/upload-middleware.ts:21", "v": "0/2:server/core/upload-middleware.ts:21#1|fs.unlink"}
+codex-multi-auth test/accounts.test.ts::AccountManager::removeAccount cursor adjustment::adjusts currentAcc
+   #11 old {"t": 0, "s": "outcome", "o": "outcome", "at": "", "v": "passed"}
+   #11 new {"t": 0, "s": "other", "o": "env.get", "at": "lib/codex-cli/state.ts:253", "v": "CODEX_CLI_CONFIG_PATH=unset"}
+codex-multi-auth test/codex-bin-wrapper.test.ts::codex bin wrapper::falls back to native resume when the se
+   #48 old {"t": 0, "s": "fs", "o": "fs.readdirSync", "at": "test/codex-bin-wrapper.test.ts:58", "v": "<tmp>/codex-home/multi-auth|3|6592416363ee284e1411110dee3ca9c6"}
+   #48 new {"t": 0, "s": "fs", "o": "fs.readdirSync", "at": "test/codex-bin-wrapper.test.ts:58", "v": "<tmp>/codex-home/multi-auth|3|47c704d8c9840d27f29f54e793d083ca"}
