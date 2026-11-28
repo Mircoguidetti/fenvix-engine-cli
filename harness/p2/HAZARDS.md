@@ -40,9 +40,11 @@ against 217 passed in every plain serial run. The database is a real conflict fo
 - Read: no test file and no application code reads it (no match for `logs/app` or the log's name in `src/` and `test/`
   outside `logger.ts`). The "read" side of the hazard is the rotation library, `file-stream-rotator` 0.6.1
   (`FileStreamRotator.js` 510-516): at start-up it checks `existsSync(logfile)` and `statSync(logfile).size` (for the 20 MB
-  rotation) and reads its own audit JSON files (`logs/.<hash>-audit.json`, line 221); it never reads the log's content.
+  rotation) and reads its own audit JSON files (`logs/.<hash>-audit.json`, line 221). No read of the log's content was
+  found in the start-up path read (lines 500-540); the whole library was not reviewed.
 - Does an outcome depend on it? Plain Vitest (`vitest run`) with `logs/` removed, with today's
   `logs/app-<date>.log` pre-filled with 1 MB of unrelated text, and as it was: 438 passed in all three, the same outcome
   for every test (0 differ). The directory was restored afterwards.
 
-So every test file of agentlang writes the log and the rotator stats it, and nothing that decides an outcome reads it.
+So the hazard pairs (161 `read-write` on that file in round 1) come from the logger writing the log and the rotator
+checking it in each test file's process, and no test outcome depends on the log, as measured above.
