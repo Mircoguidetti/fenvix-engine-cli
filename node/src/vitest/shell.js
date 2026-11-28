@@ -104,6 +104,8 @@ function makeRunner(Base, realm = globalThis) {
       if (c.active) {
         controls.installProcess();
         controls.installRealm(realm, { sameRealm: realm === globalThis });
+        // the runner's module graph: each module's code with its source map, kept before a mock can replace it (D7)
+        require('../sites').watchViteModules();
         // Vitest 5's vm pools: their own copies of Node's modules' named exports, re-synced after the controls
         const req = realm !== globalThis && realm.__vitest_required__;
         if (req && typeof req.syncBuiltinESMExports === 'function') { try { req.syncBuiltinESMExports(); } catch { /* the preload covers it */ } }

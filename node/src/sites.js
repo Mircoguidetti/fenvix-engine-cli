@@ -83,6 +83,55 @@ const structured = (_e, cs) => cs;
 // Returns { file, line } (absolute file, 1-based line) or undefined when the frame is not such a module's.
 const VITE_MAPS = new WeakMap(); // Vite DecodedMap -> node:module SourceMap
 const PCT = /(?:%[0-9a-f]{2})+/gi;
+// Per module file, the last code (with its inline source map) a node of the runner's graph carried: Vitest's mocker gives
+// a mocked module's node the mock's meta (no code, no map) on the same node vi.importActual evaluated the actual code on,
+// so when the mock's fetch comes last the node no longer carries the map of the code that runs (codex-multi-auth;
+// node/test/p2-c6-vite-map.test.js). Kept from the moment the runner sets the node's meta (watchViteModules).
+const MAP_MARK = 'sourceMappingURL=data:application/json';
+const VITE_CODE = new Map(); // file -> { code, sm: node:module SourceMap | null | undefined (not parsed yet) }
+const WATCHED = new WeakSet(); // EvaluatedModules graphs and their nodes already watched
+function keepCode(node, meta) {
+  if (meta && typeof meta.code === 'string' && meta.code.includes(MAP_MARK)) {
+    const f = node.file || meta.file || node.id;
+    if (typeof f === 'string' && f) VITE_CODE.set(f, { code: meta.code, sm: undefined });
+  }
+}
+function watchNode(node) {
+  if (!node || typeof node !== 'object' || WATCHED.has(node)) return;
+  WATCHED.add(node);
+  let meta = node.meta;
+  keepCode(node, meta);
+  try {
+    Object.defineProperty(node, 'meta', {
+      configurable: true, enumerable: true,
+      get() { return meta; },
+      set(v) { meta = v; keepCode(node, v); },
+    });
+  } catch { /* a frozen node: its current code is kept */ }
+}
+/** Watch the module graph of Vitest's worker state (called once per worker, before test files are imported). */
+function watchViteModules() {
+  const st = globalThis.__vitest_worker__;
+  const em = st && st.evaluatedModules;
+  const m = em && em.idToModuleMap;
+  if (!m || typeof m.set !== 'function' || WATCHED.has(em)) return;
+  WATCHED.add(em);
+  for (const n of m.values()) watchNode(n);
+  const set = m.set;
+  m.set = function setWatched(k, v) { watchNode(v); return set.call(this, k, v); };
+}
+/** The source map of the last code with one that a node of `file` carried (keepCode), parsed once. */
+function keptMap(file) {
+  const k = VITE_CODE.get(file);
+  if (!k) return null;
+  if (k.sm === undefined) {
+    k.sm = null;
+    const i = k.code.lastIndexOf(MAP_MARK);
+    const m = /^sourceMappingURL=data:application\/json[^,]*base64,([A-Za-z0-9+/=]+)/.exec(k.code.slice(i));
+    if (m) { try { k.sm = new (require('node:module').SourceMap)(JSON.parse(Buffer.from(m[1], 'base64').toString('utf8'))); } catch { k.sm = null; } }
+  }
+  return k.sm;
+}
 function viteSource(cs) {
   const st = globalThis.__vitest_worker__;
   const em = st && st.evaluatedModules;
@@ -93,11 +142,19 @@ function viteSource(cs) {
   const id = name.replace(PCT, (m) => { try { const d = decodeURIComponent(m); return /^\s+$/.test(d) ? d : m; } catch { return m; } });
   let dm = null;
   try { dm = em.getModuleSourceMapById(id); } catch { dm = null; }
-  if (!dm || !dm.map) return undefined;
-  let sm = VITE_MAPS.get(dm);
-  if (!sm) {
-    try { sm = new (require('node:module').SourceMap)(dm.map); } catch { return undefined; }
-    VITE_MAPS.set(dm, sm);
+  let sm = null;
+  let base = id;
+  if (dm && dm.map) {
+    sm = VITE_MAPS.get(dm);
+    if (!sm) {
+      try { sm = new (require('node:module').SourceMap)(dm.map); } catch { return undefined; }
+      VITE_MAPS.set(dm, sm);
+    }
+    base = dm.url || id;
+  } else {
+    // the node no longer carries a map (a mocked module's node): the map of the code it carried when it was evaluated
+    sm = keptMap(id);
+    if (!sm) return undefined;
   }
   const line = cs.getLineNumber(); const col = cs.getColumnNumber();
   if (!line || !col) return undefined;
@@ -106,7 +163,7 @@ function viteSource(cs) {
   if (!e || typeof e.originalLine !== 'number' || !e.originalSource) return undefined;
   let src = e.originalSource;
   if (src.startsWith('file://')) { try { src = require('node:url').fileURLToPath(src); } catch { return undefined; } }
-  if (!path.isAbsolute(src)) src = path.resolve(path.dirname(dm.url || id), src);
+  if (!path.isAbsolute(src)) src = path.resolve(path.dirname(base), src);
   return { file: src, line: e.originalLine + 1 };
 }
 
@@ -255,4 +312,4 @@ function runnerInitiatedAt(limit) {
   return files.length >= limit ? null : false;
 }
 
-module.exports = { resolve, normPath, setRoot, setRealmError, SHELL_DIR, INFRA, runnerInitiated };
+module.exports = { resolve, watchViteModules, normPath, setRoot, setRealmError, SHELL_DIR, INFRA, runnerInitiated };

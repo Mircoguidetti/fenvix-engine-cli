@@ -1,0 +1,33 @@
+D7 identity: fixed-epoch runs at w1, old = a148bca2 (before C6/D7), new = cf9ac636 (D7: Vite map sites + raw stack in the outside-files recorder); two runs each, alternating, same boot
+
+alakajam: wall old [52.84, 51.48] new [36.33, 33.43]; outcomes changed 0; files_read_outside_tests old 311/311 new 149/149
+  header fields differing old vs new beyond each engine's own repeat: ['.files_read_outside_tests']
+  stable tests whose events differ: site ('at') only 113, other 1
+    at server/entity/timestamped.entity.ts:44 -> server/entity/timestamped.entity.ts:21: 410
+    at server/entity/timestamped.entity.ts:45 -> server/entity/timestamped.entity.ts:22: 410
+    at server/core/fs-utils.spec.ts:17 -> server/core/fs-utils.spec.ts:15: 18
+    at server/core/fs-utils.spec.ts:14 -> server/core/fs-utils.spec.ts:11: 6
+    at server/entity/timestamped.entity.ts:48 -> server/entity/timestamped.entity.ts:27: 6
+    at server/post/comment/comment.service.spec.ts:380 -> server/post/comment/comment.service.spec.ts:393: 6
+    at server/core/fs-utils.ts:17 -> server/core/fs-utils.ts:19: 4
+    at server/core/migration-0047-node-table.spec.ts:308 -> server/core/migration-0047-node-table.spec.ts:219: 3
+
+agentsys: wall old [24.73, 16.1] new [15.52, 15.72]; outcomes changed 0; files_read_outside_tests old 121/121 new 121/121
+  header fields differing old vs new beyond each engine's own repeat: []
+  stable tests whose events differ: site ('at') only 0, other 0
+
+yalc: wall old [108.05, 79.03] new [76.94, 79.29]; outcomes changed 0; files_read_outside_tests old 36/36 new 36/36
+  header fields differing old vs new beyond each engine's own repeat: []
+  stable tests whose events differ: site ('at') only 0, other 0
+
+codex-multi-auth: wall old [413.0, 394.28] new [400.2, 392.87]; outcomes changed 3; files_read_outside_tests old 379/379 new 379/379
+  header fields differing old vs new beyond each engine's own repeat: ['.status.failed', '.status.passed']
+  stable tests whose events differ: site ('at') only 25, other 4
+    at lib/storage.ts:1996 -> lib/storage.ts:1352: 36
+    at lib/config.ts:827 -> lib/config.ts:559: 27
+    at lib/config.ts:795 -> lib/config.ts:548: 11
+    at lib/storage.ts:2097 -> lib/storage.ts:1387: 8
+    at lib/account-policy.ts:109 -> lib/account-policy.ts:76: 6
+    at lib/config.ts:151 -> lib/config.ts:137: 4
+    at lib/config.ts:163 -> lib/config.ts:146: 4
+    at lib/config.ts:179 -> lib/config.ts:158: 4
