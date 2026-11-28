@@ -219,19 +219,19 @@ Printed by `report.py` from the committed raw rows; `verify.py` re-derives every
 
 ## Decision
 
-**IN PROGRESS: 3603 read, pain yes 34 (rate 0.0094); projected over the candidate pool 1793.6 (95% 1124.9 to upper 22190.7).**
+**IN PROGRESS: 3741 read, pain yes 35 (rate 0.0094); projected over the candidate pool 1784.0 (95% 1128.3 to upper 22152.0).**
 
-P 34<!--P--> (recording 5<!--P_recording-->, text 29<!--P_text-->); P without the repositories whose only libraries are langchain*/llama-index*/llamaindex: 30<!--P_no_retrieval--> (information; the decision uses P).
+P 35<!--P--> (recording 5<!--P_recording-->, text 30<!--P_text-->); P without the repositories whose only libraries are langchain*/llama-index*/llamaindex: 31<!--P_no_retrieval--> (information; the decision uses P).
 
-read 3603<!--read-->, members 309<!--members-->, pain yes 34<!--yes-->, unknown 171<!--unknown-->, no 104<!--no-->, uncertain 156<!--uncertain-->; bounds S1 1.0<!--B_S1-->, S2 2807325.2<!--B_S2-->, S3 undefined; hand check: not passed.
+read 3741<!--read-->, members 320<!--members-->, pain yes 35<!--yes-->, unknown 177<!--unknown-->, no 108<!--no-->, uncertain 163<!--uncertain-->; bounds S1 1.0<!--B_S1-->, S2 2838871.3<!--B_S2-->, S3 undefined; hand check: not passed.
 
-S3 by pool (a check, not a rule; coordinator 2026-11-26 19:10Z): old-pool read 999<!--S3_old_read-->, pain yes 10<!--S3_old_yes--> (95% 0.0054 to 0.0183); new-pool (the S3 extension) read 579<!--S3_new_read-->, pain yes 2<!--S3_new_yes--> (95% 0.0009 to 0.0125). The intervals overlap.
+S3 by pool (a check, not a rule; coordinator 2026-11-26 19:10Z): old-pool read 1045<!--S3_old_read-->, pain yes 10<!--S3_old_yes--> (95% 0.0052 to 0.0175); new-pool (the S3 extension) read 605<!--S3_new_read-->, pain yes 2<!--S3_new_yes--> (95% 0.0009 to 0.0120). The intervals overlap.
 
 | stratum | candidates | N_s | read | A_s | U_s | B_s | how |
 |---|---|---|---|---|---|---|---|
 | S1 | 12<!--cand_S1--> | 12<!--N_S1--> | 6<!--read_S1--> | 1<!--A_S1--> | 0.56351 | 1.0<!--B_S1--> | count |
-| S2 | 113511<!--cand_S2--> | 26212230<!--N_S2--> | 2019<!--read_S2--> | 189<!--A_S2--> | 0.10710 | 2807325.2<!--B_S2--> | wilson |
-| S3 | 80478<!--cand_S3--> | 10478336<!--N_S3--> | 1578<!--read_S3--> | 171<!--A_S3--> | 0.12466 | undefined | undefined |
+| S2 | 113511<!--cand_S2--> | 26212230<!--N_S2--> | 2085<!--read_S2--> | 198<!--A_S2--> | 0.10830 | 2838871.3<!--B_S2--> | wilson |
+| S3 | 80478<!--cand_S3--> | 10478336<!--N_S3--> | 1650<!--read_S3--> | 176<!--A_S3--> | 0.12249 | undefined | undefined |
 
 covered: GitHub Actions, public repositories, libraries ag2, agno, autogen-agentchat, autogen-core, autogen-ext, claude-agent-sdk, crewai, crewai-tools, dspy, dspy-ai, google-adk, haystack-ai, langchain, langgraph, llama-index, openai-agents, phidata, pyautogen, pydantic-ai, pydantic-ai-slim, semantic-kernel, smolagents, strands-agents, langchain-*, langgraph-*, llama-index-* (PyPI); @anthropic-ai/claude-agent-sdk, @mastra/core, @openai/agents, ai, langchain, llamaindex, @langchain/*, @ai-sdk/*, @llamaindex/* (npm), pain visible to code, issue and commit search; not covered: private repositories, other CI systems, pain never written down, pain written in words outside the discovery queries (the frame is pain-first: a DROP bounds the frame, not the population), libraries and hosts not listed, texts in languages other than English, shapes dropped after the probe.
 
@@ -781,20 +781,20 @@ Zero-count bound for the planned reads (assumes no uncertain or unknown rows): 3
 | stratum | candidates | truncated leaves | incomplete leaves | unread hits | excluded | read | member | no-agent-lib | no-ci-tests | uncertain | yes (recording / text) | unknown | no |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | S1 | 12 | 0 | 0 | 0 | 6<!--excl_S1--> | 6 | 2<!--member_S1--> | 3<!--nolib_S1--> | 1<!--noci_S1--> | 0<!--unc_S1--> | 1<!--yes_S1--> (1 / 0) | 0<!--unk_S1--> | 1<!--no_S1--> |
-| S2 | 113511 | 365 | 0 | 26098719 | 304<!--excl_S2--> | 2019 | 196<!--member_S2--> | 1673<!--nolib_S2--> | 100<!--noci_S2--> | 50<!--unc_S2--> | 21<!--yes_S2--> (4 / 17) | 118<!--unk_S2--> | 57<!--no_S2--> |
-| S3 | 80478 | 96 | 12 | 10397858 | 77<!--excl_S3--> | 1578 | 111<!--member_S3--> | 1194<!--nolib_S3--> | 167<!--noci_S3--> | 106<!--unc_S3--> | 12<!--yes_S3--> (0 / 12) | 53<!--unk_S3--> | 46<!--no_S3--> |
+| S2 | 113511 | 365 | 0 | 26098719 | 313<!--excl_S2--> | 2085 | 205<!--member_S2--> | 1725<!--nolib_S2--> | 102<!--noci_S2--> | 53<!--unc_S2--> | 22<!--yes_S2--> (4 / 18) | 123<!--unk_S2--> | 60<!--no_S2--> |
+| S3 | 80478 | 96 | 12 | 10397858 | 80<!--excl_S3--> | 1650 | 113<!--member_S3--> | 1252<!--nolib_S3--> | 175<!--noci_S3--> | 110<!--unc_S3--> | 12<!--yes_S3--> (0 / 12) | 54<!--unk_S3--> | 47<!--no_S3--> |
 
 capped-query (first 1,000 read, rest added to N_s): `committer-date:>=2024-01-01 "non deterministic" anthropic test`; `committer-date:>=2024-01-01 "non deterministic" claude test`; `committer-date:>=2024-01-01 "non-deterministic" anthropic test`; `committer-date:>=2024-01-01 "non-deterministic" claude test`; `committer-date:>=2024-01-01 flakiness agent test`; `committer-date:>=2024-01-01 flakiness anthropic test`; `committer-date:>=2024-01-01 flakiness claude test`; `committer-date:>=2024-01-01 flakiness eval test`; `committer-date:>=2024-01-01 flakiness llm test`; `committer-date:>=2024-01-01 flakiness openai test`; `committer-date:>=2024-01-01 flakiness prompt test`; `committer-date:>=2024-01-01 flaky agent test`; `committer-date:>=2024-01-01 flaky anthropic test`; `committer-date:>=2024-01-01 flaky claude test`; `committer-date:>=2024-01-01 flaky eval test`; `committer-date:>=2024-01-01 flaky llm test`; `committer-date:>=2024-01-01 flaky openai test`; `committer-date:>=2024-01-01 flaky prompt test`; `committer-date:>=2024-01-01 intermittent agent test`; `committer-date:>=2024-01-01 intermittent anthropic test`; `committer-date:>=2024-01-01 intermittent claude test`; `committer-date:>=2024-01-01 intermittent prompt test`; `committer-date:>=2024-01-01 retry anthropic test`; `committer-date:>=2024-01-01 retry claude test`; `committer-date:>=2024-01-01 retry eval test`; `committer-date:>=2024-01-01 retry gemini test`; `committer-date:>=2024-01-01 retry gpt test`; `committer-date:>=2024-01-01 retry llm test`; `committer-date:>=2024-01-01 retry openai test`; `committer-date:>=2024-01-01 retry prompt test`; `committer-date:>=2024-01-01 unstable agent test`; `committer-date:>=2024-01-01 unstable anthropic test`; `committer-date:>=2024-01-01 unstable claude test`; `committer-date:>=2024-01-01 xfail anthropic test`; `committer-date:>=2024-01-01 xfail claude test`; `is:public created:>=2024-01-01 "api costs" test (llm OR openai OR agent)`; `is:public created:>=2024-01-01 "expensive tests" (llm OR openai OR agent)`; `is:public created:>=2024-01-01 "live llm" (llm OR openai OR agent)`; `is:public created:>=2024-01-01 "llm tests" (llm OR openai OR agent)`; `is:public created:>=2024-01-01 "mock llm" (llm OR openai OR agent)`; `is:public created:>=2024-01-01 "mock the llm" (llm OR openai OR agent)`; `is:public created:>=2024-01-01 "non deterministic" agent test`; `is:public created:>=2024-01-01 "non deterministic" claude test`; `is:public created:>=2024-01-01 "non deterministic" eval test`; `is:public created:>=2024-01-01 "non deterministic" gemini test`; `is:public created:>=2024-01-01 "non deterministic" llm test`; `is:public created:>=2024-01-01 "non deterministic" openai test`; `is:public created:>=2024-01-01 "non deterministic" prompt test`; `is:public created:>=2024-01-01 "non-deterministic" agent test`; `is:public created:>=2024-01-01 "non-deterministic" claude test`; `is:public created:>=2024-01-01 "non-deterministic" eval test`; `is:public created:>=2024-01-01 "non-deterministic" gemini test`; `is:public created:>=2024-01-01 "non-deterministic" llm test`; `is:public created:>=2024-01-01 "non-deterministic" openai test`; `is:public created:>=2024-01-01 "non-deterministic" prompt test`; `is:public created:>=2024-01-01 "real llm" test (llm OR openai OR agent)`; `is:public created:>=2024-01-01 "skip llm" (llm OR openai OR agent)`; `is:public created:>=2024-01-01 "token cost" test (llm OR openai OR agent)`; `is:public created:>=2024-01-01 flakiness agent test`; `is:public created:>=2024-01-01 flakiness claude test`; `is:public created:>=2024-01-01 flakiness eval test`; `is:public created:>=2024-01-01 flakiness llm test`; `is:public created:>=2024-01-01 flakiness prompt test`; `is:public created:>=2024-01-01 flaky "ai sdk" test`; `is:public created:>=2024-01-01 flaky "model output" test`; `is:public created:>=2024-01-01 flaky agent test`; `is:public created:>=2024-01-01 flaky anthropic test`; `is:public created:>=2024-01-01 flaky claude test`; `is:public created:>=2024-01-01 flaky eval test`; `is:public created:>=2024-01-01 flaky gemini test`; `is:public created:>=2024-01-01 flaky gpt test`; `is:public created:>=2024-01-01 flaky langchain test`; `is:public created:>=2024-01-01 flaky llm test`; `is:public created:>=2024-01-01 flaky openai test`; `is:public created:>=2024-01-01 flaky prompt test`; `is:public created:>=2024-01-01 intermittent agent test`; `is:public created:>=2024-01-01 intermittent anthropic test`; `is:public created:>=2024-01-01 intermittent claude test`; `is:public created:>=2024-01-01 intermittent eval test`; `is:public created:>=2024-01-01 intermittent gpt test`; `is:public created:>=2024-01-01 intermittent llm test`; `is:public created:>=2024-01-01 intermittent openai test`; `is:public created:>=2024-01-01 intermittent prompt test`; `is:public created:>=2024-01-01 nondeterministic agent test`; `is:public created:>=2024-01-01 nondeterministic claude test`; `is:public created:>=2024-01-01 nondeterministic prompt test`; `is:public created:>=2024-01-01 rerun "ai sdk" test`; `is:public created:>=2024-01-01 rerun "model output" test`; `is:public created:>=2024-01-01 rerun agent test`; `is:public created:>=2024-01-01 rerun anthropic test`; `is:public created:>=2024-01-01 rerun claude test`; `is:public created:>=2024-01-01 rerun eval test`; `is:public created:>=2024-01-01 rerun gemini test`; `is:public created:>=2024-01-01 rerun gpt test`; `is:public created:>=2024-01-01 rerun llm test`; `is:public created:>=2024-01-01 rerun openai test`; `is:public created:>=2024-01-01 rerun prompt test`; `is:public created:>=2024-01-01 retry "ai sdk" test`; `is:public created:>=2024-01-01 retry "model output" test`; `is:public created:>=2024-01-01 retry agent test`; `is:public created:>=2024-01-01 retry anthropic test`; `is:public created:>=2024-01-01 retry claude test`; `is:public created:>=2024-01-01 retry eval test`; `is:public created:>=2024-01-01 retry gemini test`; `is:public created:>=2024-01-01 retry gpt test`; `is:public created:>=2024-01-01 retry langchain test`; `is:public created:>=2024-01-01 retry langgraph test`; `is:public created:>=2024-01-01 retry llm test`; `is:public created:>=2024-01-01 retry openai test`; `is:public created:>=2024-01-01 retry prompt test`; `is:public created:>=2024-01-01 unstable agent test`; `is:public created:>=2024-01-01 unstable anthropic test`; `is:public created:>=2024-01-01 unstable claude test`; `is:public created:>=2024-01-01 unstable eval test`; `is:public created:>=2024-01-01 unstable gemini test`; `is:public created:>=2024-01-01 unstable gpt test`; `is:public created:>=2024-01-01 unstable llm test`; `is:public created:>=2024-01-01 unstable openai test`; `is:public created:>=2024-01-01 unstable prompt test`; `is:public created:>=2024-01-01 xfail agent test`; `is:public created:>=2024-01-01 xfail claude test`; `is:public created:>=2024-01-01 xfail prompt test`
 
 ## Reading statistics
 
 - requests per candidate: median 4, p90 24, max 300
-- text candidates per member without a recording: median 53, p90 310, max 1118
-- texts first-read per hour: 215.9
+- text candidates per member without a recording: median 55, p90 305, max 1118
+- texts first-read per hour: 221.7
 - search requests per member observed: median 12, p90 12, max 12
 - X-RateLimit-Remaining observed (last chunk): {}
 
-Pain unknown reasons (a member can have several): comments-incomplete 2, not-read 11, recording-capped 7, recording-unread 1, request-cap 3, text-cap 156, text-capped 109, tree-truncated 1, unclear 13
+Pain unknown reasons (a member can have several): comments-incomplete 2, not-read 11, recording-capped 8, recording-unread 1, request-cap 3, text-cap 163, text-capped 115, tree-truncated 1, unclear 13
 
 ## Per agent library
 
@@ -802,8 +802,8 @@ Pain unknown reasons (a member can have several): comments-incomplete 2, not-rea
 |---|---|---|---|---|---|---|
 | @ai-sdk/alibaba | 3 | 3 | 0 | 0 | 1 | 1 |
 | @ai-sdk/amazon-bedrock | 7 | 7 | 0 | 0 | 2 | 4 |
-| @ai-sdk/anthropic | 26 | 26 | 0 | 0 | 5 | 14 |
-| @ai-sdk/azure | 5 | 5 | 0 | 0 | 2 | 3 |
+| @ai-sdk/anthropic | 28 | 28 | 0 | 0 | 5 | 16 |
+| @ai-sdk/azure | 6 | 6 | 0 | 0 | 2 | 4 |
 | @ai-sdk/cerebras | 3 | 3 | 0 | 0 | 1 | 1 |
 | @ai-sdk/cohere | 4 | 4 | 0 | 0 | 2 | 1 |
 | @ai-sdk/deepinfra | 3 | 3 | 0 | 0 | 1 | 1 |
@@ -811,26 +811,26 @@ Pain unknown reasons (a member can have several): comments-incomplete 2, not-rea
 | @ai-sdk/devtools | 1 | 1 | 0 | 0 | 0 | 1 |
 | @ai-sdk/fireworks | 2 | 2 | 0 | 0 | 0 | 1 |
 | @ai-sdk/gateway | 4 | 4 | 0 | 0 | 2 | 2 |
-| @ai-sdk/google | 19 | 19 | 0 | 0 | 4 | 11 |
+| @ai-sdk/google | 20 | 20 | 0 | 0 | 4 | 12 |
 | @ai-sdk/google-vertex | 4 | 4 | 0 | 0 | 3 | 1 |
 | @ai-sdk/groq | 5 | 5 | 0 | 0 | 1 | 2 |
 | @ai-sdk/huggingface | 1 | 1 | 0 | 0 | 0 | 0 |
 | @ai-sdk/mcp | 5 | 5 | 1 | 0 | 1 | 3 |
 | @ai-sdk/mistral | 4 | 4 | 0 | 0 | 1 | 2 |
 | @ai-sdk/moonshotai | 1 | 1 | 0 | 0 | 0 | 0 |
-| @ai-sdk/openai | 41 | 41 | 1 | 0 | 7 | 25 |
+| @ai-sdk/openai | 43 | 43 | 1 | 0 | 7 | 27 |
 | @ai-sdk/openai-compatible | 20 | 18 | 3 | 0 | 4 | 14 |
-| @ai-sdk/otel | 1 | 1 | 0 | 0 | 0 | 1 |
+| @ai-sdk/otel | 2 | 2 | 0 | 0 | 0 | 2 |
 | @ai-sdk/perplexity | 4 | 4 | 0 | 0 | 2 | 1 |
-| @ai-sdk/provider | 8 | 7 | 2 | 0 | 2 | 6 |
+| @ai-sdk/provider | 9 | 7 | 3 | 0 | 2 | 7 |
 | @ai-sdk/provider-utils | 8 | 8 | 1 | 0 | 3 | 4 |
-| @ai-sdk/react | 20 | 20 | 0 | 0 | 2 | 15 |
+| @ai-sdk/react | 24 | 24 | 0 | 0 | 2 | 19 |
 | @ai-sdk/replicate | 1 | 1 | 0 | 0 | 0 | 0 |
 | @ai-sdk/togetherai | 3 | 3 | 0 | 0 | 1 | 1 |
 | @ai-sdk/vercel | 4 | 4 | 0 | 0 | 2 | 1 |
 | @ai-sdk/workflow | 1 | 1 | 0 | 0 | 0 | 1 |
-| @ai-sdk/xai | 8 | 8 | 0 | 0 | 2 | 4 |
-| @anthropic-ai/claude-agent-sdk | 30 | 27 | 5 | 0 | 3 | 25 |
+| @ai-sdk/xai | 9 | 9 | 0 | 0 | 2 | 5 |
+| @anthropic-ai/claude-agent-sdk | 32 | 29 | 5 | 0 | 3 | 27 |
 | @langchain/anthropic | 6 | 5 | 0 | 1 | 0 | 4 |
 | @langchain/aws | 2 | 1 | 1 | 0 | 0 | 1 |
 | @langchain/baidu-qianfan | 1 | 1 | 0 | 0 | 0 | 1 |
@@ -838,27 +838,27 @@ Pain unknown reasons (a member can have several): comments-incomplete 2, not-rea
 | @langchain/cloudflare | 1 | 1 | 0 | 0 | 0 | 1 |
 | @langchain/cohere | 1 | 1 | 0 | 0 | 0 | 1 |
 | @langchain/community | 3 | 3 | 0 | 0 | 0 | 2 |
-| @langchain/core | 25 | 24 | 8 | 1 | 2 | 15 |
+| @langchain/core | 26 | 25 | 8 | 1 | 2 | 15 |
 | @langchain/deepseek | 1 | 1 | 0 | 0 | 0 | 1 |
 | @langchain/exa | 1 | 1 | 0 | 0 | 0 | 1 |
 | @langchain/google | 1 | 1 | 0 | 0 | 0 | 1 |
 | @langchain/google-genai | 3 | 2 | 1 | 0 | 0 | 3 |
 | @langchain/google-vertexai | 1 | 1 | 0 | 0 | 0 | 1 |
 | @langchain/groq | 2 | 2 | 0 | 0 | 0 | 2 |
-| @langchain/langgraph | 16 | 15 | 1 | 1 | 1 | 13 |
+| @langchain/langgraph | 17 | 16 | 1 | 1 | 1 | 14 |
 | @langchain/langgraph-checkpoint | 2 | 2 | 1 | 0 | 0 | 2 |
 | @langchain/langgraph-checkpoint-postgres | 2 | 2 | 0 | 0 | 0 | 2 |
 | @langchain/langgraph-checkpoint-sqlite | 1 | 1 | 0 | 0 | 0 | 1 |
 | @langchain/langgraph-cli | 1 | 0 | 1 | 0 | 1 | 0 |
-| @langchain/langgraph-sdk | 5 | 5 | 0 | 0 | 2 | 3 |
-| @langchain/mcp-adapters | 1 | 1 | 0 | 0 | 0 | 1 |
+| @langchain/langgraph-sdk | 5 | 5 | 0 | 0 | 2 | 2 |
+| @langchain/mcp-adapters | 2 | 2 | 0 | 0 | 0 | 2 |
 | @langchain/mistralai | 1 | 1 | 0 | 0 | 0 | 1 |
 | @langchain/mongodb | 1 | 1 | 0 | 0 | 0 | 1 |
 | @langchain/ollama | 2 | 2 | 0 | 0 | 0 | 2 |
 | @langchain/openai | 14 | 14 | 2 | 0 | 0 | 8 |
 | @langchain/pinecone | 1 | 1 | 0 | 0 | 0 | 1 |
 | @langchain/qdrant | 1 | 1 | 0 | 0 | 0 | 1 |
-| @langchain/react | 1 | 1 | 0 | 0 | 0 | 1 |
+| @langchain/react | 1 | 1 | 0 | 0 | 0 | 0 |
 | @langchain/redis | 2 | 2 | 0 | 0 | 0 | 2 |
 | @langchain/tavily | 1 | 1 | 0 | 0 | 0 | 1 |
 | @langchain/textsplitters | 3 | 3 | 0 | 0 | 0 | 2 |
@@ -870,10 +870,10 @@ Pain unknown reasons (a member can have several): comments-incomplete 2, not-rea
 | @llamaindex/openai | 1 | 1 | 1 | 0 | 0 | 1 |
 | @llamaindex/workflow | 1 | 1 | 0 | 0 | 0 | 1 |
 | @mastra/core | 6 | 6 | 3 | 0 | 0 | 5 |
-| @openai/agents | 4 | 4 | 1 | 0 | 0 | 4 |
+| @openai/agents | 5 | 5 | 1 | 0 | 0 | 5 |
 | ag2 | 2 | 2 | 0 | 0 | 1 | 1 |
 | agno | 6 | 4 | 0 | 2 | 1 | 4 |
-| ai | 67 | 65 | 11 | 0 | 8 | 45 |
+| ai | 71 | 69 | 11 | 0 | 8 | 48 |
 | autogen-agentchat | 3 | 1 | 1 | 2 | 1 | 2 |
 | autogen-core | 2 | 2 | 0 | 0 | 1 | 1 |
 | autogen-ext | 1 | 1 | 0 | 0 | 0 | 1 |
@@ -883,59 +883,63 @@ Pain unknown reasons (a member can have several): comments-incomplete 2, not-rea
 | dspy | 2 | 2 | 0 | 0 | 0 | 2 |
 | dspy-ai | 2 | 2 | 1 | 1 | 0 | 1 |
 | google-adk | 9 | 6 | 2 | 5 | 0 | 9 |
-| haystack-ai | 3 | 3 | 1 | 1 | 0 | 3 |
-| langchain | 85 | 69 | 8 | 18 | 15 | 39 |
-| langchain-anthropic | 32 | 26 | 1 | 5 | 9 | 15 |
+| haystack-ai | 3 | 3 | 1 | 1 | 0 | 2 |
+| langchain | 86 | 70 | 8 | 18 | 15 | 38 |
+| langchain-anthropic | 33 | 27 | 1 | 5 | 9 | 15 |
 | langchain-aws | 2 | 2 | 0 | 0 | 1 | 1 |
 | langchain-azure-ai | 1 | 0 | 0 | 1 | 0 | 1 |
 | langchain-cerebras | 1 | 1 | 0 | 0 | 0 | 0 |
 | langchain-chroma | 5 | 3 | 0 | 2 | 1 | 2 |
 | langchain-classic | 3 | 2 | 1 | 0 | 1 | 1 |
 | langchain-cohere | 1 | 0 | 0 | 1 | 0 | 1 |
-| langchain-community | 34 | 27 | 1 | 6 | 7 | 15 |
-| langchain-core | 98 | 79 | 6 | 25 | 13 | 47 |
-| langchain-daytona | 1 | 1 | 0 | 0 | 0 | 1 |
+| langchain-community | 34 | 27 | 1 | 6 | 7 | 14 |
+| langchain-core | 99 | 80 | 6 | 25 | 13 | 46 |
+| langchain-daytona | 1 | 1 | 0 | 0 | 0 | 0 |
 | langchain-deepseek | 6 | 2 | 0 | 4 | 2 | 3 |
 | langchain-docling | 1 | 1 | 0 | 0 | 1 | 0 |
+| langchain-exa | 1 | 1 | 0 | 0 | 0 | 1 |
 | langchain-experimental | 2 | 1 | 1 | 0 | 0 | 2 |
-| langchain-fireworks | 1 | 1 | 0 | 0 | 0 | 1 |
-| langchain-google-genai | 19 | 15 | 3 | 2 | 3 | 12 |
+| langchain-fireworks | 1 | 1 | 0 | 0 | 0 | 0 |
+| langchain-google-genai | 19 | 15 | 3 | 2 | 3 | 11 |
 | langchain-google-vertexai | 1 | 1 | 0 | 0 | 0 | 1 |
 | langchain-groq | 9 | 9 | 0 | 0 | 3 | 4 |
 | langchain-huggingface | 3 | 1 | 0 | 2 | 0 | 2 |
 | langchain-ibm | 1 | 1 | 0 | 0 | 1 | 0 |
 | langchain-ivoire | 1 | 0 | 1 | 0 | 0 | 0 |
 | langchain-litellm | 1 | 1 | 0 | 0 | 1 | 0 |
-| langchain-mcp-adapters | 7 | 6 | 0 | 1 | 1 | 6 |
+| langchain-mcp-adapters | 7 | 6 | 0 | 1 | 1 | 5 |
 | langchain-mistralai | 3 | 1 | 0 | 2 | 0 | 3 |
-| langchain-modal | 1 | 1 | 0 | 0 | 0 | 1 |
+| langchain-modal | 2 | 2 | 0 | 0 | 0 | 1 |
+| langchain-nimble | 1 | 1 | 0 | 0 | 0 | 1 |
 | langchain-nvidia-ai-endpoints | 1 | 1 | 0 | 0 | 0 | 1 |
 | langchain-ollama | 12 | 9 | 1 | 3 | 2 | 6 |
-| langchain-openai | 68 | 52 | 9 | 10 | 11 | 35 |
+| langchain-openai | 69 | 53 | 9 | 10 | 11 | 34 |
 | langchain-openviking | 1 | 1 | 0 | 0 | 1 | 0 |
 | langchain-postgres | 2 | 2 | 0 | 0 | 0 | 1 |
 | langchain-protocol | 7 | 7 | 1 | 0 | 1 | 2 |
-| langchain-qdrant | 2 | 2 | 0 | 0 | 1 | 1 |
-| langchain-runloop | 1 | 1 | 0 | 0 | 0 | 1 |
-| langchain-tavily | 2 | 2 | 0 | 0 | 1 | 1 |
+| langchain-qdrant | 2 | 2 | 0 | 0 | 1 | 0 |
+| langchain-runloop | 1 | 1 | 0 | 0 | 0 | 0 |
+| langchain-tavily | 3 | 3 | 0 | 0 | 1 | 2 |
 | langchain-tests | 4 | 0 | 3 | 1 | 0 | 1 |
-| langchain-text-splitters | 27 | 22 | 1 | 5 | 7 | 12 |
+| langchain-text-splitters | 28 | 23 | 1 | 5 | 7 | 13 |
 | langchain-together | 1 | 1 | 0 | 0 | 0 | 1 |
 | langchain-voyageai | 2 | 1 | 1 | 0 | 0 | 0 |
 | langchain-xai | 1 | 0 | 0 | 1 | 0 | 1 |
-| langgraph | 116 | 93 | 9 | 20 | 16 | 52 |
+| langchain-youdotcom | 1 | 1 | 0 | 0 | 0 | 1 |
+| langgraph | 117 | 93 | 9 | 21 | 16 | 51 |
 | langgraph-api | 2 | 2 | 0 | 0 | 1 | 1 |
-| langgraph-checkpoint | 15 | 15 | 1 | 0 | 2 | 6 |
-| langgraph-checkpoint-postgres | 27 | 25 | 0 | 2 | 7 | 10 |
+| langgraph-checkpoint | 15 | 15 | 1 | 0 | 2 | 5 |
+| langgraph-checkpoint-postgres | 28 | 26 | 0 | 2 | 7 | 10 |
 | langgraph-checkpoint-redis | 1 | 1 | 0 | 0 | 0 | 1 |
-| langgraph-checkpoint-sqlite | 16 | 14 | 0 | 2 | 3 | 7 |
-| langgraph-cli | 4 | 2 | 1 | 1 | 2 | 2 |
+| langgraph-checkpoint-sqlite | 17 | 15 | 0 | 2 | 3 | 8 |
+| langgraph-cli | 4 | 2 | 1 | 1 | 2 | 1 |
 | langgraph-prebuilt | 13 | 12 | 2 | 0 | 2 | 4 |
 | langgraph-runtime-inmem | 2 | 1 | 0 | 1 | 1 | 1 |
-| langgraph-sdk | 15 | 14 | 2 | 0 | 3 | 6 |
-| llama-index | 8 | 6 | 2 | 2 | 1 | 2 |
-| llama-index-core | 14 | 8 | 0 | 8 | 1 | 10 |
+| langgraph-sdk | 15 | 14 | 2 | 0 | 3 | 5 |
+| llama-index | 9 | 6 | 2 | 3 | 1 | 3 |
+| llama-index-core | 15 | 8 | 0 | 9 | 1 | 10 |
 | llama-index-embeddings-azure-openai | 1 | 0 | 1 | 0 | 0 | 1 |
+| llama-index-embeddings-nvidia | 1 | 0 | 0 | 1 | 0 | 1 |
 | llama-index-embeddings-openai | 1 | 1 | 0 | 0 | 1 | 0 |
 | llama-index-embeddings-voyageai | 1 | 1 | 0 | 0 | 0 | 0 |
 | llama-index-llms-anthropic | 1 | 1 | 0 | 0 | 0 | 0 |
@@ -943,45 +947,47 @@ Pain unknown reasons (a member can have several): comments-incomplete 2, not-rea
 | llama-index-llms-openai | 3 | 3 | 0 | 0 | 0 | 1 |
 | llama-index-postprocessor-cohere-rerank | 1 | 1 | 0 | 0 | 0 | 0 |
 | llama-index-protocols-ag-ui | 1 | 1 | 0 | 0 | 0 | 1 |
+| llama-index-readers-file | 1 | 0 | 0 | 1 | 0 | 1 |
 | llama-index-readers-web | 1 | 0 | 1 | 0 | 0 | 1 |
 | llama-index-readers-wikipedia | 1 | 0 | 1 | 0 | 0 | 1 |
 | llama-index-storage-chat-store-redis | 1 | 1 | 0 | 0 | 0 | 1 |
 | llama-index-tools-wikipedia | 1 | 0 | 1 | 0 | 0 | 1 |
-| llama-index-vector-stores-qdrant | 2 | 2 | 0 | 0 | 0 | 1 |
+| llama-index-vector-stores-chroma | 1 | 0 | 0 | 1 | 0 | 1 |
+| llama-index-vector-stores-qdrant | 2 | 2 | 0 | 0 | 0 | 0 |
 | llamaindex | 2 | 2 | 0 | 0 | 0 | 2 |
-| openai-agents | 17 | 10 | 1 | 7 | 1 | 13 |
+| openai-agents | 17 | 10 | 1 | 7 | 2 | 12 |
 | pyautogen | 1 | 1 | 1 | 1 | 0 | 1 |
-| pydantic-ai | 12 | 9 | 1 | 4 | 1 | 8 |
-| pydantic-ai-slim | 23 | 19 | 3 | 7 | 1 | 16 |
+| pydantic-ai | 12 | 9 | 1 | 4 | 1 | 7 |
+| pydantic-ai-slim | 25 | 21 | 3 | 8 | 1 | 18 |
 | semantic-kernel | 3 | 1 | 0 | 2 | 0 | 2 |
-| smolagents | 3 | 2 | 0 | 1 | 1 | 2 |
-| strands-agents | 8 | 7 | 1 | 3 | 1 | 6 |
-| (total, each repository once) | 309 | | | | 34 | 171 |
+| smolagents | 3 | 2 | 0 | 1 | 2 | 1 |
+| strands-agents | 9 | 8 | 1 | 3 | 1 | 7 |
+| (total, each repository once) | 320 | | | | 35 | 177 |
 
-Pain yes by kind: recording 5, text 29 (cost 4, provider-errors 5, varying-output 20).
+Pain yes by kind: recording 5, text 30 (cost 4, provider-errors 5, varying-output 21).
 
 ## Candidates and non-members per S2/S3 model term
 
 | model term | candidates | read | non-members |
 |---|---|---|---|
-| llm | 629 | 585 | 478 |
-| openai | 562 | 499 | 426 |
-| anthropic | 628 | 576 | 509 |
-| claude | 426 | 406 | 369 |
-| gemini | 648 | 588 | 491 |
-| gpt | 506 | 451 | 364 |
-| "model output" | 814 | 735 | 632 |
-| prompt | 578 | 537 | 435 |
-| eval | 589 | 531 | 442 |
-| langchain | 311 | 256 | 165 |
-| langgraph | 284 | 264 | 165 |
-| crewai | 70 | 61 | 39 |
-| autogen | 102 | 86 | 71 |
-| llamaindex | 48 | 40 | 18 |
-| "llama-index" | 54 | 41 | 28 |
-| "pydantic-ai" | 199 | 183 | 133 |
-| "ai sdk" | 315 | 281 | 225 |
-| agent | 524 | 504 | 421 |
+| llm | 655 | 609 | 498 |
+| openai | 590 | 526 | 450 |
+| anthropic | 649 | 596 | 525 |
+| claude | 440 | 420 | 380 |
+| gemini | 672 | 611 | 508 |
+| gpt | 528 | 472 | 383 |
+| "model output" | 847 | 766 | 658 |
+| prompt | 606 | 565 | 458 |
+| eval | 612 | 551 | 458 |
+| langchain | 323 | 265 | 170 |
+| langgraph | 294 | 273 | 170 |
+| crewai | 73 | 64 | 41 |
+| autogen | 106 | 89 | 73 |
+| llamaindex | 53 | 44 | 20 |
+| "llama-index" | 56 | 43 | 28 |
+| "pydantic-ai" | 208 | 190 | 136 |
+| "ai sdk" | 325 | 291 | 229 |
+| agent | 548 | 528 | 442 |
 
 ## Pain list
 
@@ -993,6 +999,7 @@ Pain yes by kind: recording 5, text 29 (cost 4, provider-errors 5, varying-outpu
 | https://github.com/aieng-abdullah/production-rag-assistant | langchain, langchain-community, langchain-core, langchain-groq, langchain-qdrant, langchain-text-splitters | text (varying-output) | 2026-10-08 | test: retry verify-failed generations in eval | https://github.com/aieng-abdullah/production-rag-assistant/commit/a0503da99348dcb1c02331783194b8002255008d |
 | https://github.com/buYoung/pi-packages | @anthropic-ai/claude-agent-sdk | text (varying-output) | 2026-07-29 | Asking a model to enumerate its tools was flaky - gemini intermittently summarises and omits custom tools. | https://github.com/buYoung/pi-packages/commit/7c18e88f5675692bcf9e5286b6b08eedc4675d7c |
 | https://github.com/code0monkey1/invoice-dispute-agent | langchain, langchain-core, langchain-groq, langgraph, langgraph-checkpoint-postgres, langgraph-checkpoint-sqlite | text (provider-errors) | 2026-11-13 | When a *client-reply* case was rate-limited, `handle_client_reply` logged and swallowed the error (correct for a webhook), so the eval saw "the agent didn't call the tool". | https://github.com/code0monkey1/invoice-dispute-agent/pull/28 |
+| https://github.com/context-labs/HALO | openai-agents, smolagents | text (varying-output) | 2026-07-29 | The same test passed on two branch runs of identical code minutes earlier — model nondeterminism against a budget with no slack. | https://github.com/context-labs/HALO/pull/90 |
 | https://github.com/cuga-project/cuga-agent | langchain, langchain-core, langchain-docling, langchain-google-genai, langchain-groq, langchain-ibm, langchain-litellm, langchain-ollama, langchain-openai, langchain-text-splitters, langgraph, langgraph-checkpoint-postgres, langgraph-checkpoint-sqlite | text (provider-errors) | 2026-10-07 | This makes Policy (unit), Policy (e2e), SDK integration and Stability Tests fail at random on every PR. | https://github.com/cuga-project/cuga-agent/issues/907 |
 | https://github.com/dre-mkr/aspire-chatbot | langchain, langchain-anthropic, langchain-chroma, langchain-core, langchain-openai, langchain-protocol, langchain-text-splitters, langgraph, langgraph-checkpoint, langgraph-checkpoint-postgres, langgraph-prebuilt, langgraph-sdk | text (varying-output) | 2026-08-14 | judging_memory 14 is recorded as unassigned and nondeterministic. One run recalled "Marisol's secondary-school uniform"; the next answered "You mentioned a laptop or a trip as savings goals" -- invent | https://github.com/dre-mkr/aspire-chatbot/commit/d33395f58d589b6f41e6ed24176d2856004fb9c9 |
 | https://github.com/dyad-sh/dyad | @ai-sdk/amazon-bedrock, @ai-sdk/anthropic, @ai-sdk/azure, @ai-sdk/google, @ai-sdk/google-vertex, @ai-sdk/mcp, @ai-sdk/openai, @ai-sdk/openai-compatible, @ai-sdk/provider-utils, @ai-sdk/xai, ai | text (varying-output) | 2026-08-05 | Whether a run passes or fails depends on whether the model happens to wait for the sub-agent, hence the flakiness (failing runs finish in 1–3 minutes). | https://github.com/dyad-sh/dyad/pull/4204 |
@@ -1024,11 +1031,11 @@ Pain yes by kind: recording 5, text 29 (cost 4, provider-errors 5, varying-outpu
 
 ## Hand reads
 
-first reads 8075<!--first_reads--> (confirmed 31, unclear 13, rejected 8031); second reads 588; both confirmed 29; confirmed first read not confirmed by the second 2; rejected first read labelled confirmed by the second 3.
+first reads 8367<!--first_reads--> (confirmed 32, unclear 13, rejected 8322); second reads 609; both confirmed 30; confirmed first read not confirmed by the second 2; rejected first read labelled confirmed by the second 3.
 
 ## Hand check (AC4)
 
-required yes checks 34, missing 34, failed 0; samples (10 non-members, 10 members with pain no, every recording package hit) done: no.
+required yes checks 35, missing 35, failed 0; samples (10 non-members, 10 members with pain no, every recording package hit) done: no.
 
 ## Information
 
