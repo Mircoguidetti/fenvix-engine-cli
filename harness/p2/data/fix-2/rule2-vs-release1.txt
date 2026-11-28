@@ -1,0 +1,30 @@
+rule 2 per repo: tests whose fixed-run fingerprint differs between the fix-1 engine (fix1c) and the head (fix2),
+classified against release-1 519bf1a0 alone (rel1), same boot; fix2r = the head's repeat
+nestjs-pino: differ 0; head equals release-1 0; neither head run equals release-1 0 (of them not passing at the head 0; head vs its repeat unstable 0)
+agentsys: differ 15; head equals release-1 0; neither head run equals release-1 15 (of them not passing at the head 0; head vs its repeat unstable 15)
+alakajam: differ 95; head equals release-1 12; neither head run equals release-1 83 (of them not passing at the head 76; head vs its repeat unstable 81)
+agentlang: differ 4; head equals release-1 2; neither head run equals release-1 2 (of them not passing at the head 0; head vs its repeat unstable 2)
+yalc: differ 22; head equals release-1 2; neither head run equals release-1 20 (of them not passing at the head 0; head vs its repeat unstable 20)
+ironcurtain: differ 476; head equals release-1 50; neither head run equals release-1 426 (of them not passing at the head 120; head vs its repeat unstable 416)
+codex-multi-auth: differ 1205; head equals release-1 79; neither head run equals release-1 1126 (of them not passing at the head 51; head vs its repeat unstable 1108)
+drydock: differ 278; head equals release-1 16; neither head run equals release-1 262 (of them not passing at the head 11; head vs its repeat unstable 254)
+lerna-lite: differ 17; head equals release-1 3; neither head run equals release-1 14 (of them not passing at the head 0; head vs its repeat unstable 12)
+
+stable differences: the head's two fixed runs agree with each other and both differ from release-1 alone
+nestjs-pino: 0
+agentsys: 0
+alakajam: 9; e.g. server/core/security.spec.ts::Security::post permissions::should give no write permissions (failed vs rel1 failed); server/entry/team/team.service.spec.ts::Team service::find team members::should list the o (failed vs rel1 failed); server/post/like/like.service.spec.ts::Like service::like::should ignore invalid like type (passed vs rel1 passed)
+agentlang: 0
+yalc: 4; e.g. src/__tests__/archetype-outreach-campaign-builder.test.ts::archetype C — outreach-campaign (passed vs rel1 passed); src/__tests__/auto-commit-threshold.test.ts::0.9.F auto-commit threshold::applyAutoCommit  (passed vs rel1 passed); src/__tests__/flag-capture-rich-profile.test.ts::A4 — flag-capture rich profile synthesis: (passed vs rel1 passed)
+ironcurtain: 36; e.g. test/checkpoint-selection.test.ts@@main::checkpoint-selection::findResumableCheckpoints::f (passed vs rel1 passed); test/docker-resource-lifecycle.test.ts@@main::Docker resource crash reconciliation::reclai (passed vs rel1 passed); test/docker-workload/apple-vm-egress-relay.test.ts@@main::purpose-built Apple VM egress re (passed vs rel1 passed)
+codex-multi-auth: 59; e.g. test/account-policy.test.ts::account policy store::leaves a raced newer entry alone when t (passed vs rel1 passed); test/active-account-sync.test.ts::autoSyncActiveAccountToCodex fingerprint short-circuit:: (passed vs rel1 passed); test/api-capability-custom-fetch.test.ts::uses the configured raw transport for daily capa (passed vs rel1 passed)
+drydock: 24; e.g. api/index.test.ts::API Index::real Express: a non-whitelisted /api/* request returns 410 J (failed vs rel1 passed); api/index.test.ts::API Index::real Express: whitelisted wud-card endpoints still serve via (passed vs rel1 failed); api/index.test.ts::API Index::real Express: GET /api/auth/methods is no longer registered  (failed vs rel1 failed)
+lerna-lite: 2; e.g. e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves PR #1411 cross-env-she (passed vs rel1 passed); e2e/watch/watch-lifecycle.spec.ts::lerna watch lifecycle::preserves PR #1411 cross-env-she (passed vs rel1 passed)
+
+of those, how many also vary between the fix-1 engine's own two fixed runs (data/fix-1 fix1/fix1r) or between the head's and the fix-1 engine's other runs
+alakajam: 9 stable differences, 6 of them variable with other engines' runs too; left ['server/entry/team/team.service.spec.ts::Team service::find team members::should ', 'server/post/like/like.service.spec.ts::Like service::like::should ignore invalid', 'server/post/like/like.service.spec.ts::Like service::unlike::should remove the l']
+yalc: 4 stable differences, 2 of them variable with other engines' runs too; left ['src/__tests__/flag-capture-rich-profile.test.ts::A4 — flag-capture rich profile ', 'src/lib/providers/declarative/__tests__/registry-integration.test.ts::registerDe']
+ironcurtain: 36 stable differences, 19 of them variable with other engines' runs too; left ['test/checkpoint-selection.test.ts@@main::checkpoint-selection::findResumableChec', 'test/docker-resource-lifecycle.test.ts@@main::Docker resource crash reconciliati', 'test/docker-workload/apple-vm-egress-relay.test.ts@@main::purpose-built Apple VM', 'test/docker-workload/apple-vm-egress-relay.test.ts@@main::purpose-built Apple VM']
+codex-multi-auth: 59 stable differences, 40 of them variable with other engines' runs too; left ['test/api-capability-custom-fetch.test.ts::uses the configured raw transport for ', 'test/api-model-runtime.test.ts::answers an API pool whose credentials all return', 'test/automatic-api-checks.test.ts::migrates legacy ownership before claiming the', 'test/automatic-subscription-checks.test.ts::does not prime a disabled saved work']
+drydock: 24 stable differences, 8 of them variable with other engines' runs too; left ['api/index.test.ts::API Index::real Express: a non-whitelisted /api/* request ret', 'api/index.test.ts::API Index::real Express: whitelisted wud-card endpoints still', 'api/index.test.ts::API Index::real Express: GET /api/auth/methods is no longer r', 'api/index.test.ts::API Index::real Express: /api/v1/* traffic is never reached b']
+lerna-lite: 2 stable differences, 2 of them variable with other engines' runs too; left []
