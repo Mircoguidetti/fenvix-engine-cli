@@ -1031,7 +1031,7 @@ Pain yes by kind: recording 5, text 30 (cost 4, provider-errors 5, varying-outpu
 
 ## Hand reads
 
-first reads 9470<!--first_reads--> (confirmed 32, unclear 14, rejected 9424); second reads 650; both confirmed 30; confirmed first read not confirmed by the second 2; rejected first read labelled confirmed by the second 4.
+first reads 9470<!--first_reads--> (confirmed 32, unclear 14, rejected 9424); second reads 670; both confirmed 30; confirmed first read not confirmed by the second 2; rejected first read labelled confirmed by the second 4.
 
 ## Hand check (AC4)
 
