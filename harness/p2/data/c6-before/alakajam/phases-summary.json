@@ -1,0 +1,501 @@
+{
+ "source": "phases-alakajam.jsonl.phases.jsonl",
+ "main": {
+  "deps_hash_s": 0.64,
+  "plan_s": 0.0,
+  "trace_write_s": 0.036,
+  "start_at_s": [
+   0.0
+  ],
+  "workers_spawn_at_s": [
+   0.338
+  ],
+  "exit_at_s": [
+   67.712
+  ],
+  "start_uptime_s": [
+   0.055
+  ],
+  "exit_uptime_s": [
+   67.767
+  ]
+ },
+ "workers": [
+  {
+   "worker": "1239:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 0.198,
+   "wall_s": 1.016,
+   "file_s": 1.016,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1386,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1247:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 1.365,
+   "wall_s": 0.842,
+   "file_s": 0.842,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1224,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1255:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 2.362,
+   "wall_s": 0.221,
+   "file_s": 0.221,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 134,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1267:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 2.74,
+   "wall_s": 0.434,
+   "file_s": 0.434,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 493,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1275:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 3.336,
+   "wall_s": 2.631,
+   "file_s": 2.631,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 6374,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1287:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 6.143,
+   "wall_s": 0.404,
+   "file_s": 0.404,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 512,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1295:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 6.701,
+   "wall_s": 7.88,
+   "file_s": 7.88,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 9720,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1308:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 14.765,
+   "wall_s": 0.77,
+   "file_s": 0.77,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1276,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1316:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 15.693,
+   "wall_s": 0.459,
+   "file_s": 0.459,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 617,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1328:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 16.301,
+   "wall_s": 2.084,
+   "file_s": 2.084,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4596,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1340:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 18.542,
+   "wall_s": 3.375,
+   "file_s": 3.375,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 7980,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1352:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 22.103,
+   "wall_s": 3.267,
+   "file_s": 3.267,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 6287,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1371:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 25.546,
+   "wall_s": 0.225,
+   "file_s": 0.225,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 36,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1379:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 25.964,
+   "wall_s": 7.577,
+   "file_s": 7.577,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 9768,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1394:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 33.696,
+   "wall_s": 0.188,
+   "file_s": 0.188,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 32,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1402:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 34.034,
+   "wall_s": 2.145,
+   "file_s": 2.145,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4683,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1414:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 36.327,
+   "wall_s": 2.129,
+   "file_s": 2.129,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4698,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1426:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 38.634,
+   "wall_s": 1.987,
+   "file_s": 1.987,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4581,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1434:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 40.774,
+   "wall_s": 1.912,
+   "file_s": 1.912,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4391,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1442:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 42.859,
+   "wall_s": 0.179,
+   "file_s": 0.179,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 30,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1450:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 43.185,
+   "wall_s": 3.412,
+   "file_s": 3.412,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 8441,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1462:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 46.758,
+   "wall_s": 5.615,
+   "file_s": 5.615,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 11518,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1474:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 52.528,
+   "wall_s": 3.53,
+   "file_s": 3.53,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 13687,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1486:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 56.24,
+   "wall_s": 3.64,
+   "file_s": 3.64,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 8739,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1501:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 60.036,
+   "wall_s": 2.009,
+   "file_s": 2.009,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4469,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1509:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 62.25,
+   "wall_s": 0.585,
+   "file_s": 0.585,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 3999,
+   "uncontrolled_io": 0
+  },
+  {
+   "worker": "1517:0",
+   "pass": null,
+   "files": 1,
+   "ready_after_spawn_s": 62.98,
+   "wall_s": 3.55,
+   "file_s": 3.55,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 8844,
+   "uncontrolled_io": 0
+  }
+ ],
+ "rerun_one_lane": [],
+ "passes": [
+  "None"
+ ],
+ "files_top": [
+  {
+   "file": "server/core/security.spec.ts",
+   "s": 7.88,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 9720
+  },
+  {
+   "file": "server/entry/team/team.service.spec.ts",
+   "s": 7.577,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 9768
+  },
+  {
+   "file": "server/post/comment/comment.service.spec.ts",
+   "s": 5.615,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 11518
+  },
+  {
+   "file": "server/post/post.service.spec.ts",
+   "s": 3.64,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 8739
+  },
+  {
+   "file": "server/user/user.service.spec.ts",
+   "s": 3.55,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 8844
+  },
+  {
+   "file": "server/post/like/like.service.spec.ts",
+   "s": 3.53,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 13687
+  },
+  {
+   "file": "server/event/tournament/tournament.service.spec.ts",
+   "s": 3.412,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 8441
+  },
+  {
+   "file": "server/entry/entry.service.spec.ts",
+   "s": 3.375,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 7980
+  },
+  {
+   "file": "server/entry/highscore/highscore.service.spec.ts",
+   "s": 3.267,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 6287
+  },
+  {
+   "file": "server/core/migration-0047-node-table.spec.ts",
+   "s": 2.631,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 6374
+  },
+  {
+   "file": "server/event/manage/rankings/event-manage-rankings.controller.spec.ts",
+   "s": 2.145,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4683
+  },
+  {
+   "file": "server/event/manage/settings/event-settings.controller.spec.ts",
+   "s": 2.129,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4698
+  },
+  {
+   "file": "server/entry/entry-hotness.service.spec.ts",
+   "s": 2.084,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4596
+  },
+  {
+   "file": "server/user/authentication/register.controller.spec.ts",
+   "s": 2.009,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4469
+  },
+  {
+   "file": "server/event/results/results.template.spec.ts",
+   "s": 1.987,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4581
+  },
+  {
+   "file": "server/event/streamers/youtube.service.spec.ts",
+   "s": 1.912,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 4391
+  },
+  {
+   "file": "server/core/formats.spec.ts",
+   "s": 1.016,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1386
+  },
+  {
+   "file": "server/core/forms.spec.ts",
+   "s": 0.842,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1224
+  },
+  {
+   "file": "server/core/templating-filters.spec.ts",
+   "s": 0.77,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 1276
+  },
+  {
+   "file": "server/user/user-timezone.service.spec.ts",
+   "s": 0.585,
+   "io_release": 0,
+   "held_s": 0.0,
+   "stack_captures": 3999
+  }
+ ],
+ "totals": {
+  "io_release": 0,
+  "stack_captures": 128515,
+  "uncontrolled_io": 0,
+  "held_s": 0.0
+ }
+}
