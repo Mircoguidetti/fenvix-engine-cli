@@ -1,0 +1,349 @@
+{
+ "profiles": 1,
+ "total_s": 77.916,
+ "top": [
+  {
+   "function": "(idle) :0",
+   "self_s": 75.266,
+   "share": 0.966
+  },
+  {
+   "function": "RegExp: ^\\s*?\\/[\\/\\*][@#]\\s+?sourceMappingURL=data:(((?:application|text)\\/json)(?:;charset=([^;,]+?)?)?)?(?:;(base64))?,(.*?)$ :0",
+   "self_s": 0.344,
+   "share": 0.0044
+  },
+  {
+   "function": "(garbage collector) :0",
+   "self_s": 0.258,
+   "share": 0.0033
+  },
+  {
+   "function": "readFileSync node:fs:433",
+   "self_s": 0.211,
+   "share": 0.0027
+  },
+  {
+   "function": "read :0",
+   "self_s": 0.184,
+   "share": 0.0024
+  },
+  {
+   "function": "open :0",
+   "self_s": 0.181,
+   "share": 0.0023
+  },
+  {
+   "function": "RegExp: (?:\\/\\/[@#][ \\t]+?sourceMappingURL=([^\\s'\"`]+?)[ \\t]*?$)|(?:\\/\\*[@#][ \\t]+sourceMappingURL=([^*]+?)[ \\t]*?(?:\\*\\/){1}[ \\t]*?$) :0",
+   "self_s": 0.142,
+   "share": 0.0018
+  },
+  {
+   "function": "spawn node:internal/child_process:354",
+   "self_s": 0.116,
+   "share": 0.0015
+  },
+  {
+   "function": "compileSourceTextModule node:internal/modules/esm/utils:344",
+   "self_s": 0.082,
+   "share": 0.0011
+  },
+  {
+   "function": "depsInput file:///home/user/fx-fix2/node/src/loaded.js:30",
+   "self_s": 0.075,
+   "share": 0.001
+  },
+  {
+   "function": "readFileUtf8 :0",
+   "self_s": 0.068,
+   "share": 0.0009
+  },
+  {
+   "function": "(program) :0",
+   "self_s": 0.043,
+   "share": 0.0005
+  },
+  {
+   "function": "readdir :0",
+   "self_s": 0.035,
+   "share": 0.0005
+  },
+  {
+   "function": "close :0",
+   "self_s": 0.031,
+   "share": 0.0004
+  },
+  {
+   "function": "phases.span.part file:///home/user/fx-fix2/node/src/session.js:555",
+   "self_s": 0.029,
+   "share": 0.0004
+  },
+  {
+   "function": "walk file:///home/user/fx-fix2/node/src/loaded.js:15",
+   "self_s": 0.025,
+   "share": 0.0003
+  },
+  {
+   "function": "fstat :0",
+   "self_s": 0.025,
+   "share": 0.0003
+  },
+  {
+   "function": "unlink :0",
+   "self_s": 0.024,
+   "share": 0.0003
+  },
+  {
+   "function": "writeBuffer :0",
+   "self_s": 0.021,
+   "share": 0.0003
+  },
+  {
+   "function": "dlopen :0",
+   "self_s": 0.018,
+   "share": 0.0002
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/session.js:549",
+   "self_s": 0.015,
+   "share": 0.0002
+  },
+  {
+   "function": "projectFrame file:///home/user/fx-fix2/node/src/controls.js:206",
+   "self_s": 0.014,
+   "share": 0.0002
+  },
+  {
+   "function": "parseChannelMessages node:internal/child_process/serialization:61",
+   "self_s": 0.014,
+   "share": 0.0002
+  },
+  {
+   "function": "compileForInternalLoader node:internal/bootstrap/realm:385",
+   "self_s": 0.013,
+   "share": 0.0002
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/session.js:339",
+   "self_s": 0.013,
+   "share": 0.0002
+  },
+  {
+   "function": "highlightTokens file:///root/pm/repos/alakajam/node_modules/vitest/dist/chunks/index.1TqnEahn.js:8322",
+   "self_s": 0.011,
+   "share": 0.0001
+  },
+  {
+   "function": "wrapSafe node:internal/modules/cjs/loader:1671",
+   "self_s": 0.011,
+   "share": 0.0001
+  },
+  {
+   "function": "channel.onread node:internal/child_process:613",
+   "self_s": 0.011,
+   "share": 0.0001
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/repro.js:156",
+   "self_s": 0.01,
+   "share": 0.0001
+  },
+  {
+   "function": "defaultPrepareStackTrace node:internal/errors:94",
+   "self_s": 0.01,
+   "share": 0.0001
+  },
+  {
+   "function": "existsSync :0",
+   "self_s": 0.01,
+   "share": 0.0001
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/session.js:689",
+   "self_s": 0.01,
+   "share": 0.0001
+  },
+  {
+   "function": "join node:path:1347",
+   "self_s": 0.009,
+   "share": 0.0001
+  },
+  {
+   "function": "(anonymous) file:///root/pm/repos/alakajam/node_modules/vite/dist/node/chunks/node.js:56",
+   "self_s": 0.009,
+   "share": 0.0001
+  },
+  {
+   "function": "jsTokens_1 file:///root/pm/repos/alakajam/node_modules/vitest/dist/chunks/index.1TqnEahn.js:7871",
+   "self_s": 0.008,
+   "share": 0.0001
+  },
+  {
+   "function": "__require node:internal/deps/undici/undici:5",
+   "self_s": 0.008,
+   "share": 0.0001
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/loaded.js:38",
+   "self_s": 0.008,
+   "share": 0.0001
+  },
+  {
+   "function": "openFileHandle :0",
+   "self_s": 0.008,
+   "share": 0.0001
+  },
+  {
+   "function": "slice node:buffer:640",
+   "self_s": 0.008,
+   "share": 0.0001
+  },
+  {
+   "function": "prepareStackTrace file:///root/pm/repos/alakajam/node_modules/vite/dist/node/module-runner.js:1097",
+   "self_s": 0.008,
+   "share": 0.0001
+  }
+ ],
+ "top_engine": [
+  {
+   "function": "depsInput file:///home/user/fx-fix2/node/src/loaded.js:30",
+   "self_s": 0.075,
+   "share": 0.001
+  },
+  {
+   "function": "phases.span.part file:///home/user/fx-fix2/node/src/session.js:555",
+   "self_s": 0.029,
+   "share": 0.0004
+  },
+  {
+   "function": "walk file:///home/user/fx-fix2/node/src/loaded.js:15",
+   "self_s": 0.025,
+   "share": 0.0003
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/session.js:549",
+   "self_s": 0.015,
+   "share": 0.0002
+  },
+  {
+   "function": "projectFrame file:///home/user/fx-fix2/node/src/controls.js:206",
+   "self_s": 0.014,
+   "share": 0.0002
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/session.js:339",
+   "self_s": 0.013,
+   "share": 0.0002
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/repro.js:156",
+   "self_s": 0.01,
+   "share": 0.0001
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/session.js:689",
+   "self_s": 0.01,
+   "share": 0.0001
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/loaded.js:38",
+   "self_s": 0.008,
+   "share": 0.0001
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/session.js:622",
+   "self_s": 0.007,
+   "share": 0.0001
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/cache/capture.js:1701",
+   "self_s": 0.004,
+   "share": 0.0001
+  },
+  {
+   "function": "finish file:///home/user/fx-fix2/node/src/session.js:495",
+   "self_s": 0.002,
+   "share": 0.0
+  },
+  {
+   "function": "STATE.onEnvRead file:///home/user/fx-fix2/node/src/controls.js:197",
+   "self_s": 0.002,
+   "share": 0.0
+  },
+  {
+   "function": "readMarkers file:///home/user/fx-fix2/node/src/parallel.js:794",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "main file:///home/user/fx-fix2/node/src/vitest/cli.js:34",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/cache/capture.js:1",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "main file:///home/user/fx-fix2/node/bin/detjs.js:26",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/session.js:554",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "runLines file:///home/user/fx-fix2/node/src/session.js:470",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "provableField file:///home/user/fx-fix2/node/src/session.js:410",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/state.js:1",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "load file:///home/user/fx-fix2/node/src/native.js:29",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "envReadOutside file:///home/user/fx-fix2/node/src/session.js:389",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/src/controls.js:213",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "readSide file:///home/user/fx-fix2/node/src/repro.js:146",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "(anonymous) file:///home/user/fx-fix2/node/bin/detjs.js:1",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "phases.span.part file:///home/user/fx-fix2/node/src/session.js:565",
+   "self_s": 0.001,
+   "share": 0.0
+  },
+  {
+   "function": "stampStatus file:///home/user/fx-fix2/node/src/session.js:616",
+   "self_s": 0.001,
+   "share": 0.0
+  }
+ ],
+ "engine_self_s": 0.231
+}
